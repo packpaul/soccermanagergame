@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+                                       http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd"
+                   logicalFilePath="/hconnect">
+
+    <changeSet author="pavel.perminov" id="1.X-10">
+        <createSequence sequenceName="HIBERNATE_SEQUENCE" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="pavel.perminov" id="1.X-20">
+        <createTable tableName="OAUTH_ACCESS_TOKEN">
+            <column name="TOKEN_ID" type="VARCHAR(256)"/>
+            <column name="TOKEN" type="LONGVARBINARY"/>
+            <column name="AUTHENTICATION_ID" type="VARCHAR(256)">
+                <constraints primaryKey="true" primaryKeyName="PK_OAUTH_ACCESS_TOKEN"/>
+            </column>
+            <column name="USER_NAME" type="VARCHAR(256)"/>
+            <column name="CLIENT_ID" type="VARCHAR(256)"/>
+            <column name="AUTHENTICATION" type="LONGVARBINARY"/>
+            <column name="REFRESH_TOKEN" type="VARCHAR(256)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="pavel.perminov" id="1.X-30">
+        <createTable tableName="OAUTH_REFRESH_TOKEN">
+            <column name="TOKEN_ID" type="VARCHAR(256)"/>
+            <column name="TOKEN" type="LONGVARBINARY"/>
+            <column name="AUTHENTICATION" type="LONGVARBINARY"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="pavel.perminov" id="1.X-40">
+        <createTable tableName="USERS">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="PK_USERS"/>
+            </column>
+            <column name="USERNAME" type="VARCHAR(32)">
+                <constraints nullable="false"
+                             unique="true" uniqueConstraintName="UK_USERS_USERNAME"/>
+            </column>
+            <column name="USERTYPE" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LASTLOGINDATE" type="TIMESTAMP"/>
+            <column name="PASSWORD" type="VARCHAR(128)"/>
+        </createTable>
+    </changeSet>
+    
+    <!-- Initial data -->
+    <changeSet author="pavel.perminov" id="1.X-10010">
+        <insert tableName="USERS">
+            <column name="USERNAME" value="admin" />
+            <column name="USERTYPE" value="ADMIN" />
+            <!-- password="admin" -->
+            <column name="PASSWORD" value="e17fe9fb2a7f7c185431fdc0b9505b3ece66adac44b557444e0feea78c485c0441c0b4360bdf9988" />
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
