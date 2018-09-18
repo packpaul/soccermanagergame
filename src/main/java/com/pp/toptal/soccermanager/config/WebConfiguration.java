@@ -12,9 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-
 import com.pp.toptal.soccermanager.servlet.filter.ApiAuthHandlingFilter;
 import com.pp.toptal.soccermanager.servlet.filter.ApiVersionForwardFilter;
 import com.pp.toptal.soccermanager.servlet.filter.TLFilter;
@@ -77,16 +74,6 @@ public class WebConfiguration {
     @Bean("tlFilter")
     public TLFilter getTLFilter() {
         return new TLFilter();
-    }
-
-    @Bean
-    public WebMvcConfigurerAdapter forwardRootToLogin() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addViewControllers(ViewControllerRegistry registry) {
-                registry.addViewController("/").setViewName("forward:/login/index.html");
-            }
-        };
     }
 
 }

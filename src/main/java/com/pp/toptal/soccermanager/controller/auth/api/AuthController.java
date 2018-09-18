@@ -4,7 +4,6 @@ import java.security.Principal;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
@@ -12,6 +11,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 
 import com.pp.toptal.soccermanager.auth.AuthService;
+import com.pp.toptal.soccermanager.so.NullSO;
 
 /**
  * Controller for features related to authentication.
@@ -51,10 +51,11 @@ public class AuthController {
      * Logout method. It's working itself in a secure context, and revokes the tokens of current user.
      */
     @PostMapping(path = "/v" + AuthApi.BASELINE_VERSION + "/logout")
-    @ResponseStatus(HttpStatus.OK)
-    public void logout() {
+    public NullSO logout() {
         String username = authService.getCurrentUsername();
         authService.revokeTokens(username);
+        
+        return NullSO.INSTANCE;
     }
 
 }
