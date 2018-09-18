@@ -20,6 +20,12 @@ public class UserEntity extends EntityBase<Long> implements Serializable {
     public UserEntity(UserType userType) {
         this.userType = userType;
     }
+    
+    public UserEntity(String username, UserType userType, String password) {
+        this(userType);
+        this.username = username;
+        this.password = password;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

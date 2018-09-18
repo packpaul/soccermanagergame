@@ -6,6 +6,7 @@ public enum ErrorCode {
 
     INVALID_CREDENTIALS("invalid_credentials"),
     MISSING_CREDENTIALS("missing_credentials"),
+    DUPLICATE_CREDENTIALS("duplicate_credentials"),
     
     VALIDATION_ERROR("validation_error"),
     OBJECT_NOT_FOUND("object_not_found"),

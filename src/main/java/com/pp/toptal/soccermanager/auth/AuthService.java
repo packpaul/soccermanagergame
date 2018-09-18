@@ -8,17 +8,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
 
 import com.pp.toptal.soccermanager.config.properties.AuthProperties;
+import com.pp.toptal.soccermanager.entity.UserEntity;
+import com.pp.toptal.soccermanager.entity.UserEntity.UserType;
+import com.pp.toptal.soccermanager.exception.BusinessException;
+import com.pp.toptal.soccermanager.exception.ErrorCode;
+import com.pp.toptal.soccermanager.repo.UserRepo;
 
 @Service
 public class AuthService {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthService.class);
+    
+    public static final String GRANT_TYPE_PARAM = "grant_type";
+    public static final String USERNAME_PARAM = "username";
+    public static final String PASSWORD_PARAM = "password";
     
     @Autowired
     private ConsumerTokenServices tokenServices;
@@ -28,6 +38,12 @@ public class AuthService {
     
     @Autowired
     private TokenStore tokenStore;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private UserRepo userRepo;
     
     public String getCurrentUsername() {
         if(getContext().getAuthentication() == null) {
@@ -55,6 +71,31 @@ public class AuthService {
                 LOGGER.debug("Unable to revoke tokens for user {}.", username);
             }
         }
+    }
+    
+    /**
+     * Registers a new user to the system as a team owner if there's no user with the same username.
+     * 
+     * @param username
+     * @param password
+     * 
+     * @throws BusinessException
+     */
+    public void register(String username, String password) throws BusinessException {
+        
+        username = username.trim().toLowerCase();
+        
+        if (username.isEmpty()) {
+            throw new BusinessException(ErrorCode.MISSING_CREDENTIALS,
+                    String.format("Username may not be empty or blank!", username));
+        }
+        
+        if (userRepo.findOneByUsername(username) != null) {
+            throw new BusinessException(ErrorCode.DUPLICATE_CREDENTIALS,
+                    String.format("Username '%s%' already in use!", username));
+        }
+        
+        userRepo.save(new UserEntity(username, UserType.TEAM_OWNER, passwordEncoder.encode(password)));
     }
     
 }

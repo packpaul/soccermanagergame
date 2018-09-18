@@ -45,7 +45,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             }
 
             case INVALID_CREDENTIALS:
-            case MISSING_CREDENTIALS: {
+            case MISSING_CREDENTIALS:
+            case DUPLICATE_CREDENTIALS: {
                 status = HttpStatus.UNAUTHORIZED;
                 break;
             }

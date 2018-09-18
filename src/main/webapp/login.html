@@ -24,8 +24,10 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="css/AdminLTE.css">
   <link rel="stylesheet" href="css/skins/skin-blue.min.css">
+  
+  <!-- iCheck -->
+  <link rel="stylesheet" href="plugins/iCheck/square/blue.css">
 </head>
-
 
 <body class="hold-transition login-page">
 <div class="login-box">
@@ -37,17 +39,30 @@
     <p class="login-box-msg">Log-in to start a game</p>
 
     <form action="api/login" method="post">
-      <div class="form-group has-feedback">
-        <span id="errorTooltip" class="help-block hidden">Incorrect user or password</span>      
-        <input id="login" type="text" class="form-control" placeholder="username">
-        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+      <div class="form-group has-error hidden">
+          <span id="errorTooltip" class="help-block"></span>
       </div>
-      <div class="form-group has-feedback">
-        <input id="password" type="password" class="form-control" placeholder="password">
-        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+      <div class="_inputs">    
+          <div class="form-group has-feedback">
+            <input id="username" type="text" class="form-control" placeholder="username">
+            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+          </div>
+          <div class="form-group has-feedback">
+            <input id="password" type="password" class="form-control" placeholder="password">
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+          </div>
+          <div class="form-group has-feedback hidden">
+            <input id="repeatPassword" type="password" class="form-control" placeholder="repeat password">
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+          </div>
       </div>
       <div class="row">
         <div class="col-xs-8">
+          <div class="checkbox icheck">
+            <label>
+                <input id="loginAsNewUser" type="checkbox"> Log-in as a new user
+            </label>
+          </div>
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
@@ -80,8 +95,27 @@
 <!-- Bootstrap 3.3.6 -->
 <script src="bootstrap/js/bootstrap.min.js"></script>
 
+<!-- iCheck -->
+<script src="plugins/iCheck/icheck.min.js"></script>
+
 <script src="js/restApi.js"></script>
 <script src="js/login.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        $('.icheck input').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+            increaseArea: '20%' // optional
+          });
+        
+        $loginAsNewUser = $('#loginAsNewUser'); 
+        $loginAsNewUser.iCheck('uncheck');
+        $loginAsNewUser.on('ifToggled', function() {
+            onLoginAsNewUser();
+        });
+    });    
+</script>
 
 </body>
 </html>

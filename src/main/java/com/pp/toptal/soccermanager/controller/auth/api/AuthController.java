@@ -43,6 +43,13 @@ public class AuthController {
     @PostMapping(path = "/v" + AuthApi.BASELINE_VERSION + "/login")
     public ResponseEntity<OAuth2AccessToken> login(Principal principal, @RequestParam Map<String, String> parameters)
             throws HttpRequestMethodNotSupportedException {
+        
+        if ("signup".equals(parameters.get(AuthService.GRANT_TYPE_PARAM))) {
+            authService.register(
+                    parameters.get(AuthService.USERNAME_PARAM),
+                    parameters.get(AuthService.PASSWORD_PARAM));
+            parameters.put(AuthService.GRANT_TYPE_PARAM, "password");
+        }
 
         return genericTokenEndpoint.postAccessToken(principal, parameters);
     }

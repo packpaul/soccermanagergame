@@ -109,6 +109,32 @@ $.rest.login = function(username, password, callback, failCallback) {
     });
 }
 
+$.rest.signup = function(username, password, callback, failCallback) {
+
+    const uri = "/auth/api/login" + $.query.set("grant_type", "signup")
+                                           .set("client_id", "managerClient")
+                                           .set("username", username)
+                                           .set("password", password).toString();
+    $.ajax({
+        url: uri,
+        type: "POST",
+        contentType: "application/json",
+        dataType: "json"
+    }).done(function (respData) {
+        Cookies.set("access_token", respData.access_token);
+        Cookies.set("refresh_token", respData.refresh_token, { expires: 30 });
+        if (callback != undefined) {
+            callback();
+        }
+    }).fail(function(resp) {
+        Cookies.remove("access_token");
+        _restOnError(uri, resp.status, resp.responseJSON);
+        if (failCallback != undefined) {
+            failCallback(resp.status, resp.responseJSON);
+        }
+    });
+}
+
 $.rest.login.refresh = function(callback, failCallback) {
     
     const uri = "/auth/api/login" + $.query.set("grant_type", "refresh_token")
