@@ -1,0 +1,192 @@
+openapi: "3.0.1"
+info:
+  # Every API update should increment corresponding API version. 
+  # Also update com.pp.toptal.soccermanager.controller.auth.api.AuthApi.MIN_VERSION constant
+  # in /src/main/java/com/pp/toptal/soccermanager/controller/auth/api/AuthApi.java
+  version: "1.1" # <baseline>[,<follow-up>[,<depricated 1>,<depricated 2>,...]]
+  title: Soccer Manager Game - AuthService REST API
+  contact:
+    name: Pavel Perminov
+    email: packpaul@mail.ru
+  license:
+    name: Copyright 2018 by Pavel Perminov (packpaul@mail.ru)
+
+servers:
+  - url: http://localhost:8080/auth/api
+    description: The local API server
+
+paths:
+  /info:
+    get:
+      summary: get version info
+      operationId: AuthInfoController.getInfo()
+      responses:
+        200:
+          description: Api version information
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/ApiInfoSO"
+        default:
+          description: Unknown error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error_type: unknown_error
+
+  /login:
+    post:
+      summary: authenticates user
+      description: |
+        Authentificates or sign-ups a user and provides access and refresh tokens to work with protected endpoints.
+      operationId: AuthController.loginBaseline(Principal, Map<String, String>)
+      parameters:
+        - name: grant_type
+          in: query
+          schema:
+            type: string
+            enum:
+              - password
+              - signup
+              - refresh_token
+          required: true
+          description: |          
+            Grant type "password" is sent for standard authentication by name/password.
+            Grant type "authid" is sent for simplified authentication.
+            Grant type "authid_password" is sent for standard authentication by rfid/password.
+        - name: client_id
+          in: query
+          schema:
+            type: string
+            enum:
+              - managerClient
+          required: true
+          description: |
+            managerClient - client id for accessing /manager/api/**
+        - name: username
+          description: required when grant_type = password|signup
+          in: query
+          schema:
+            type: string
+        - name: password
+          description: required when grant_type = password|signup
+          in: query
+          schema:
+            type: string
+        - name: refresh_token
+          description: required when grant_type = refresh_token
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success authentication
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/AuthTokenSO"
+        401:
+          description: Invalid authentication >
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error_type: invalid_credentials | missing_credentials | duplicate_credentials
+        default:
+          description: Unknown error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error_type: unknown_error
+
+  /logout:
+    parameters:
+      - $ref: "#/components/parameters/access_token"
+    post:
+      operationId: AuthController.logout()
+      summary: logs out current user
+      description: Revokes access tokens of current user
+      responses:
+        200:
+          description: Successfully logged-out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NullSO"
+        default:
+          description: Unknown error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error_type: unknown_error
+
+components:
+  parameters:
+    access_token:
+      name: access_token
+      in: query
+      schema:
+        type: string
+      required: true
+
+  schemas:
+    NullSO:
+      type: object
+    
+    ApiInfoSO:
+      required:
+        - apiRoot
+        - apiVersions
+      properties:
+        apiRoot:
+          type: string
+        apiVersions:
+          description: |
+            &lt;baseline&gt;[,<follow-up>[,<depricated-1>,<depricated-2>,...]]
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+
+    ErrorResponse:
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          enum:
+            - unknown_error
+            - invalid_request
+            - invalid_credentials
+            - missing_credentials
+            - validation_error
+            - object_not_found
+            - invalid_state
+            - invalid_reason
+        error_description:
+          type: string
+          
+    AuthTokenSO:
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          enum:
+            - bearer
+        refresh_token:
+          type: string
+        expires_in:
+          type: integer
+          format: int32
+        scope:
+          type: string
+          enum:
+            - write
