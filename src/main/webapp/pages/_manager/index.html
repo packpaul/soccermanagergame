@@ -28,7 +28,7 @@
   
   <!-- manager page styles -->
 <!--
-  <!- -/*/ <th:block th:replace="${page}::styles" /> /*/- ->
+  <script src="style.css" th:src="@{/pages/_manager/style.css}"></script>
 -->
 </head>
 
@@ -115,12 +115,12 @@ desired effect
         <li class="header">MENU</li>
         <!-- Optionally, you can add icons to the links -->
         <li class="active">
-          <a href="#" onClick="$.Manager.doLoadPage('/users');"><i class="fa fa-link"></i>
+          <a href="#users"><i class="fa fa-link"></i>
             <span>Users</span>
           </a>
         </li>
         <li>
-          <a href="#"><i class="fa fa-link"></i>
+          <a href="#teams"><i class="fa fa-link"></i>
             <span>Teams</span>
           </a>
         </li>
@@ -132,10 +132,10 @@ desired effect
           </a>
           <ul class="treeview-menu">
             <li>
-              <a href="#">Overview</a>
+              <a href="#transfersOverview">Overview</a>
             </li>
             <li>
-              <a href="#">Proposals</a>
+              <a href="#transfersProposals">Proposals</a>
             </li>
           </ul>
         </li>
@@ -164,9 +164,11 @@ desired effect
     </section>
 
     <!-- manager page content -->
-    <section class="content">
-
-    </section>
+    <section id="users" class="content hidden" src="/users"></section>
+    <section id="teams" class="content hidden" src="/teams"></section>
+    <section id="transfersOverview" class="content hidden" src="/transfersOverview"></section>
+    <section id="transfersProposals" class="content hidden" src="/transfersProposals"></section>
+    
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
@@ -204,12 +206,9 @@ desired effect
 
 <script src="../../js/restApi.js" th:src="@{/js/restApi.js}"></script>
 
-<!-- pages scripts -->
+<!-- manager page scripts -->
 <script src="script.js" th:src="@{/pages/_manager/script.js}"></script>
 
-<!--  
-<!- -/*/ <th:block th:replace="${page}::scripts" /> /*/- ->
--->
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the
      user experience. Slimscroll is required when using the
