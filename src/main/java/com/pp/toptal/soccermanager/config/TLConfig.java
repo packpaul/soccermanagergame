@@ -10,17 +10,18 @@ import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import com.pp.toptal.soccermanager.controller.TLController;
-import com.pp.toptal.soccermanager.controller.TestTLController;
+import com.pp.toptal.soccermanager.controller.tl.ManagerTLController;
+import com.pp.toptal.soccermanager.controller.tl.TLControllerAbstract;
+import com.pp.toptal.soccermanager.controller.tl.TestTLController;
 
 @Configuration
 public class TLConfig {
     
-    public static final String PAGES_ROOT = "/manager/pages";
+    public static final String PAGES_ROOT = "/pages";
     
     private TemplateEngine templateEngine;
     
-    private Map<String, TLController> controllersMap = new HashMap<>();
+    private Map<String, TLControllerAbstract> controllersMap = new HashMap<>();
     
     private Map<String, String> pageToPageNameMap = new HashMap<>();
     
@@ -29,19 +30,24 @@ public class TLConfig {
      */
     @Autowired
     TestTLController testController;
+
+    @Autowired
+    ManagerTLController managerController;
     
     @PostConstruct
     private void init() {
         registerController("/tl_test", "TL test", testController);
+        
+        registerController("/manager", managerController);
 
         initializeTemplateEngine();
     }
     
-    private void registerController(String page, TLController controller) {
+    private void registerController(String page, TLControllerAbstract controller) {
         controllersMap.put(page, controller);
     }
     
-    private void registerController(String page, String pageName, TLController controller) {
+    private void registerController(String page, String pageName, TLControllerAbstract controller) {
         registerController(page, controller);
         pageToPageNameMap.put(page, pageName);
     } 
@@ -67,7 +73,7 @@ public class TLConfig {
         return templateEngine;
     }
     
-    public TLController resolveController(String requestPath) {
+    public TLControllerAbstract resolveController(String requestPath) {
         return controllersMap.get(requestPath);
     }
     

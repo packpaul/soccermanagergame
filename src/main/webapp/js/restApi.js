@@ -71,6 +71,10 @@ function _restAjax(apiRoot, path, reqType, callback, reqData, failCallback) {
                 ajaxCall(failCallback);
             },
             failCallback); // TODO: redirect to authentication and back
+        } else {
+            if (failCallback != undefined) {
+                failCallback(status, respData);
+            }
         }
     });
 }

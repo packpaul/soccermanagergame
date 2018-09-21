@@ -1,4 +1,4 @@
-package com.pp.toptal.soccermanager.controller;
+package com.pp.toptal.soccermanager.controller.tl;
 import org.springframework.stereotype.Controller;
 import org.thymeleaf.context.WebContext;
 
@@ -6,7 +6,7 @@ import org.thymeleaf.context.WebContext;
  * This is a controller to test TL in work.
  */
 @Controller
-public class TestTLController extends TLController {
+public class TestTLController extends TLControllerAbstract {
     
     @Override
     protected void fillContext(WebContext ctx) {

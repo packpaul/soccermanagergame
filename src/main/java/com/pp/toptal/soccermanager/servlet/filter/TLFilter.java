@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.GenericFilterBean;
 
 import com.pp.toptal.soccermanager.config.TLConfig;
-import com.pp.toptal.soccermanager.controller.TLController;
+import com.pp.toptal.soccermanager.controller.tl.TLControllerAbstract;
 
 import java.io.IOException;
 
@@ -33,7 +33,7 @@ public class TLFilter extends GenericFilterBean {
         
         final String requestPath = getRequestPath(request);
         
-        TLController controller = config.resolveController(requestPath);
+        TLControllerAbstract controller = config.resolveController(requestPath);
         if (controller != null) {
             controller.process(requestPath, request, response, getServletContext(), config.getTemplateEngine());
             return true;

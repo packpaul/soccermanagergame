@@ -1,4 +1,4 @@
-package com.pp.toptal.soccermanager.controller;
+package com.pp.toptal.soccermanager.controller.tl;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ import org.thymeleaf.context.WebContext;
 
 import com.pp.toptal.soccermanager.config.TLConfig;
 
-public abstract class TLController {
+public abstract class TLControllerAbstract {
     
     private static final String PAGE_ROOT_VAR_NAME = "pageRoot";
     
