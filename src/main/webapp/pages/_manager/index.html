@@ -149,7 +149,7 @@ desired effect
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <h1>
+      <h1 th:text="''">
         Page name
 <!--
         <small>Optional description</small>
@@ -164,10 +164,10 @@ desired effect
     </section>
 
     <!-- manager page content -->
-    <section id="users" class="content hidden" src="/users"></section>
-    <section id="teams" class="content hidden" src="/teams"></section>
-    <section id="transfersOverview" class="content hidden" src="/transfersOverview"></section>
-    <section id="transfersProposals" class="content hidden" src="/transfersProposals"></section>
+    <section id="users" pageName="Users" class="content hidden" src="/users"></section>
+    <section id="teams" pageName="Teams" class="content hidden" src="/teams"></section>
+    <section id="transfersOverview" pageName="Transfers Overview" class="content hidden" src="/transfersOverview"></section>
+    <section id="transfersProposals" pageName="Transfers Proposals" class="content hidden" src="/transfersProposals"></section>
     
     <!-- /.content -->
   </div>

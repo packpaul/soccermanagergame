@@ -11,6 +11,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import com.pp.toptal.soccermanager.controller.tl.ManagerTLController;
+import com.pp.toptal.soccermanager.controller.tl.PageContentTLController;
 import com.pp.toptal.soccermanager.controller.tl.TLControllerAbstract;
 import com.pp.toptal.soccermanager.controller.tl.TestTLController;
 
@@ -34,11 +35,16 @@ public class TLConfig {
     @Autowired
     ManagerTLController managerController;
     
+    @Autowired
+    PageContentTLController pageContentController;
+    
     @PostConstruct
     private void init() {
         registerController("/tl_test", "TL test", testController);
         
         registerController("/manager", managerController);
+        
+        registerController("/users", pageContentController);        
 
         initializeTemplateEngine();
     }

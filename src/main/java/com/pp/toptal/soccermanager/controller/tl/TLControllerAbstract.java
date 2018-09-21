@@ -14,8 +14,19 @@ import com.pp.toptal.soccermanager.config.TLConfig;
 public abstract class TLControllerAbstract {
     
     private static final String PAGE_ROOT_VAR_NAME = "pageRoot";
+    private static final String PAGE_VAR_NAME = "page";
     
-    public void process(String templateName,
+    private final boolean isUseResolvedTemplateNameForPageVariales;
+    
+    TLControllerAbstract() {
+        this(true);
+    }
+    
+    TLControllerAbstract(boolean isUseResolvedTemplateNameForPageVariales) {
+        this.isUseResolvedTemplateNameForPageVariales = isUseResolvedTemplateNameForPageVariales;
+    }
+    
+    public final void process(String templateName,
             final HttpServletRequest request, final HttpServletResponse response,
             final ServletContext servletContext, final TemplateEngine templateEngine) throws IOException {
        
@@ -28,24 +39,31 @@ public abstract class TLControllerAbstract {
         WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
         fillContext(ctx);
         
-        String resolvedTemplateName = resolveTemplateName(templateName, ctx);
-        setContextVariable(PAGE_ROOT_VAR_NAME, TLConfig.PAGES_ROOT + resolvedTemplateName, ctx);
+        final String resolvedTemplateName = resolveTemplateName(templateName);
         
-        templateEngine.process(resolvedTemplateName, ctx, response.getWriter()); 
+        if (isUseResolvedTemplateNameForPageVariales) {
+            setContextVariable(PAGE_ROOT_VAR_NAME, TLConfig.PAGES_ROOT + resolvedTemplateName, ctx);
+            setContextVariable(PAGE_VAR_NAME, resolvedTemplateName, ctx);
+        } else {
+            setContextVariable(PAGE_ROOT_VAR_NAME, TLConfig.PAGES_ROOT + templateName, ctx);
+            setContextVariable(PAGE_VAR_NAME, templateName, ctx);
+        }
+        
+        templateEngine.process(resolvedTemplateName, ctx, response.getWriter());
     }
     
     protected abstract void fillContext(WebContext ctx);
     
-    String resolveTemplateName(String templateName, WebContext ctx) {
+    String resolveTemplateName(String templateName) {
         return templateName;
     }
     
-    void setContextVariable(String name, final Object value, WebContext ctx) {
+    final void setContextVariable(String name, final Object value, WebContext ctx) {
         if (ctx.getVariables().containsKey(name)) {
             throw new IllegalArgumentException(String.format(
                     "Variable '%s' is already defined in the context!", name));
         }
         ctx.setVariable(name, value);
     }
-    
+
 }

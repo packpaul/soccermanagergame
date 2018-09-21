@@ -4,18 +4,22 @@ import org.springframework.stereotype.Controller;
 import org.thymeleaf.context.WebContext;
 
 /**
- * TL Controller of main page
+ * This is a controller to test TL in work.
  */
 @Controller
-public class ManagerTLController extends TLControllerAbstract {
-
+public class PageContentTLController extends TLControllerAbstract {
+    
+    public PageContentTLController() {
+        super(false);
+    }
+    
     @Override
     String resolveTemplateName(String templateName) {
-        return "/_manager";
+        return "/_content";
     }
 
     @Override
     protected void fillContext(WebContext ctx) {
     }
-    
+
 }

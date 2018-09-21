@@ -1,0 +1,20 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Soccer Manager Game</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!-- jQuery 2.2.3 -->
+    <script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
+  </head>
+  <body class="page-users">
+    <!--/*/ <th:block th:fragment="content"> /*/-->
+    <link type="text/css" rel="stylesheet" href="style.css" th:href="@{ ${pageRoot} + '/style.css'}" />
+    
+    <p th:style="'color: lime'" th:text="Online">Offline</p>
+    
+    <script src="script.js" th:src="@{ ${pageRoot} + '/script.js'}"></script>
+    <!--/*/ </th:block> /*/-->
+  </body>
+
+</html>
