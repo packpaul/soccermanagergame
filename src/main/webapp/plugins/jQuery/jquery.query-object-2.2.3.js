@@ -1,4 +1,4 @@
-﻿/**
+﻿﻿/**
  * jQuery.query - Query String Modification and Creation for jQuery
  * Written by Blair Mitchelmore (blair DOT mitchelmore AT gmail DOT com)
  * Licensed under the WTFPL (http://sam.zoy.org/wtfpl/).
@@ -222,7 +222,8 @@ new function(settings) {
         };
         var build = function(obj, base) {
           var newKey = function(key) {
-            return !base || base == "" ? [key].join("") : [base, "[", key, "]"].join("");
+//            return !base || base == "" ? [key].join("") : [base, "[", key, "]"].join("");
+            return !base || base == "" ? [key].join("") : [base, "[]"].join(""); // PP
           };
           jQuery.each(obj, function(key, value) {
             if (typeof value == 'object') 

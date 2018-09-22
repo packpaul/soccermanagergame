@@ -8,7 +8,7 @@ $.rest = {};
  * GET
  */
 $.rest.GET = function(path, callback, failCallback) {
-    _restAjax("/manager/api", path, "GET", callback, failCallback);
+    _restAjax("/manager/api", path, "GET", callback, null, failCallback);
 }
 
 /**
@@ -34,7 +34,7 @@ $.rest.DELETE = function(path, callback, failCallback) {
 
 function _restAjax(apiRoot, path, reqType, callback, reqData, failCallback) {
     
-    if (reqData != undefined) {
+    if (reqData) {
         reqData = JSON.stringify(reqData);
     }
     
@@ -48,12 +48,12 @@ function _restAjax(apiRoot, path, reqType, callback, reqData, failCallback) {
             contentType: "application/json",
             dataType: "json"
         }).done(function (respData) {
-            if (callback != undefined) {
+            if (callback) {
                 callback(respData);
             }
         }).fail(function(resp) {
             _restOnError(uri, resp.status, resp.responseJSON);
-            if (failCallback != undefined) {
+            if (failCallback) {
                 failCallback(resp.status, resp.responseJSON);
             }
         });
@@ -72,7 +72,7 @@ function _restAjax(apiRoot, path, reqType, callback, reqData, failCallback) {
             },
             failCallback); // TODO: redirect to authentication and back
         } else {
-            if (failCallback != undefined) {
+            if (failCallback) {
                 failCallback(status, respData);
             }
         }
@@ -80,7 +80,7 @@ function _restAjax(apiRoot, path, reqType, callback, reqData, failCallback) {
 }
 
 function _restOnError(uri, status, data) {
-    var dataError = (data != undefined) ? data.error : undefined;
+    var dataError = (data) ? data.error : undefined;
     console.error(">> " + uri + " - " + status + ": " + dataError);
     if (status >= 500) {
         alert("Server connection error!");
@@ -101,13 +101,13 @@ $.rest.login = function(username, password, callback, failCallback) {
     }).done(function (respData) {
         Cookies.set("access_token", respData.access_token);
         Cookies.set("refresh_token", respData.refresh_token, { expires: 30 });
-        if (callback != undefined) {
+        if (callback) {
             callback();
         }
     }).fail(function(resp) {
         Cookies.remove("access_token");
         _restOnError(uri, resp.status, resp.responseJSON);
-        if (failCallback != undefined) {
+        if (failCallback) {
             failCallback(resp.status, resp.responseJSON);
         }
     });
@@ -127,13 +127,13 @@ $.rest.signup = function(username, password, callback, failCallback) {
     }).done(function (respData) {
         Cookies.set("access_token", respData.access_token);
         Cookies.set("refresh_token", respData.refresh_token, { expires: 30 });
-        if (callback != undefined) {
+        if (callback) {
             callback();
         }
     }).fail(function(resp) {
         Cookies.remove("access_token");
         _restOnError(uri, resp.status, resp.responseJSON);
-        if (failCallback != undefined) {
+        if (failCallback) {
             failCallback(resp.status, resp.responseJSON);
         }
     });
@@ -152,14 +152,14 @@ $.rest.login.refresh = function(callback, failCallback) {
         dataType: "json"
     }).done(function (respData) {
         Cookies.set("access_token", respData.access_token);
-        if (callback != undefined) {
+        if (callback) {
             callback();
         }
     }).fail(function(resp) {
         Cookies.remove("access_token");
         Cookies.remove("refresh_token");
         _restOnError(uri, resp.status, resp.responseJSON);
-        if (failCallback != undefined) {
+        if (failCallback) {
             failCallback(resp.status, resp.responseJSON);
         }
     });
@@ -171,7 +171,7 @@ $.rest.logout = function(callback, failCallback) {
             function() {
                 Cookies.remove("access_token");
                 Cookies.remove("refresh_token");
-                if (callback != undefined) {
+                if (callback) {
                     callback();
                 }
             },
