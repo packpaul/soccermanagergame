@@ -20,6 +20,10 @@
     <!-- DataTables -->
     <link rel="stylesheet" href="../../plugins/datatables/dataTables.bootstrap.css" />
     
+    <!-- Select2 -->
+    <link rel="stylesheet" href="../../plugins/select2/select2.min.css" />
+    <link rel="stylesheet" href="../../plugins/select2/select2-bootstrap.min.css" />
+    
     <!-- jQuery 2.2.3 -->
     <script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
     <!-- Less 2.7.2 -->
@@ -34,6 +38,14 @@
     <!-- DataTables -->
     <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="../../plugins/datatables/dataTables.bootstrap.min.js"></script>
+    
+    <!-- Select2 -->
+    <script src="../../plugins/select2/select2.min.js"></script>
+    <script>
+        $(function () {           
+            $.fn.select2.defaults.set("theme", "bootstrap");
+        });
+    </script>
             
     <script src="../../js/restApi.js"></script>
     <script src="../../js/util.js"></script>
@@ -53,14 +65,23 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <label>Username</label>
-                        <input id='username' type="text" class="form-control" placeholder="f.e. 'team*' ('*' wildcard can be used)" />
+                        <input id="username" type="text" class="form-control" placeholder="f.e. 'team*' ('*' wildcard can be used)" />
                     </div>
-                    <div class="col-lg-8">
+                    <div class="col-lg-3">
+                        <label>Role</label>
+                        <select id="userType" class="form-control" value="">
+                            <option value="">-- no selection --</option>
+                            <option value="ADMIN">Administrator</option>                            
+                            <option value="TEAM_OWNER">Team Owner</option>
+                            <option value="LEAGUE_MANAGER">League Manager</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-5">
                     </div>
                 </div>
                 <hr/>
-                <a class="btn btn-primary" href="#" onClick="$.Manager.pages.Users.searchTable();">Filter</a>
-                <a class="btn btn-primary" href="#" onClick="$.Manager.pages.Users.resetTable();">Reset Filter</a>
+                <a class="btn btn-primary" href="#" onClick="$.Manager.pages.Users.filterTable();">Filter</a>
+                <a class="btn btn-primary" href="#" onClick="$.Manager.pages.Users.resetFilter();">Reset Filter</a>
             </div>
         </div>
     </div>
@@ -128,7 +149,10 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Role</label>
                         <div class="col-sm-9">
-                            <input name="userType" required="required" class="form-control" />
+                            <select name="userType" class="form-control" value="">
+                                <option value="TEAM_OWNER">Team Owner</option>
+                                <option value="LEAGUE_MANAGER">League Manager</option>
+                            </select>
                         </div>
                     </div>
                 </form>

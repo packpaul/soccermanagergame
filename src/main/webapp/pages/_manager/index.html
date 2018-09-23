@@ -26,9 +26,15 @@
   <link rel="stylesheet" href="../../css/AdminLTE.css" th:href="@{/css/AdminLTE.css}" />
   <link rel="stylesheet" href="../../css/skins/skin-blue.min.css" th:href="@{/css/skins/skin-blue.min.css}" />
 
-   <!-- DataTables -->
-   <link rel="stylesheet" href="../../plugins/datatables/dataTables.bootstrap.css"
-                          th:href="@{/plugins/datatables/dataTables.bootstrap.css}" />
+  <!-- DataTables -->
+  <link rel="stylesheet" href="../../plugins/datatables/dataTables.bootstrap.css"
+                         th:href="@{/plugins/datatables/dataTables.bootstrap.css}" />
+
+  <!-- Select2 -->
+  <link rel="stylesheet" href="../../plugins/select2/select2.min.css"
+                         th:href="@{/plugins/select2/select2.min.css}" />
+  <link rel="stylesheet" href="../../plugins/select2/select2-bootstrap.min.css"
+                         th:href="@{/plugins/select2/select2-bootstrap.min.css}" />
 
   <!-- manager page styles -->
 <!--
@@ -213,6 +219,14 @@ desired effect
         th:src="@{/plugins/datatables/jquery.dataTables.min.js}"></script>
 <script src="../../plugins/datatables/dataTables.bootstrap.min.js"
         th:src="@{/plugins/datatables/dataTables.bootstrap.min.js}"></script>
+        
+<!-- Select2 -->
+<script src="../../plugins/select2/select2.min.js" th:src="@{/plugins/select2/select2.min.js}"></script>
+<script>
+   $(function () {           
+       $.fn.select2.defaults.set("theme", "bootstrap");
+   });
+</script>
 
 <script src="../../js/restApi.js" th:src="@{/js/restApi.js}"></script>
 <script src="../../js/util.js" th:src="@{/js/util.js}"></script>

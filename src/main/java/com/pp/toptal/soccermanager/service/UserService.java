@@ -1,6 +1,7 @@
 package com.pp.toptal.soccermanager.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -11,9 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pp.toptal.soccermanager.entity.QUserEntity;
 import com.pp.toptal.soccermanager.entity.UserEntity;
+import com.pp.toptal.soccermanager.entity.UserEntity.UserType;
 import com.pp.toptal.soccermanager.exception.BusinessException;
 import com.pp.toptal.soccermanager.exception.DataParameterException;
 import com.pp.toptal.soccermanager.exception.ErrorCode;
@@ -22,6 +25,8 @@ import com.pp.toptal.soccermanager.repo.OffsetBasedPageRequest;
 import com.pp.toptal.soccermanager.repo.UserRepo;
 import com.pp.toptal.soccermanager.so.TableDataSO;
 import com.pp.toptal.soccermanager.so.UserSO;
+
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 
 @Service
@@ -34,7 +39,7 @@ public class UserService {
     
     @Autowired
     private EntityToSOMapper toSoMapper;
-
+    
     public List<UserSO> getUsers(SelectionParameters params) {
         return getUsersInternal(params).getValue0();
     }
@@ -59,14 +64,23 @@ public class UserService {
             String[] values = params.getFilterValues();
             QUserEntity entity = QUserEntity.userEntity;
             for (int i = 0; i < properties.length; i++) {
+                Predicate propPredicate;
                 if (Objects.equals(properties[i], entity.username.getMetadata().getName())) {
                     String value = values[i];
                     if (! value.matches("[\\w\\*]+")) {
-                        throw new DataParameterException("Filter for 'username' should only contain [a-zA-Z_*] !");
+                        throw new DataParameterException("Filter for 'username' should only contain [a-zA-Z_0-9*] !");
                     }
                     value = value.replace('*', '%');
-                    predicate = entity.username.likeIgnoreCase(value);
+                    propPredicate = entity.username.likeIgnoreCase(value);
+                } else if (Objects.equals(properties[i], entity.userType.getMetadata().getName())) {
+                    UserType value = UserType.valueOf(values[i]);
+                    propPredicate = entity.userType.eq(value);
+                } else {
+                    continue;
                 }
+                
+                predicate = (predicate != null) ? ExpressionUtils.and(predicate, propPredicate) :
+                                                  propPredicate;
             }
         }
         
@@ -78,8 +92,6 @@ public class UserService {
         for (UserEntity u : ui) {
             users.add(toSoMapper.map(u, new UserSO()));
         }
-
-        
         
         if (predicate != null) {
             return Triplet.with(users, null, count);
@@ -102,13 +114,57 @@ public class UserService {
     }
 
     public UserSO getUser(Long userId) {
+        return toSoMapper.map(findUser(userId), new UserSO());
+    }
+    
+    private UserEntity findUser(Long userId) {
         UserEntity user = userRepo.findOne(userId);
         if (user == null) {
             throw new BusinessException(ErrorCode.OBJECT_NOT_FOUND,
-                    String.format("Users (id=%d) not found!", userId));
+                    String.format("User (id=%d) not found!", userId));
         }
         
-        return toSoMapper.map(user, new UserSO());
+        return user;
+    }
+
+    @Transactional
+    public UserSO updateUser(Long userId, UserSO userData) {
+        
+        UserEntity user = findUser(userId);
+        
+        String dataUsername = (userData.getUsername() != null) ?
+                userData.getUsername().toLowerCase() : null;
+        UserType dataUserType = UserEntity.UserType.valueOf(userData.getUserType()); 
+        
+        boolean isChanged = false;
+        
+        if ((dataUsername != null) && (! dataUsername.equals(user.getUsername()))) {
+            if (! dataUsername.matches("[\\w]+")) {
+                throw new DataParameterException("Username should only contain [a-zA-Z_0-9] !");
+            }
+            user.setUsername(dataUsername);
+            isChanged = true;
+        }
+        if (dataUserType != user.getUserType()) {
+            if (user.getUserType() == UserType.ADMIN) {
+                throw new BusinessException(ErrorCode.INVALID_STATE,
+                        String.format("User (id=%d) is administrator. User type cannot be changed!", userId));
+            }
+            if (dataUserType == UserType.ADMIN) {
+                throw new BusinessException(ErrorCode.INVALID_DATA,
+                        String.format("User (id=%d) cannot be changed to administrator!", userId));                
+            }
+            user.setUserType(dataUserType);
+            isChanged = true;
+        }
+        
+        if (isChanged) {
+            user.setUpdateDate(new Date());
+        }
+        
+        LOGGER.info(String.format("User (id=%d) was updated.", userId));
+        
+        return toSoMapper.map(userRepo.save(user), new UserSO());
     }
     
 }

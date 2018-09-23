@@ -21,6 +21,8 @@ $.Manager.pages.Users = {
     onLoad: function($page) {
     
         this.$page = $page;
+        
+//        this.$page.find("select").select2();
 
         var dtConfig = {
             processing: true,
@@ -78,7 +80,8 @@ $.Manager.pages.Users = {
         this.$table = this.$page.find('#usersTable').DataTable(dtConfig);
 
         this.initSearchBoxValues({
-            username: this.$table.column('username:name').search()
+            username: this.$table.column('username:name').search(),
+            userType: this.$table.column('userType:name').search()
         });
         
         function createListQuery(data) {
@@ -124,6 +127,8 @@ $.Manager.pages.Users = {
         Object.keys(searchValues).forEach(function(name) {
             $searchBox.find('#' + name).val(searchValues[name]);
         });
+        
+        $searchBox.find('select').trigger("change");
     },
     
     getSearchBoxValues: function() {
@@ -137,7 +142,7 @@ $.Manager.pages.Users = {
         return values;
     },
 
-    searchTable: function() {
+    filterTable: function() {
         const self = this;
         const searchValues = self.getSearchBoxValues()
         
@@ -199,9 +204,11 @@ $.Manager.pages.Users = {
         return this.$page.find('#editUserModal');
     },
     
-    resetTable: function() {
-        this.$page.find('#searchBox .form-control').val('');
-        this.searchTable();
+    resetFilter: function() {
+        var $searchBox = this.$page.find('#searchBox');
+        $searchBox.find('.form-control').val('');
+        $searchBox.find('select').trigger("change");
+        this.filterTable();
     },
     
     saveUser: function () {
