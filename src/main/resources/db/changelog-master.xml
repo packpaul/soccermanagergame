@@ -6,6 +6,8 @@
                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
                                        http://www.liquibase.org/xml/ns/dbchangelog
                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <property name="now" value="NOW()" dbms="h2"/>
                                        
     <include file="changelog/1.X.xml" relativeToChangelogFile="true" />
                                   

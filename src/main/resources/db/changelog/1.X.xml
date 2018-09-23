@@ -46,6 +46,8 @@
             <column name="USERTYPE" type="VARCHAR(16)">
                 <constraints nullable="false"/>
             </column>
+            <column name="CREATIONDATE" type="TIMESTAMP"/>
+            <column name="UPDATEDATE" type="TIMESTAMP"/>
             <column name="LASTLOGINDATE" type="TIMESTAMP"/>
             <column name="PASSWORD" type="VARCHAR(128)"/>
         </createTable>
@@ -56,6 +58,7 @@
         <insert tableName="USERS">
             <column name="USERNAME" value="admin" />
             <column name="USERTYPE" value="ADMIN" />
+            <column name ="CREATIONDATE" value = "${now}" />
             <!-- password="admin" -->
             <column name="PASSWORD" value="e17fe9fb2a7f7c185431fdc0b9505b3ece66adac44b557444e0feea78c485c0441c0b4360bdf9988" />
         </insert>

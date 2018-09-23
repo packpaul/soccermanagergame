@@ -25,13 +25,14 @@ public class UserEntity extends EntityBase<Long> implements Serializable {
         this(userType);
         this.username = username;
         this.password = password;
+        this.creationDate = new Date();
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Override
-    public Long getID() {
-        return super.getID();
+    public Long getId() {
+        return super.getId();
     }
     
     private String username;
@@ -65,7 +66,29 @@ public class UserEntity extends EntityBase<Long> implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
+    
+    private Date creationDate;
 
+    @Column(name = "creationdate")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getCreationDate() {
+        return creationDate;
+    }
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    private Date updateDate;
+
+    @Column(name = "updatedate")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+    
     private Date lastLoginDate;
     
     @JsonIgnore
@@ -101,7 +124,7 @@ public class UserEntity extends EntityBase<Long> implements Serializable {
     public String toString() {
         StringBuffer sb = new StringBuffer(getClass().getSimpleName())
                 .append('{')
-                    .append("id=").append(getID()).append(',')
+                    .append("id=").append(getId()).append(',')
                     .append("username='").append(username).append('\'').append(',')
                     .append("userType='").append(userType).append('\'').append(',')
                     .append("lastLoginDate='").append(toDateTimeString(lastLoginDate)).append('\'').append(',')

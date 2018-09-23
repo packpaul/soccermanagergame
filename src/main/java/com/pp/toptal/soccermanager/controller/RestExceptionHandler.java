@@ -39,7 +39,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             }
 
             case INVALID_STATE:
-            case INVALID_REASON: {
+            case INVALID_REASON:
+            case INVALID_DATA: {
                 status = HttpStatus.PRECONDITION_FAILED;
                 break;
             }

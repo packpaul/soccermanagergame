@@ -13,6 +13,7 @@ public enum ErrorCode {
 
     INVALID_STATE("invalid_state"),
     INVALID_REASON("invalid_reason"),
+    INVALID_DATA("invalid_data"),
 
     UNKNOWN_ERROR("unknown_error");
     

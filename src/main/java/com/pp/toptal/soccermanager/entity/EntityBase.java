@@ -18,15 +18,15 @@ public abstract class EntityBase<ID> {
     
     private ID id;
     
-    public ID getID() {
+    public ID getId() {
         return id;
     }
-    public void setID(ID id) {
+    public void setId(ID id) {
         this.id = id;
     }
     
-    final static <ID> ID getID(EntityBase<ID> entity) {
-        return (entity != null) ? entity.getID() : null;
+    final static <ID> ID getId(EntityBase<ID> entity) {
+        return (entity != null) ? entity.getId() : null;
     }
     
     @Override
@@ -51,7 +51,7 @@ public abstract class EntityBase<ID> {
     public String toString() {
         StringBuffer sb = new StringBuffer(getClass().getSimpleName())
             .append('{')
-                .append("id=").append(getID())
+                .append("id=").append(getId())
             .append('}');
         
         return sb.toString();
