@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pp.toptal.soccermanager.entity.QUserEntity;
 import com.pp.toptal.soccermanager.entity.UserEntity;
-import com.pp.toptal.soccermanager.entity.UserEntity.UserType;
+import com.pp.toptal.soccermanager.entity.UserType;
 import com.pp.toptal.soccermanager.exception.BusinessException;
 import com.pp.toptal.soccermanager.exception.DataParameterException;
 import com.pp.toptal.soccermanager.exception.ErrorCode;
@@ -134,7 +134,7 @@ public class UserService {
         
         String dataUsername = (userData.getUsername() != null) ?
                 userData.getUsername().toLowerCase() : null;
-        UserType dataUserType = UserEntity.UserType.valueOf(userData.getUserType()); 
+        UserType dataUserType = UserType.valueOf(userData.getUserType()); 
         
         boolean isChanged = false;
         
@@ -165,6 +165,13 @@ public class UserService {
         LOGGER.info(String.format("User (id=%d) was updated.", userId));
         
         return toSoMapper.map(userRepo.save(user), new UserSO());
+    }
+
+    public UserEntity createUser(String username, UserType userType, String password) {
+
+        UserEntity user = new UserEntity(username, userType, password);
+        
+        return userRepo.save(user);
     }
     
 }

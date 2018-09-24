@@ -2,7 +2,6 @@ package com.pp.toptal.soccermanager.controller.manager.api;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

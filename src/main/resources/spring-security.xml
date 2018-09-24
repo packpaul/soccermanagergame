@@ -128,11 +128,10 @@
           class="com.pp.toptal.soccermanager.auth.CustomAuthenticationProvider">
     </bean>
     
-<!--
     <bean id="loginSuccessListener"
         class="com.pp.toptal.soccermanager.auth.LoginSuccessListener">
     </bean>
--->
+
     <!-- enhance token -->
 <!--
     <bean id="tokenEnhancer"

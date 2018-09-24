@@ -76,6 +76,13 @@
         <addUniqueConstraint constraintName="UK_TEAMS_TEAMNAME_COUNTRY"
                              tableName="TEAMS" columnNames="TEAMNAME,COUNTRY"/>
     </changeSet>
+    <changeSet author="pavel.perminov" id="1.X-51">
+        <addColumn tableName="TEAMS">
+            <column name="BALANCE" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
     
     <changeSet author="pavel.perminov" id="1.X-60">
         <createTable tableName="PLAYERS">

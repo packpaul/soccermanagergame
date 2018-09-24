@@ -135,10 +135,4 @@ public class UserEntity extends EntityBase<Long> implements Serializable {
         return sb.toString();
     }
 
-    public enum UserType {
-        ADMIN,
-        TEAM_OWNER,
-        LEAGUE_MANAGER
-    }
-
 }

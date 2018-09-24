@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,11 +16,11 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
 
 import com.pp.toptal.soccermanager.config.properties.AuthProperties;
-import com.pp.toptal.soccermanager.entity.UserEntity;
-import com.pp.toptal.soccermanager.entity.UserEntity.UserType;
+import com.pp.toptal.soccermanager.entity.UserType;
 import com.pp.toptal.soccermanager.exception.BusinessException;
 import com.pp.toptal.soccermanager.exception.ErrorCode;
 import com.pp.toptal.soccermanager.repo.UserRepo;
+import com.pp.toptal.soccermanager.service.UserService;
 
 @Service
 public class AuthService {
@@ -45,8 +46,11 @@ public class AuthService {
     @Autowired
     private UserRepo userRepo;
     
+    @Autowired
+    private UserService userService;
+    
     public String getCurrentUsername() {
-        if(getContext().getAuthentication() == null) {
+        if (getContext().getAuthentication() == null) {
             return null;
         }
         Object principal = getContext().getAuthentication().getPrincipal();
@@ -59,6 +63,21 @@ public class AuthService {
     
     private SecurityContext getContext() {
         return SecurityContextHolder.getContext();
+    }
+    
+    public UserType getCurrentUserType() {
+        if (getContext().getAuthentication() == null) {
+            return null;
+        }
+        Collection<? extends GrantedAuthority> authorities =
+                getContext().getAuthentication().getAuthorities();
+        if (authorities.isEmpty()) {
+            return null;
+        }
+        
+        String authority = authorities.iterator().next().getAuthority();
+        
+        return UserType.valueOf(authority);
     }
     
     public void revokeTokens(String username) {
@@ -95,7 +114,7 @@ public class AuthService {
                     String.format("Username '%s%' already in use!", username));
         }
         
-        userRepo.save(new UserEntity(username, UserType.TEAM_OWNER, passwordEncoder.encode(password)));
+        userService.createUser(username, UserType.TEAM_OWNER, passwordEncoder.encode(password));
     }
     
 }

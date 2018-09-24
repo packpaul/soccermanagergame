@@ -95,6 +95,16 @@ public class TeamEntity extends EntityBase<Long> implements Serializable {
         this.players = players;
     }
     
+    private Long balance; 
+    
+    @Column(name = "balance", nullable = false)
+    public Long getBalance() {
+        return balance;
+    }
+    public void setBalance(Long balance) {
+        this.balance = balance;
+    }
+    
     @Transient
     public long getValue() {
         return players.stream().collect(Collectors.summingLong((p) -> p.getValue()));
