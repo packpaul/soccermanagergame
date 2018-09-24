@@ -18,12 +18,12 @@ public class UserEntity extends EntityBase<Long> implements Serializable {
     }
     
     public UserEntity(UserType userType) {
-        this.userType = userType;
+        this(null, userType, null);
     }
     
     public UserEntity(String username, UserType userType, String password) {
-        this(userType);
         this.username = username;
+        this.userType = userType;
         this.password = password;
         this.creationDate = new Date();
     }
@@ -127,7 +127,9 @@ public class UserEntity extends EntityBase<Long> implements Serializable {
                     .append("id=").append(getId()).append(',')
                     .append("username='").append(username).append('\'').append(',')
                     .append("userType='").append(userType).append('\'').append(',')
-                    .append("lastLoginDate='").append(toDateTimeString(lastLoginDate)).append('\'').append(',')
+                    .append("creationDate='").append(toDateTimeString(creationDate)).append('\'').append(',')
+                    .append("updateDate='").append(toDateTimeString(updateDate)).append('\'').append(',')
+                    .append("lastLoginDate='").append(toDateTimeString(lastLoginDate)).append('\'')
                 .append('}');
             
         return sb.toString();

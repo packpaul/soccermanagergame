@@ -53,6 +53,62 @@
         </createTable>
     </changeSet>
     
+    <changeSet author="pavel.perminov" id="1.X-50">
+        <createTable tableName="TEAMS">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="PK_TEAMS"/>
+            </column>
+            <column name="USERID" type="BIGINT">
+                <constraints foreignKeyName="FK_TEAMS_USERID_USERS"
+                             referencedTableName="USERS" referencedColumnNames="ID" />
+            </column>
+            <column name="TEAMNAME" type="VARCHAR(64)">
+                <constraints nullable="false"
+                             unique="true" uniqueConstraintName="UK_TEAMS_TEAMNAME"/>
+            </column>
+            <column name="COUNTRY" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- VALUE = SUM(PLAYERS.VALUE) -->
+            <column name="CREATIONDATE" type="TIMESTAMP"/>
+            <column name="UPDATEDATE" type="TIMESTAMP"/>
+        </createTable>
+        <addUniqueConstraint constraintName="UK_TEAMS_TEAMNAME_COUNTRY"
+                             tableName="TEAMS" columnNames="TEAMNAME,COUNTRY"/>
+    </changeSet>
+    
+    <changeSet author="pavel.perminov" id="1.X-60">
+        <createTable tableName="PLAYERS">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="PK_PLAYERS"/>
+            </column>
+            <column name="TEAMID" type="BIGINT">
+                <constraints foreignKeyName="FK_PLAYERS_TEAMID_TEAMS"
+                             referencedTableName="TEAMS" referencedColumnNames="ID" />
+            </column>
+            <column name="FIRSTNAME" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LASTNAME" type="VARCHAR(64)" />
+            <column name="AGE" type="INT"> <!-- 18 to 40 y.o. -->
+                <constraints nullable="false"/>
+            </column>
+            <column name="COUNTRY" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PLAYERTYPE" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VALUE" type="BIGINT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATIONDATE" type="TIMESTAMP"/>
+            <column name="UPDATEDATE" type="TIMESTAMP"/>
+        </createTable>
+        <addUniqueConstraint constraintName="UK_PLAYERS_FIRSTNAME_LASTNAME_COUNTRY"
+                             tableName="PLAYERS" columnNames="FIRSTNAME,LASTNAME,COUNTRY"/>
+    </changeSet>
+    
     <!-- Initial data -->
     <changeSet author="pavel.perminov" id="1.X-10010">
         <insert tableName="USERS">
@@ -63,5 +119,5 @@
             <column name="PASSWORD" value="e17fe9fb2a7f7c185431fdc0b9505b3ece66adac44b557444e0feea78c485c0441c0b4360bdf9988" />
         </insert>
     </changeSet>
-
+    
 </databaseChangeLog>
