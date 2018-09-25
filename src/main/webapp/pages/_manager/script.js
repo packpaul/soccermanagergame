@@ -94,17 +94,15 @@ $.Manager = {
     }
     
     function onhashchange() {
-        var hash;
-        var param;
         
-        if (location.hash) {
-            var rexp = /#([-_0-9A-Za-z]+)(\:(.+))?/;
-            var match = rexp.exec(location.hash);
-            hash = match[1];
-            param = match[3];
-        } else {
-            hash = $("section.content")[0].id;
+        if (! location.hash) {
+            return;
         }
+
+        var rexp = /#([-_0-9A-Za-z]+)(\:(.+))?/;
+        var match = rexp.exec(location.hash);
+        var hash = match[1];
+        var param = match[3];
 
         // navigate to the page
         app(hash, param);
@@ -116,7 +114,7 @@ $.Manager = {
     
     $(function() {
         // initial state setup
-        window.onhashchange();
+        app($("section.content")[0].id);
      });
 
   })();
