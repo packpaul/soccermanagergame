@@ -79,7 +79,7 @@ function _ajax(apiRoot, path, reqType, callback, reqData, failCallback, dataType
     }
     
     ajaxCall(function(status, respData) {
-        if ((status == 401) && (! respData) && (respData.error == "invalid_token")) {
+        if ((status == 401) && respData && (respData.error == "invalid_token")) {
             $.rest.login.refresh(function() {
                 ajaxCall(failCallback);
             },
@@ -104,10 +104,10 @@ function _restOnError(uri, status, data) {
 
 $.rest.login = function(username, password, callback, failCallback) {
 
-    const uri = "/auth/api/login" + $.query.set("grant_type", "password")
-                                           .set("client_id", "managerClient")
-                                           .set("username", username)
-                                           .set("password", password).toString();
+    const uri = "/auth/api/login" + $.query.empty().set("grant_type", "password")
+                                                   .set("client_id", "managerClient")
+                                                   .set("username", username)
+                                                   .set("password", password).toString();
     $.ajax({
         url: uri,
         type: "POST",
@@ -130,10 +130,10 @@ $.rest.login = function(username, password, callback, failCallback) {
 
 $.rest.signup = function(username, password, callback, failCallback) {
 
-    const uri = "/auth/api/login" + $.query.set("grant_type", "signup")
-                                           .set("client_id", "managerClient")
-                                           .set("username", username)
-                                           .set("password", password).toString();
+    const uri = "/auth/api/login" + $.query.empty().set("grant_type", "signup")
+                                                   .set("client_id", "managerClient")
+                                                   .set("username", username)
+                                                   .set("password", password).toString();
     $.ajax({
         url: uri,
         type: "POST",
@@ -156,9 +156,9 @@ $.rest.signup = function(username, password, callback, failCallback) {
 
 $.rest.login.refresh = function(callback, failCallback) {
     
-    const uri = "/auth/api/login" + $.query.set("grant_type", "refresh_token")
-                                           .set("client_id", "managerClient")
-                                           .set("refresh_token", Cookies.get("refresh_token"));
+    const uri = "/auth/api/login" + $.query.empty().set("grant_type", "refresh_token")
+                                                   .set("client_id", "managerClient")
+                                                   .set("refresh_token", Cookies.get("refresh_token"));
     
     $.ajax({
         url: uri,

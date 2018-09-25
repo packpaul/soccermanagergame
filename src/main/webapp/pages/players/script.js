@@ -63,7 +63,7 @@ $.Manager.pages.Players = {
                                 data: reqData.data,
                                 draw: data.draw,
                                 recordsTotal: reqData.countTotal,
-                                recordsFiltered: reqData.countFiltered | reqData.countTotal
+                                recordsFiltered: reqData.countFiltered || reqData.countTotal
                             });
                         },
                         function(status, reqData) {
