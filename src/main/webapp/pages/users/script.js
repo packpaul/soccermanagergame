@@ -19,10 +19,8 @@ $.Manager.pages.Users = {
     editUserId: null,
         
     onLoad: function($page) {
-    
-        this.$page = $page;
         
-//        this.$page.find("select").select2();
+        this.$page = $page;
 
         var dtConfig = {
             processing: true,
@@ -118,7 +116,8 @@ $.Manager.pages.Users = {
         }
     },
         
-    onShowing: function($page, params) {
+    onShow: function($page, params) {
+//        $page.find("select").select2();
     },
     
     initSearchBoxValues: function(searchValues) {
@@ -192,7 +191,7 @@ $.Manager.pages.Users = {
     },
     
     showEditUserModal: function() {
-        this.find$editUserModal().modal('show');  
+        this.find$editUserModal().modal('show');
     },
     
     hideEditUserModal: function() {
@@ -246,15 +245,15 @@ $.Manager.pages.Users = {
 $(function() {
     if ($.Manager.isPrototype) {
         var $body = $(document.body);
-        $.Manager.pages.Users.onShowing($body, null);
         $.Manager.pages.Users.onLoad($body, null);
+        $.Manager.pages.Users.onShow($body, null);
     } else {
         $.Manager.pages.setHandlers(
             function($page, params) {
-                $.Manager.pages.Users.onShowing($page, params);
+                $.Manager.pages.Users.onLoad($page, params);
             },
             function($page, params) {
-                $.Manager.pages.Users.onLoad($page, params);
+                $.Manager.pages.Users.onShow($page, params);
             });
     } 
- });
+});

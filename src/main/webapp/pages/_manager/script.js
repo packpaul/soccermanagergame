@@ -21,7 +21,7 @@ $.Manager = {
 
     var currentPage;
     
-    var onShowingPageHandlers = {};
+    var onShowPageHandlers = {};
     var onLoadPageHandlers = {};
 
     // "page" loader
@@ -73,23 +73,23 @@ $.Manager = {
         var name = $page.attr("pageName")
         $("section.content-header > h1").text((name) ? name : "");
 
-        var handler = onShowingPageHandlers[pageName]; 
+        $(document.body).find("section.content").addClass("hidden");
+        $page.removeClass("hidden");
+        
+        var handler = onShowPageHandlers[pageName]; 
         if (handler) { 
             handler($page.length ? $page : null, param);
         }
-        
-        $(document.body).find("section.content").addClass("hidden");
-        $page.removeClass("hidden");
     }
 
     // register page handler  
-    app.setHandlers = function(onShowingPageHandler, onLoadPageHandler) {
+    app.setHandlers = function(onLoadPageHandler, onShowPageHandler) {
         var $page = find$page(currentPage);
-        if (onShowingPageHandler) {
-            onShowingPageHandlers[currentPage] = onShowingPageHandler;
-        }
         if (onLoadPageHandlers) {
             onLoadPageHandlers[currentPage] = onLoadPageHandler;
+        }
+        if (onShowPageHandler) {
+            onShowPageHandlers[currentPage] = onShowPageHandler;
         }
     }
     
