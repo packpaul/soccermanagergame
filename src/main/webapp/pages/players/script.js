@@ -11,12 +11,12 @@ if (! $.Manager) {
     }
 }
 
-$.Manager.pages.Teams = {
+$.Manager.pages.Players = {
 
     $page: null,
-    $teamsTable: null,
+    $playersTable: null,
     
-    editTeamId: null,
+    editPlayerId: null,
         
     onLoad: function($page) {
     
@@ -31,18 +31,21 @@ $.Manager.pages.Teams = {
 
             columns: [
                 {data: 'id', name: 'id'},
-                {data: 'teamName', name: 'teamName'},
+                {data: 'firstName', name: 'firstName'},
+                {data: 'lastName', name: 'lastName'},
+                {data: 'playerType', name: 'playerType'},
+                {data: 'age', name: 'age'},
                 {data: 'country', name: 'country'},
-                {data: 'owner', name: 'owner'},
-                {data: 'value', name: 'value', orderable: false},
-                {data: 'balance', name: 'balance'},
+                {data: 'teamName', name: 'teamName'},
+                {data: 'teamCountry', name: 'teamCountry'},
+                {data: 'value', name: 'value'},
                 {data: 'creationDate', name: 'created'},
                 {data: 'updateDate', name: 'updated'},
 //                    {defaultContent: '', orderable: false},
                 {data: null, orderable: false, searchable: false, render: function (info, type, row) {
-                        var action = '<a href="#" onclick="$.Manager.pages.Teams.onEditTeam(' + info.id + ');">edit</a>';
+                        var action = '<a href="#" onclick="$.Manager.pages.Players.onEditPlayer(' + info.id + ');">edit</a>';
                         if ($.Manager.userType != 'TEAM_OWNER') {
-                            action += '<a href="#" onclick="$.Manager.pages.Teams.onDeleteTeam(' + info.id + ');"> delete</a>'
+                            action += '<a href="#" onclick="$.Manager.pages.Players.onDeletePlayer(' + info.id + ');"> delete</a>'
                         }
                         return action;
                     }
@@ -54,7 +57,7 @@ $.Manager.pages.Teams = {
         if (! $.Manager.isPrototype) {
             $.extend(dtConfig, {
                 ajax: function(data, callback, settings) {
-                    $.rest.GET('/team/list' + createListQuery(data),
+                    $.rest.GET('/player/list' + createListQuery(data),
                         function(reqData) {
                             callback({
                                 data: reqData.data,
@@ -83,12 +86,13 @@ $.Manager.pages.Teams = {
             });
         }
         
-        this.$teamsTable = this.$page.find('#teamsTable').DataTable(dtConfig);
+        this.$playersTable = this.$page.find('#playersTable').DataTable(dtConfig);
 
-        this.initTeamsSearchBoxValues({
-            teamName: this.$teamsTable.column('teamName:name').search(),
-            country: this.$teamsTable.column('country:name').search(),
-            owner: this.$teamsTable.column('owner:name').search()
+        this.initPlayersSearchBoxValues({
+            firstName: this.$playersTable.column('firstName:name').search(),
+            lastName: this.$playersTable.column('lastName:name').search(),
+            playerType: this.$playersTable.column('playerType:name').search(),
+            country: this.$playersTable.column('country:name').search(),
         });
         
         function createListQuery(data) {
@@ -129,21 +133,21 @@ $.Manager.pages.Teams = {
 //      $page.find("select").select2();
     },
     
-    initTeamsSearchBoxValues: function(searchValues) {
-        var $teamsSearchBox = this.$page.find('#teamsSearchBox');
+    initPlayersSearchBoxValues: function(searchValues) {
+        var $playersSearchBox = this.$page.find('#playersSearchBox');
         
         Object.keys(searchValues).forEach(function(name) {
-            $teamsSearchBox.find('#' + name).val(searchValues[name]);
+            $playersSearchBox.find('#' + name).val(searchValues[name]);
         });
         
-        $teamsSearchBox.find('select').trigger("change");
+        $playersSearchBox.find('select').trigger("change");
     },
     
-    getTeamsSearchBoxValues: function() {
+    getPlayersSearchBoxValues: function() {
         var values = {};
     
-        var $teamsSearchBoxControls = this.$page.find('#teamsSearchBox .form-control');
-        $teamsSearchBoxControls.each(function(index, $control) {
+        var $playersSearchBoxControls = this.$page.find('#playersSearchBox .form-control');
+        $playersSearchBoxControls.each(function(index, $control) {
             values[$control.id] = $control.value.trim();
         }); 
         
@@ -152,51 +156,53 @@ $.Manager.pages.Teams = {
 
     filterTable: function() {
         const self = this;
-        const searchValues = self.getTeamsSearchBoxValues()
+        const searchValues = self.getPlayersSearchBoxValues()
         
         console.info('Searching for: ', searchValues);
         
         Object.keys(searchValues).forEach(function(name) {
-            self.$teamsTable.column(name + ':name').search(searchValues[name]);
+            self.$playersTable.column(name + ':name').search(searchValues[name]);
         });
 
-        this.$teamsTable.draw();
+        this.$playersTable.draw();
     },
     
-    onEditTeam: function(teamId) {
+    onEditPlayer: function(playerId) {
 
         const self = this;
-        self.setDataToEditTeamModal({});
+        self.setDataToEditPlayerModal({});
 
-        self.showEditTeamModal();
+        self.showEditPlayerModal();
         
         if ($.Manager.isPrototype) {
-            self.setDataToEditTeamModal({
-                id: teamId,
-                teamName: 'Soccer Dream Team',
-                country: 'BELGIUM',
-                owner: 'jose_owner',
-                value: 20000000,
-                balance: 5000000
+            self.setDataToEditPlayerModal({
+                id: playerId,
+                firstName: 'Jordi',
+                lastName: 'di María',
+                playerType: 'ATTACKER',
+                age: 28,
+                country: 'BRAZIL',
+                teamId: 1,
+                value: 1450000
             });
             
             return;
         }
         
         $.rest.GET(
-            '/team/' + teamId,
+            '/player/' + playerId,
             function(respData) {
                 if (respData != undefined) {
 //                    console.debug(respData);
-                    self.setDataToEditTeamModal(respData);
-                    self.editTeamId = respData.id;
+                    self.setDataToEditPlayerModal(respData);
+                    self.editPlayerId = respData.id;
                 }
             }
         );
     },
     
-    onDeleteTeam: function(teamId) {
-        if (! confirm("Confirm deletion of team (id=" + teamId + ").")) {
+    onDeletePlayer: function(playerId) {
+        if (! confirm("Confirm deletion of player (id=" + playerId + ").")) {
             return;
         }
         
@@ -205,9 +211,9 @@ $.Manager.pages.Teams = {
         }
         
         $.rest.DELETE(
-                '/team/' + teamId,
+                '/player/' + playerId,
                 function() {
-                    self.$teamsTable.draw();
+                    self.$playersTable.draw();
                 },
                 function(respData) {
                     alert(respData.error_description);
@@ -215,55 +221,56 @@ $.Manager.pages.Teams = {
             );
     },
     
-    setDataToEditTeamModal: function(data) {
-        this.find$editTeamModal().find('form').deserializeObject(data);
+    setDataToEditPlayerModal: function(data) {
+        var $editPlayerModalForm = this.find$editPlayerModal().find('form');
+        $editPlayerModalForm.deserializeObject(data);
     },
 
-    getDataFromEditTeamModal: function() {
-        return this.find$editTeamModal().find('form').serializeObject();
+    getDataFromEditPlayerModal: function() {
+        return this.find$editPlayerModal().find('form').serializeObject();
     },
     
-    showEditTeamModal: function() {
-        this.find$editTeamModal().modal('show');  
+    showEditPlayerModal: function() {
+        this.find$editPlayerModal().modal('show');  
     },
     
-    hideEditTeamModal: function() {
-        this.find$editTeamModal().modal('hide');
-        this.editTeamId = null;  
+    hideEditPlayerModal: function() {
+        this.find$editPlayerModal().modal('hide');
+        this.editPlayerId = null;  
     },
     
-    find$editTeamModal: function() {
-        return this.$page.find('#editTeamModal');
+    find$editPlayerModal: function() {
+        return this.$page.find('#editPlayerModal');
     },
     
     resetFilter: function() {
-        var $teamsSearchBox = this.$page.find('#teamsSearchBox');
-        $teamsSearchBox.find('.form-control').val('');
-        $teamsSearchBox.find('select').trigger("change");
+        var $playersSearchBox = this.$page.find('#playersSearchBox');
+        $playersSearchBox.find('.form-control').val('');
+        $playersSearchBox.find('select').trigger("change");
         this.filterTable();
     },
     
-    saveTeam: function () {
+    savePlayer: function () {
         
         const self = this;
-        const data = self.getDataFromEditTeamModal();
+        const data = self.getDataFromEditPlayerModal();
         
-        console.info('updating team (id=' + self.editTeamId + '): ', data);
+        console.info('updating player (id=' + self.editPlayerId + '): ', data);
         
         if ($.Manager.isPrototype) {
             setTimeout(
                 function() {
-                    self.hideEditTeamModal();    
+                    self.hideEditPlayerModal();    
                 },
                 2000);
             return;
         }
         
-        $.rest.PUT('/team/' + self.editTeamId, data,
+        $.rest.PUT('/player/' + self.editPlayerId, data,
             function(respData) {
 //                console.debug(respData);
-                self.hideEditTeamModal();
-                self.$teamsTable.draw();
+                self.hideEditPlayerModal();
+                self.$playersTable.draw();
             },
             function(status, respData) {
                 if (respData) {
@@ -278,15 +285,15 @@ $.Manager.pages.Teams = {
 $(function() {
     if ($.Manager.isPrototype) {
         var $body = $(document.body);
-        $.Manager.pages.Teams.onLoad($body, null);
-        $.Manager.pages.Teams.onShow($body, null);
+        $.Manager.pages.Players.onLoad($body, null);
+        $.Manager.pages.Players.onShow($body, null);
     } else {
         $.Manager.pages.setHandlers(
             function($page, params) {
-                $.Manager.pages.Teams.onLoad($page, params);
+                $.Manager.pages.Players.onLoad($page, params);
             },
             function($page, params) {
-                $.Manager.pages.Teams.onShow($page, params);
+                $.Manager.pages.Players.onShow($page, params);
             });
     } 
 });

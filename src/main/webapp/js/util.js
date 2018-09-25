@@ -51,6 +51,11 @@ $.fn.deserializeObject = function(o) {
             }
         }
     });
+    $.each(this.find('select[name]'), function() {
+        var $this = $(this);
+        const value = o[$this.attr('name')];
+        $this.val(value || '');
+    });
 }
 
 /**

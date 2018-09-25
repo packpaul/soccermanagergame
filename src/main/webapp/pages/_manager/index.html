@@ -134,6 +134,11 @@ desired effect
             <span>Teams</span>
           </a>
         </li>
+        <li>
+          <a href="#players"><i class="fa fa-link"></i>
+            <span>Players</span>
+          </a>
+        </li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Transfers</span>
             <span class="pull-right-container">
@@ -176,6 +181,7 @@ desired effect
     <!-- manager page content -->
     <section id="users" pageName="Users" class="content hidden" src="/manager/users" th:if="${userType} == 'ADMIN'"></section>
     <section id="teams" pageName="Teams" class="content hidden" src="/manager/teams"></section>
+    <section id="players" pageName="Players" class="content hidden" src="/manager/players"></section>
     <section id="transfersOverview" pageName="Transfers Overview" class="content hidden" src="/manager/transfersOverview"></section>
     <section id="transfersProposals" pageName="Transfers Proposals" class="content hidden" src="/manager/transfersProposals"></section>
     

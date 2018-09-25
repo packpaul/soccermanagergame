@@ -41,18 +41,17 @@
     
     <!-- Select2 -->
     <script src="../../plugins/select2/select2.min.js"></script>
+    <script>
+        $(function () {           
+            $.fn.select2.defaults.set("theme", "bootstrap");
+        });
+    </script>
 
     <script src="../../js/util.js" th:src="@{/js/util.js}"></script>
     <script src="../../js/restApi.js" th:src="@{/js/restApi.js}"></script>
             
     <script src="../../js/restApi.js"></script>
     <script src="../../js/util.js"></script>
-    
-    <script>
-        $(function () {           
-            $.fn.select2.defaults.set("theme", "bootstrap");
-        });
-    </script>
 </head>
 
 <body>
@@ -131,7 +130,7 @@
                             <tr th:if="false">
                                 <td>1</td>
                                 <td>Soccer Dream Team</td>
-                                <td>Mexica</td>
+                                <td>Belgium</td>
                                 <td>jose_owner</td>
                                 <td>$20 000 000</td>
                                 <td>$5 000 000</td>
@@ -204,7 +203,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Value</label>
                         <div class="col-sm-9">
-                            <input name="value" required="required" class="form-control" />
+                            <input name="value" required="required" class="form-control" disabled="disabled" />
                         </div>
                     </div>
                     <div class="form-group">
