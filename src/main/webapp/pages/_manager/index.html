@@ -88,14 +88,14 @@ desired effect
               <img src="../../img/football_160x160.png" th:src="@{/img/football_160x160.png}"
                    class="user-image" alt="User Image" />
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
-              <span class="hidden-xs">admin</span>
+              <span class="hidden-xs" th:text="${username}">admin</span>
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
               <li class="user-header">
                 <img src="../../img/football_160x160.png" th:src="@{/img/football_160x160.png}"
                      class="img-circle" alt="User Image" />
-                <p>
+                <p th:text="${username}">
                   admin
                 </p>
               </li>
@@ -124,7 +124,7 @@ desired effect
       <ul class="sidebar-menu">
         <li class="header">MENU</li>
         <!-- Optionally, you can add icons to the links -->
-        <li class="active">
+        <li  class="active" th:if="${userType} == 'ADMIN'">
           <a href="#users"><i class="fa fa-link"></i>
             <span>Users</span>
           </a>
@@ -174,10 +174,10 @@ desired effect
     </section>
 
     <!-- manager page content -->
-    <section id="users" pageName="Users" class="content hidden" src="/users"></section>
-    <section id="teams" pageName="Teams" class="content hidden" src="/teams"></section>
-    <section id="transfersOverview" pageName="Transfers Overview" class="content hidden" src="/transfersOverview"></section>
-    <section id="transfersProposals" pageName="Transfers Proposals" class="content hidden" src="/transfersProposals"></section>
+    <section id="users" pageName="Users" class="content hidden" src="/manager/users" th:if="${userType} == 'ADMIN'"></section>
+    <section id="teams" pageName="Teams" class="content hidden" src="/manager/teams"></section>
+    <section id="transfersOverview" pageName="Transfers Overview" class="content hidden" src="/manager/transfersOverview"></section>
+    <section id="transfersProposals" pageName="Transfers Proposals" class="content hidden" src="/manager/transfersProposals"></section>
     
     <!-- /.content -->
   </div>

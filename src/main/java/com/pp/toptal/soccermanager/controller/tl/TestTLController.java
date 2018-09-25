@@ -9,7 +9,7 @@ import org.thymeleaf.context.WebContext;
 public class TestTLController extends TLControllerAbstract {
     
     @Override
-    protected void fillContext(WebContext ctx) {
+    protected void fillContext(String requestPath, WebContext ctx) {
         ctx.setVariable("online", "Online");
     }
 

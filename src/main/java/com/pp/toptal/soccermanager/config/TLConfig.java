@@ -1,5 +1,7 @@
 package com.pp.toptal.soccermanager.config;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,12 +21,10 @@ import com.pp.toptal.soccermanager.controller.tl.TestTLController;
 public class TLConfig {
     
     public static final String PAGES_ROOT = "/pages";
-    
+
     private TemplateEngine templateEngine;
     
-    private Map<String, TLControllerAbstract> controllersMap = new HashMap<>();
-    
-    private Map<String, String> pageToPageNameMap = new HashMap<>();
+    private Map<String, TLControllerAbstract> requestPathToControllerMap = new HashMap<>();
     
     /**
      * TODO: move to factory
@@ -40,24 +40,23 @@ public class TLConfig {
     
     @PostConstruct
     private void init() {
-        registerController("/tl_test", "TL test", testController);
+        registerController("/tl_test", testController);
         
         registerController("/manager", managerController);
         
-        registerController("/users", pageContentController);        
+        registerController("/manager/users", pageContentController);        
 
         initializeTemplateEngine();
     }
     
-    private void registerController(String page, TLControllerAbstract controller) {
-        controllersMap.put(page, controller);
+    public static Collection<String> getFilterUrlPatterns() {
+        return Arrays.asList("/tl_test", "/manager/*");
     }
     
-    private void registerController(String page, String pageName, TLControllerAbstract controller) {
-        registerController(page, controller);
-        pageToPageNameMap.put(page, pageName);
-    } 
-
+    private void registerController(String requestPath, TLControllerAbstract controller) {
+        requestPathToControllerMap.put(requestPath, controller);
+    }
+    
     private void initializeTemplateEngine() {
         
         ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver();
@@ -80,11 +79,7 @@ public class TLConfig {
     }
     
     public TLControllerAbstract resolveController(String requestPath) {
-        return controllersMap.get(requestPath);
-    }
-    
-    public Map<String, String> getPageToPageNameMap() {
-        return pageToPageNameMap;
+        return requestPathToControllerMap.get(requestPath);
     }
     
 }

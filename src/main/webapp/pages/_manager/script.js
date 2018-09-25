@@ -32,16 +32,16 @@ $.Manager = {
 
         if (src && ($page.find(">:first-child").length == 0)) {
             // it has src and is empty - load it
-            $.get(src, "html")
-                .done(function(html) {
+            $.html.GET(src,
+                function(html) {
                     currentPage = pageName;
                     load(pageName, html, param);
                     show(pageName, param);
-                 })
-                .fail(function() {
+                },
+                function() {
                     $page.html("failed to get " + src);
                     show(pageName, param);
-                 });
+                });
         } else {
             show(pageName, param);
         }

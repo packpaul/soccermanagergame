@@ -3,23 +3,31 @@ package com.pp.toptal.soccermanager.controller.tl;
 import org.springframework.stereotype.Controller;
 import org.thymeleaf.context.WebContext;
 
+import com.pp.toptal.soccermanager.config.TLConfig;
+
 /**
  * This is a controller to test TL in work.
  */
 @Controller
 public class PageContentTLController extends TLControllerAbstract {
-    
-    public PageContentTLController() {
-        super(false);
-    }
+
+    private static final String PAGE_VAR_NAME = "page";
     
     @Override
-    String resolveTemplateName(String templateName) {
+    String getTemplateName(String requestPath) {
         return "/_content";
     }
 
     @Override
-    protected void fillContext(WebContext ctx) {
+    protected void fillContext(String requestPath, WebContext ctx) {
+        final String pageName = getPageName(requestPath);
+        setContextVariable(PAGE_ROOT_VAR_NAME, TLConfig.PAGES_ROOT + pageName, ctx);
+        setContextVariable(PAGE_VAR_NAME, pageName, ctx);
+    }
+    
+    private String getPageName(String requestPath) {
+        int idx = requestPath.lastIndexOf('/');
+        return (idx >= 0) ? requestPath.substring(idx) : ("/" + requestPath);
     }
 
 }

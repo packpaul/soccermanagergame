@@ -3,6 +3,7 @@ if (typeof jQuery === "undefined") {
 }
 
 $.rest = {};
+$.html = {};
 
 /**
  * GET
@@ -32,11 +33,23 @@ $.rest.DELETE = function(path, callback, failCallback) {
     _restAjax("/manager/api", path, "DELETE", callback, failCallback);
 }
 
+/**
+ * GET HTML
+ */
+$.html.GET = function(url, callback, failCallback) {
+    _ajax(url, "", "GET", callback, null, failCallback, "html");
+}
+
 function _restAjax(apiRoot, path, reqType, callback, reqData, failCallback) {
-    
+
     if (reqData) {
         reqData = JSON.stringify(reqData);
     }
+    
+    _ajax(apiRoot, path, reqType, callback, reqData, failCallback, "json", "application/json");
+}
+
+function _ajax(apiRoot, path, reqType, callback, reqData, failCallback, dataType, contentType) {
     
     function ajaxCall(failCallback) {
         const uri = getUri();
@@ -45,8 +58,8 @@ function _restAjax(apiRoot, path, reqType, callback, reqData, failCallback) {
             url: uri,
             data: reqData,
             type: reqType,
-            contentType: "application/json",
-            dataType: "json"
+            contentType: contentType,
+            dataType: dataType
         }).done(function (respData) {
             if (callback) {
                 callback(respData);
@@ -70,7 +83,9 @@ function _restAjax(apiRoot, path, reqType, callback, reqData, failCallback) {
             $.rest.login.refresh(function() {
                 ajaxCall(failCallback);
             },
-            failCallback); // TODO: redirect to authentication and back
+            function() {
+                window.location.replace('/');
+            });
         } else {
             if (failCallback) {
                 failCallback(status, respData);
@@ -153,7 +168,7 @@ $.rest.login.refresh = function(callback, failCallback) {
     }).done(function (respData) {
         Cookies.set("access_token", respData.access_token);
         if (callback) {
-            callback();
+            callback(respData.access_token);
         }
     }).fail(function(resp) {
         Cookies.remove("access_token");

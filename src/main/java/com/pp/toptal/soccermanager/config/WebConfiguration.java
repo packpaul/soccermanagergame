@@ -60,6 +60,16 @@ public class WebConfiguration {
 
         return registration;
     }
+    
+    @Bean("tlFilterRegistration")
+    public FilterRegistrationBean getTLFilterRegistration(TLFilter filter) {
+
+        FilterRegistrationBean registration = new FilterRegistrationBean(filter);
+        registration.setOrder(Ordered.LOWEST_PRECEDENCE - 2);
+        registration.setUrlPatterns(TLConfig.getFilterUrlPatterns());
+
+        return registration;
+    }
 
     @Bean("apiAuthHandlingFilter")
     public ApiAuthHandlingFilter getApiAuthHandlingFilter() {

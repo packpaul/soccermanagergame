@@ -21,8 +21,17 @@
 
 <script type="text/javascript">
     $.rest.login.refresh(
-    	function() {
-    	    window.location.replace('/manager');
+    	function(access_token) {
+            window.location.replace('/manager?access_token=' + access_token);
+//            $.html.GET("/manager",
+//                function(html) {
+//                    document.open();
+//                    document.write(html);
+//                    document.close();
+//                },
+//                function() {
+//                    window.location.replace('/login.html');         
+//                });
     	},
     	function() {
     	    window.location.replace('/login.html');    	    

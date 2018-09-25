@@ -61,7 +61,7 @@ function doLogin() {
         $.rest.login($('#username').val(), $('#password').val(),
             function() {
                 unhint();
-                window.location.replace('/manager');
+                window.location.replace('/');
 //                window.location.reload(true);
             },
             function(status, respData) {

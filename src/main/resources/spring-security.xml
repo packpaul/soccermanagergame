@@ -55,7 +55,7 @@
         <!--<anonymous enabled="false"/>-->
         <intercept-url pattern="/manager/api/info" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <intercept-url pattern="/manager/api/v*/info" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-        <intercept-url pattern="/manager/api/**"
+        <intercept-url pattern="/manager/**"
                        access="IS_AUTHENTICATED_FULLY"/>   <!-- Roles are checked when issuing OAuth2 security token-->
         <intercept-url pattern="/auth/api/currentUser"
                        access="IS_AUTHENTICATED_FULLY"/>
