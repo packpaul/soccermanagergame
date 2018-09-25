@@ -15,13 +15,13 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
     public PlayerEntity() {
     }
     
-    public PlayerEntity(String firstname, Integer age, Country country) {
-        this(firstname, null, age, country);
+    public PlayerEntity(String firstName, Integer age, Country country) {
+        this(firstName, null, age, country);
     }
     
-    public PlayerEntity(String firstname, String lastname, Integer age, Country country) {
-        this.firstname = firstname;
-        this.lastname = lastname;
+    public PlayerEntity(String firstName, String lastName, Integer age, Country country) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.age = age;
         this.country = country;
         this.creationDate = new Date();
@@ -36,7 +36,7 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
     
     private TeamEntity team;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "teamid", nullable = false)
     public TeamEntity getTeam() {
         return team;
@@ -45,24 +45,24 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
         this.team = team;
     }
     
-    private String firstname;
+    private String firstName;
     
     @Column(name = "firstname", nullable = false)
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
     
-    private String lastname;
+    private String lastName;
     
     @Column(name = "lastname")
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
     
     private Integer age;
@@ -95,6 +95,17 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
     public void setValue(Long value) {
         this.value = value;
     }
+    
+    private Country country;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "country", nullable = false)
+    public Country getCountry() {
+        return country;
+    }
+    public void setCountry(Country country) {
+        this.country = country;
+    }
 
     private Date creationDate;
 
@@ -118,17 +129,6 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
         this.updateDate = updateDate;
     }
     
-    private Country country;
-    
-    @Enumerated(EnumType.STRING)
-    @Column(name = "country", nullable = false)
-    public Country getCountry() {
-        return country;
-    }
-    public void setCountry(Country country) {
-        this.country = country;
-    }
-    
     @Override
     public boolean equals(Object obj) {
         if (! super.equals(obj)) {
@@ -137,8 +137,8 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
         
         PlayerEntity other = (PlayerEntity) obj;
         
-        return (Objects.equals(firstname, other.firstname) &&
-                Objects.equals(lastname, other.lastname) &&
+        return (Objects.equals(firstName, other.firstName) &&
+                Objects.equals(lastName, other.lastName) &&
                 Objects.equals(age, other.age) &&
                 Objects.equals(country, other.country));
     }
@@ -146,7 +146,7 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + Objects.hash(firstname, lastname, age, country);
+        result = 31 * result + Objects.hash(firstName, lastName, age, country);
         
         return result;
     }
@@ -156,8 +156,8 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
         StringBuffer sb = new StringBuffer(getClass().getSimpleName())
                 .append('{')
                     .append("id=").append(getId()).append(',')
-                    .append("firstname='").append(firstname).append('\'').append(',')
-                    .append("lastnameType='").append(lastname).append('\'').append(',')
+                    .append("firstName='").append(firstName).append('\'').append(',')
+                    .append("lastName='").append(lastName).append('\'').append(',')
                     .append("age='").append(age).append('\'').append(',')
                     .append("playerType='").append(playerType).append('\'').append(',')
                     .append("country='").append(country).append('\'').append(',')
@@ -166,13 +166,6 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
                 .append('}');
             
         return sb.toString();
-    }
-
-    public enum PlayerType {
-        GOALKEEPER,
-        DEFENDER,
-        MIDFIELDER,
-        ATTACKER
     }
 
 }

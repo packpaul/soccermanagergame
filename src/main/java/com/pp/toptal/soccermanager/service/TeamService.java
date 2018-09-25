@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pp.toptal.soccermanager.entity.Country;
 import com.pp.toptal.soccermanager.entity.PlayerEntity;
-import com.pp.toptal.soccermanager.entity.PlayerEntity.PlayerType;
+import com.pp.toptal.soccermanager.entity.PlayerType;
 import com.pp.toptal.soccermanager.entity.QTeamEntity;
 import com.pp.toptal.soccermanager.entity.TeamEntity;
 import com.pp.toptal.soccermanager.entity.UserEntity;
@@ -121,8 +121,8 @@ public class TeamService {
         PlayerEntity generatedPlayer = null;
         for (int i = 1; i <= GENERATION_REATTEMPTS; i++) {
             PlayerEntity player = playerGenerator.generate();
-            if (playerRepo.findOneByFirstnameAndLastnameAndCountry(
-                    player.getFirstname(), player.getLastname(), player.getCountry()) == null) {
+            if (playerRepo.findOneByFirstNameAndLastNameAndCountry(
+                    player.getFirstName(), player.getLastName(), player.getCountry()) == null) {
                 generatedPlayer = player;
                 break;
             }
@@ -267,7 +267,7 @@ public class TeamService {
         }
         if (balance != null) {
             if (balance < 0) {
-                throw new BusinessException(ErrorCode.INVALID_DATA, "Balance should not be negative!");
+                throw new DataParameterException("Balance should not be negative!");
             }
             team.setBalance(balance);
             isChanged = true;
@@ -280,6 +280,12 @@ public class TeamService {
         LOGGER.info(String.format("Team (id=%d) was updated.", teamId));
         
         return toSoMapper.map(teamRepo.save(team), new TeamSO());
+    }
+
+    public void deleteTeam(Long teamId) {
+        findTeam(teamId);
+        
+        teamRepo.delete(teamId);
     } 
  
 }

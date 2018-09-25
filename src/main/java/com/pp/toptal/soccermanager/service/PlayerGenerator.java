@@ -90,5 +90,9 @@ final class PlayerGenerator {
         return (ctxt != null) ? ctxt.getResource("classpath:" + SAMPLE_PATH).getInputStream() :
                                 getClass().getClassLoader().getResourceAsStream(SAMPLE_PATH);
     }
+    
+    public static boolean isAgeValid(int age) {
+        return (AGE_MIN <= age);
+    }
 
 }

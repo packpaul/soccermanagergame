@@ -26,9 +26,6 @@ public class TLConfig {
     
     private Map<String, TLControllerAbstract> requestPathToControllerMap = new HashMap<>();
     
-    /**
-     * TODO: move to factory
-     */
     @Autowired
     TestTLController testController;
 
@@ -45,7 +42,8 @@ public class TLConfig {
         registerController("/manager", managerController);
         
         registerController("/manager/users", pageContentController);
-        registerController("/manager/teams", pageContentController); 
+        registerController("/manager/teams", pageContentController);
+        registerController("/manager/players", pageContentController);
 
         initializeTemplateEngine();
     }

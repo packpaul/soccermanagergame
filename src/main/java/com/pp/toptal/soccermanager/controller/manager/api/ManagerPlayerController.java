@@ -13,20 +13,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pp.toptal.soccermanager.service.SelectionParameters;
-import com.pp.toptal.soccermanager.service.TeamService;
+import com.pp.toptal.soccermanager.service.PlayerService;
 import com.pp.toptal.soccermanager.so.NullSO;
 import com.pp.toptal.soccermanager.so.TableDataSO;
-import com.pp.toptal.soccermanager.so.TeamSO;
+import com.pp.toptal.soccermanager.so.PlayerSO;
 
 @RestController()
-@RequestMapping(ManagerApi.ROOT + "/v" + ManagerApi.BASELINE_VERSION + "/team")
-public class ManagerTeamController {
+@RequestMapping(ManagerApi.ROOT + "/v" + ManagerApi.BASELINE_VERSION + "/player")
+public class ManagerPlayerController {
 
     @Autowired
-    private TeamService teamService;
+    private PlayerService playerService;
 
     @GetMapping
-    public List<TeamSO> getTeams(
+    public List<PlayerSO> getPlayers(
             @RequestParam(name = "filterProperties[]", required = false) String[] filterProperties,
             @RequestParam(name = "filterValues[]", required = false) String[] filterValues,
             @RequestParam(name = "orderProperty", required = false) String orderProperty,
@@ -43,11 +43,11 @@ public class ManagerTeamController {
         }
         params.offset(offset).limit(limit);
         
-        return teamService.getTeams(params);
+        return playerService.getPlayers(params);
     }
     
     @GetMapping("/list")
-    public TableDataSO<TeamSO> listTeams(
+    public TableDataSO<PlayerSO> listPlayers(
             @RequestParam(name = "filterProperties[]", required = false) String[] filterProperties,
             @RequestParam(name = "filterValues[]", required = false) String[] filterValues,
             @RequestParam(name = "orderProperty", required = false) String orderProperty,
@@ -64,27 +64,27 @@ public class ManagerTeamController {
         }
         params.offset(offset).limit(limit);
         
-        return teamService.listTeams(params);
+        return playerService.listPlayers(params);
     }
 
-    @GetMapping("/{teamId}")
-    public TeamSO getTeam(@PathVariable("teamId") Long teamId) {
+    @GetMapping("/{playerId}")
+    public PlayerSO getPlayer(@PathVariable("playerId") Long playerId) {
           
-        return teamService.getTeam(teamId);
+        return playerService.getPlayer(playerId);
     }
     
-    @PutMapping("/{teamId}")
-    public TeamSO updateTeam(
-            @PathVariable("teamId") Long teamId, @RequestBody TeamSO teamData) {
+    @PutMapping("/{playerId}")
+    public PlayerSO updatePlayer(
+            @PathVariable("playerId") Long playerId, @RequestBody PlayerSO playerData) {
           
-        return  teamService.updateTeam(teamId, teamData);
+        return  playerService.updatePlayer(playerId, playerData);
     }
     
-    @DeleteMapping("/{teamId}")
-    public NullSO deleteTeam(
-            @PathVariable("teamId") Long teamId) {
+    @DeleteMapping("/{playerId}")
+    public NullSO deletePlayer(
+            @PathVariable("playerId") Long playerId) {
           
-        teamService.deleteTeam(teamId);
+        playerService.deletePlayer(playerId);
         
         return NullSO.INSTANCE;
     }

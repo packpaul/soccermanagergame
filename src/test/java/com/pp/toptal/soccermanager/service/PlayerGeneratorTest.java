@@ -20,10 +20,10 @@ public class PlayerGeneratorTest {
         
         assertNotNull(player);
         
-        assertNotNull(player.getFirstname());
-        assertFalse(player.getFirstname().isEmpty());
+        assertNotNull(player.getFirstName());
+        assertFalse(player.getFirstName().isEmpty());
         
-        assertTrue((player.getLastname() == null) || (! player.getLastname().isEmpty()));
+        assertTrue((player.getLastName() == null) || (! player.getLastName().isEmpty()));
         
         assertNotNull(player.getCountry());
         

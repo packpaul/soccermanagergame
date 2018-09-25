@@ -12,7 +12,7 @@ import com.pp.toptal.soccermanager.entity.TeamEntity;
 public interface PlayerRepo extends PagingAndSortingRepository<PlayerEntity, Long>,
                                     QueryDslPredicateExecutor<PlayerEntity> {
 
-    TeamEntity findOneByFirstnameAndLastnameAndCountry(
-            String firstname, String lastname, Country country);
+    TeamEntity findOneByFirstNameAndLastNameAndCountry(
+            String firstName, String lastName, Country country);
     
 }
