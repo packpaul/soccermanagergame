@@ -18,8 +18,8 @@ public class TeamEntity extends EntityBase<Long> implements Serializable {
     public TeamEntity() {
     }
     
-    public TeamEntity(String teamname, Country country) {
-        this.teamname = teamname;
+    public TeamEntity(String teamName, Country country) {
+        this.teamName = teamName;
         this.country = country;
         this.creationDate = new Date();
     }
@@ -33,7 +33,7 @@ public class TeamEntity extends EntityBase<Long> implements Serializable {
     
     private UserEntity owner;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userid", nullable = false)
     public UserEntity getOwner() {
         return owner;
@@ -42,14 +42,14 @@ public class TeamEntity extends EntityBase<Long> implements Serializable {
         this.owner = owner;
     }
     
-    private String teamname;
+    private String teamName;
     
     @Column(name = "teamname", nullable = false)
-    public String getTeamname() {
-        return teamname;
+    public String getTeamName() {
+        return teamName;
     }
-    public void setTeamname(String teamname) {
-        this.teamname = teamname;
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
     
     private Country country;
@@ -118,13 +118,13 @@ public class TeamEntity extends EntityBase<Long> implements Serializable {
         
         TeamEntity other = (TeamEntity) obj;
         
-        return (Objects.equals(teamname, other.teamname) && Objects.equals(country, other.country));
+        return (Objects.equals(teamName, other.teamName) && Objects.equals(country, other.country));
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + Objects.hash(teamname, country);
+        result = 31 * result + Objects.hash(teamName, country);
         
         return result;
     }
@@ -134,7 +134,7 @@ public class TeamEntity extends EntityBase<Long> implements Serializable {
         StringBuffer sb = new StringBuffer(getClass().getSimpleName())
                 .append('{')
                     .append("id=").append(getId()).append(',')
-                    .append("teamname='").append(teamname).append('\'').append(',')
+                    .append("teamName='").append(teamName).append('\'').append(',')
                     .append("country='").append(country).append('\'').append(',')
                     .append("creationDate='").append(toDateTimeString(creationDate)).append('\'').append(',')
                     .append("updateDate='").append(toDateTimeString(updateDate)).append('\'')

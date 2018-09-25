@@ -11,6 +11,6 @@ import com.pp.toptal.soccermanager.entity.TeamEntity;
 public interface TeamRepo extends PagingAndSortingRepository<TeamEntity, Long>,
                                   QueryDslPredicateExecutor<TeamEntity> {
 
-    TeamEntity findOneByTeamnameAndCountry(String teamname, Country country);
+    TeamEntity findOneByTeamNameAndCountry(String teamName, Country country);
     
 }

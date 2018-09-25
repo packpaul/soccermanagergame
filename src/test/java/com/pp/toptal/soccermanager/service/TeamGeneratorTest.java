@@ -20,8 +20,8 @@ public class TeamGeneratorTest {
         
         assertNotNull(team);
         
-        assertNotNull(team.getTeamname());
-        assertFalse(team.getTeamname().isEmpty());
+        assertNotNull(team.getTeamName());
+        assertFalse(team.getTeamName().isEmpty());
         
         assertNotNull(team.getCountry());
         
