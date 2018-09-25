@@ -233,6 +233,9 @@ desired effect
 
 <!-- manager page scripts -->
 <script src="script.js" th:src="@{/pages/_manager/script.js}"></script>
+<script th:inline="javascript">
+    $.Manager.userType = /*[[${userType}]]*/ "ADMIN";
+</script>
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the

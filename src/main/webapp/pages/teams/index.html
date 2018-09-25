@@ -1,0 +1,236 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Soccer Manager Game</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css" />
+    
+    <!-- AdminLTE 2.3.8 -->
+<!--
+    <link rel="stylesheet/less" href="../../css/boxes.less" />
+-->
+<!--
+    <link rel="stylesheet/less" href="../../css/AdminLTE.less" />
+-->
+    <link rel="stylesheet" href="../../css/AdminLTE.css" />
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="../../plugins/datatables/dataTables.bootstrap.css" />
+    
+    <!-- Select2 -->
+    <link rel="stylesheet" href="../../plugins/select2/select2.min.css" />
+    <link rel="stylesheet" href="../../plugins/select2/select2-bootstrap.min.css" />
+    
+    <!-- jQuery 2.2.3 -->
+    <script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <!-- Less 2.7.2 -->
+    <!-- In FF: security.fileuri.strict_origin_policy -> false -->
+<!--  
+    <script src="../../js/less.min.js"></script>
+-->
+    
+    <!-- Bootstrap 3.3.6 -->
+    <script src="../../bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- DataTables -->
+    <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="../../plugins/datatables/dataTables.bootstrap.min.js"></script>
+    
+    <!-- Select2 -->
+    <script src="../../plugins/select2/select2.min.js"></script>
+
+    <script src="../../js/util.js" th:src="@{/js/util.js}"></script>
+    <script src="../../js/restApi.js" th:src="@{/js/restApi.js}"></script>
+            
+    <script src="../../js/restApi.js"></script>
+    <script src="../../js/util.js"></script>
+    
+    <script>
+        $(function () {           
+            $.fn.select2.defaults.set("theme", "bootstrap");
+        });
+    </script>
+</head>
+
+<body>
+
+<!--/*/ <th:block th:fragment="content"> /*/-->  
+
+<ul class="nav nav-tabs">
+    <li id="tgl-teams" class="active"><a href="#tab-teams" data-toggle="tab">Teams</a></li>
+    <li id="tgl-players"><a href="#tab-players" data-toggle="tab">Team Players</a></li>
+</ul>
+<div class="tab-content">
+
+    <div id="tab-teams" class="tab-pane active">
+        <!-- teams filter -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div id="teamsSearchBox" class="box box-primary">
+                    <div class="box-header with-border">
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <label>Name</label>
+                                <input id="teamName" type="text" class="form-control" placeholder="f.e. 'team*' ('*' wildcard can be used)" />
+                            </div>
+                            <div class="col-lg-3">
+                                <label>Country</label>
+                                <select id="country" class="form-control" value="">
+                                    <option value="">-- no selection --</option>
+                                    <option value="FRANCE">France</option>
+                                    <option value="CROATIA">Croatia</option>
+                                    <option value="ENGLAND">England</option>
+                                    <option value="BELGIUM">Belgium</option>
+                                    <option value="BRAZIL">Brazil</option>
+                                    <option value="GERMANY">Germany</option>
+                                    <option value="ICELAND">Iceland</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4">
+                                <label>Owner</label>
+                                <input id="owner" type="text" class="form-control" placeholder="f.e. 'team*' ('*' wildcard can be used)" />
+                            </div>
+                            <div class="col-lg-1">
+                            </div>
+                        </div>
+                        <hr/>
+                        <a class="btn btn-primary" href="#" onClick="$.Manager.pages.Teams.filterTable();">Filter</a>
+                        <a class="btn btn-primary" href="#" onClick="$.Manager.pages.Teams.resetFilter();">Reset Filter</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- teams table -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-primary">
+        <!--
+                        <div class="panel-heading"></div>
+        -->
+                    <div class="panel-body">
+                        <table id="teamsTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th width="7%">ID</th>
+                                    <th width="18%">Name</th>
+                                    <th width="12%">Country</th>
+                                    <th width="13%">Owner</th>
+                                    <th width="10%">Value</th>
+                                    <th width="10%">Balance</th>
+                                    <th width="10%">Created</th>
+                                    <th width="10%">Updated</th>
+                                    <th width="10%"></th>
+                                </tr>
+                            </thead>
+                            <tr th:if="false">
+                                <td>1</td>
+                                <td>Soccer Dream Team</td>
+                                <td>Mexica</td>
+                                <td>jose_owner</td>
+                                <td>$20 000 000</td>
+                                <td>$5 000 000</td>
+                                <td>2018-09-25</td>
+                                <td></td>
+                                <td>
+                                    <a href="#" onclick="$.Manager.pages.Teams.onEditTeam(1);">edit</a>
+                                    <a href="#" onclick="$.Manager.pages.Teams.onDeleteTeam(1);"> delete</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <div id="tab-players" class="tab-pane">
+ 
+    </div>
+    
+    
+</div>
+
+<!-- Modal dialogs -->
+
+<div id="editTeamModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Edit Team</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">ID</label>
+                        <div class="col-sm-9">
+                            <input name="id" required="required" class="form-control" disabled="disabled" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Name</label>
+                        <div class="col-sm-9">
+                            <input name="teamName" required="required" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Country</label>
+                        <div class="col-sm-9">
+                            <select name="country" class="form-control" value="">
+                                <option value="FRANCE">France</option>
+                                <option value="CROATIA">Croatia</option>
+                                <option value="ENGLAND">England</option>
+                                <option value="BELGIUM">Belgium</option>
+                                <option value="BRAZIL">Brazil</option>
+                                <option value="GERMANY">Germany</option>
+                                <option value="ICELAND">Iceland</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Owner</label>
+                        <div class="col-sm-9">
+                            <input name="owner" required="required" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Value</label>
+                        <div class="col-sm-9">
+                            <input name="value" required="required" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Balance</label>
+                        <div class="col-sm-9">
+                            <input name="balance" required="required" class="form-control" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="saveSettingButton" type="button" class="btn btn-primary" onclick="$.Manager.pages.Teams.saveTeam();">
+                    <i class="fa fa-refresh fa-spin hidden"></i>&nbsp;Save
+                </button>
+                <button id="cancelSaveSettingButton" type="button" class="btn btn-default" onclick="$.Manager.pages.Teams.hideEditTeamModal();">
+                    <i class="fa fa-refresh fa-spin hidden"></i>&nbsp;Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js" th:src="@{ ${pageRoot} + '/script.js'}"></script>
+
+<!--/*/ </th:block> /*/-->
+
+</body>
+
+</html>
