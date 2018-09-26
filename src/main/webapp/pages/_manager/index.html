@@ -139,6 +139,17 @@ desired effect
             <span>Players</span>
           </a>
         </li>
+        <li>
+          <a href="#transfers"><i class="fa fa-link"></i>
+            <span>Transfers</span>
+          </a>
+        </li>
+        <li>
+          <a href="#proposals"><i class="fa fa-link"></i>
+            <span>Proposals</span>
+          </a>
+        </li>
+<!--
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Transfers</span>
             <span class="pull-right-container">
@@ -154,6 +165,7 @@ desired effect
             </li>
           </ul>
         </li>
+-->
       </ul>
       <!-- /.sidebar-menu -->
     </section>
@@ -182,8 +194,8 @@ desired effect
     <section id="users" pageName="Users" class="content hidden" src="/manager/users" th:if="${userType} == 'ADMIN'"></section>
     <section id="teams" pageName="Teams" class="content hidden" src="/manager/teams"></section>
     <section id="players" pageName="Players" class="content hidden" src="/manager/players"></section>
-    <section id="transfersOverview" pageName="Transfers Overview" class="content hidden" src="/manager/transfersOverview"></section>
-    <section id="transfersProposals" pageName="Transfers Proposals" class="content hidden" src="/manager/transfersProposals"></section>
+    <section id="transfers" pageName="Transfers" class="content hidden" src="/manager/transfers"></section>
+    <section id="proposals" pageName="Proposals" class="content hidden" src="/manager/proposals"></section>
     
     <!-- /.content -->
   </div>

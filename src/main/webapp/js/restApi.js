@@ -79,7 +79,10 @@ function _ajax(apiRoot, path, reqType, callback, reqData, failCallback, dataType
     }
     
     ajaxCall(function(status, respData) {
-        if ((status == 401) && respData && (respData.error == "invalid_token")) {
+        // TODO: parse JSON from respData.responseText for 'html' content type
+//        if ((status == 401) && respData && (respData.error == "invalid_token")) {
+        if ((status == 401) && ((! respData) || (respData.error == "invalid_token"))) {
+
             $.rest.login.refresh(function() {
                 ajaxCall(failCallback);
             },

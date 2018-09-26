@@ -39,20 +39,24 @@ $.Manager.pages.Players = {
                 {data: 'teamName', name: 'teamName'},
                 {data: 'teamCountry', name: 'teamCountry'},
                 {data: 'value', name: 'value'},
-                {data: 'creationDate', name: 'created'},
-                {data: 'updateDate', name: 'updated'},
+                {data: 'inTransfer', name: 'inTransfer', searchable: false, render: function(info, type, row) {
+                        return info ? 'yes' : '';
+                    }
+                },
+//                {data: 'creationDate', name: 'created'},
+//                {data: 'updateDate', name: 'updated'},
 //                    {defaultContent: '', orderable: false},
                 {data: null, orderable: false, searchable: false, render: function (info, type, row) {
-                        var action = '<a href="#" onclick="$.Manager.pages.Players.onEditPlayer(' + info.id + ');">edit</a>';
+                        var action = '<a href="#" onclick="$.Manager.pages.Players.onEditPlayer(' + info.id + ');"> edit</a>';
                         if ($.Manager.userType != 'TEAM_OWNER') {
                             action += '<a href="#" onclick="$.Manager.pages.Players.onDeletePlayer(' + info.id + ');"> delete</a>'
                         }
+                        action += '<a href="#" onclick="$.Manager.pages.Players.onTransferPlayer(' + info.id + ');"> transfer</a>'
                         return action;
                     }
                 }
             ]
         };
-        
      
         if (! $.Manager.isPrototype) {
             $.extend(dtConfig, {
@@ -210,8 +214,30 @@ $.Manager.pages.Players = {
             return;
         }
         
+        const self = this;
+        
         $.rest.DELETE(
                 '/player/' + playerId,
+                function() {
+                    self.$playersTable.draw();
+                },
+                function(respData) {
+                    alert(respData.error_description);
+                }
+            );
+    },
+    
+    onTransferPlayer: function(playerId) {
+        if (! confirm("Confirm transferring of player (id=" + playerId + ").")) {
+            return;
+        }
+        
+        if ($.Manager.isPrototype) {
+            return;
+        }
+        
+        $.rest.POST(
+                '/transfer/player/' + playerId,
                 function() {
                     self.$playersTable.draw();
                 },
