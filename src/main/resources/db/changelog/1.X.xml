@@ -131,7 +131,7 @@
             <column name="PLAYERID" type="BIGINT">
                 <constraints foreignKeyName="FK_TRANSFERS_PLAYERID_PLAYERS"
                              referencedTableName="PLAYERS" referencedColumnNames="ID"
-                             deleteCascade="true" />
+                             nullable="false" deleteCascade="true" />
             </column>
             <column name="FROMTEAMID" type="BIGINT">
                 <constraints foreignKeyName="FK_PLAYERS_FROMTEAMID_TEAMS"
@@ -161,12 +161,12 @@
             <column name="TRANSFERID" type="BIGINT">
                 <constraints foreignKeyName="FK_PROPOSALS_TRANSFERID_TRANSFERS"
                              referencedTableName="TRANSFERS" referencedColumnNames="ID"
-                             deleteCascade="true" />
+                             nullable="false" deleteCascade="true" />
             </column>
             <column name="TOTEAMID" type="BIGINT">
                 <constraints foreignKeyName="FK_PROPOSALS_TOTEAMID_TEAMS"
                              referencedTableName="TEAMS" referencedColumnNames="ID"
-                             deleteCascade="true" />
+                             nullable="false" deleteCascade="true" />
             </column>
             <column name="PRICE" type="BIGINT">
                 <constraints nullable="false" />
@@ -184,12 +184,12 @@
             <column name="FROMUSERID" type="BIGINT">
                 <constraints foreignKeyName="FK_MESSAGES_FROMUSERID_USERS"
                              referencedTableName="USERS" referencedColumnNames="ID"
-                             deleteCascade="true" />
+                             nullable="false" deleteCascade="true" />
             </column>
             <column name="TOUSERID" type="BIGINT">
                 <constraints foreignKeyName="FK_MESSAGES_TOUSERID_USERS"
                              referencedTableName="USERS" referencedColumnNames="ID"
-                             deleteCascade="true" />
+                             nullable="false" deleteCascade="true" />
             </column>
             <column name="PREVMESSAGEID" type="BIGINT">
                 <constraints foreignKeyName="FK_MESSAGES_PREVMESSAGEID_MESSAGES"
@@ -198,6 +198,12 @@
             <column name="NEXTMESSAGEID" type="BIGINT">
                 <constraints foreignKeyName="FK_MESSAGES_NEXTMESSAGEID_MESSAGES"
                              referencedTableName="MESSAGES" referencedColumnNames="ID" />
+            </column>
+            <column name="CONTENT" type="VARCHAR(512)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="READ" type="BOOLEAN" defaultValue="false">
+                <constraints nullable="false" />
             </column>
             <column name="CREATIONDATE" type="TIMESTAMP" />
             <column name="UPDATEDATE" type="TIMESTAMP" />

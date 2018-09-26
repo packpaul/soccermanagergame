@@ -19,6 +19,7 @@ public class PlayerSO implements Serializable {
     private Long teamId;
     private String teamName;
     private String teamCountry;
+    private Boolean inTransfer;
     
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date creationDate;
@@ -94,6 +95,13 @@ public class PlayerSO implements Serializable {
     }
     public void setTeamCountry(String teamCountry) {
         this.teamCountry = teamCountry;
+    }
+    
+    public Boolean isInTransfer() {
+        return inTransfer;
+    }
+    public void setInTransfer(Boolean inTransfer) {
+        this.inTransfer = inTransfer;
     }
     
     public Date getCreationDate() {

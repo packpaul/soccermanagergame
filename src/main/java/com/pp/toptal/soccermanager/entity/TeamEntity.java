@@ -135,7 +135,7 @@ public class TeamEntity extends EntityBase<Long> implements Serializable {
                 .append('{')
                     .append("id=").append(getId()).append(',')
                     .append("teamName='").append(teamName).append('\'').append(',')
-                    .append("country='").append(country).append('\'').append(',')
+                    .append("country=").append(country).append(',')
                     .append("creationDate='").append(toDateTimeString(creationDate)).append('\'').append(',')
                     .append("updateDate='").append(toDateTimeString(updateDate)).append('\'')
                 .append('}');

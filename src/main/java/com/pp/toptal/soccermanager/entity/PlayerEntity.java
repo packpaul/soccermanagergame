@@ -106,6 +106,16 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
     public void setCountry(Country country) {
         this.country = country;
     }
+    
+    private Boolean inTransfer;
+
+    @Column(name = "intransfer", nullable = false)
+    public Boolean isInTransfer() {
+        return inTransfer;
+    }
+    public void setInTransfer(Boolean inTransfer) {
+        this.inTransfer = inTransfer;
+    }
 
     private Date creationDate;
 
@@ -127,6 +137,17 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
     }
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+    
+    @Transient
+    public String getFullName() {
+
+        String fullName = getFirstName();
+        if (getLastName() != null) {
+            fullName += " " + getLastName();
+        }
+        
+        return fullName;
     }
     
     @Override
@@ -158,9 +179,10 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
                     .append("id=").append(getId()).append(',')
                     .append("firstName='").append(firstName).append('\'').append(',')
                     .append("lastName='").append(lastName).append('\'').append(',')
-                    .append("age='").append(age).append('\'').append(',')
-                    .append("playerType='").append(playerType).append('\'').append(',')
-                    .append("country='").append(country).append('\'').append(',')
+                    .append("age=").append(age).append(',')
+                    .append("playerType=").append(playerType).append(',')
+                    .append("country=").append(country).append(',')
+                    .append("inTransfer=").append(inTransfer).append(',')
                     .append("creationDate='").append(toDateTimeString(creationDate)).append('\'').append(',')
                     .append("updateDate='").append(toDateTimeString(updateDate)).append('\'')
                 .append('}');

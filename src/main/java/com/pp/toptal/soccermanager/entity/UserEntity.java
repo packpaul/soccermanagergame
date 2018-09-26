@@ -126,7 +126,7 @@ public class UserEntity extends EntityBase<Long> implements Serializable {
                 .append('{')
                     .append("id=").append(getId()).append(',')
                     .append("username='").append(username).append('\'').append(',')
-                    .append("userType='").append(userType).append('\'').append(',')
+                    .append("userType=").append(userType).append(',')
                     .append("creationDate='").append(toDateTimeString(creationDate)).append('\'').append(',')
                     .append("updateDate='").append(toDateTimeString(updateDate)).append('\'').append(',')
                     .append("lastLoginDate='").append(toDateTimeString(lastLoginDate)).append('\'')
