@@ -44,6 +44,8 @@ public class TLConfig {
         registerController("/manager/users", pageContentController);
         registerController("/manager/teams", pageContentController);
         registerController("/manager/players", pageContentController);
+        registerController("/manager/transfers", pageContentController);
+        registerController("/manager/proposals", pageContentController);
 
         initializeTemplateEngine();
     }

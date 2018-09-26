@@ -198,6 +198,10 @@ public class PlayerService {
         }
         if (teamId != null) {
             TeamEntity team = teamRepo.findOne(teamId);
+            if (player.isInTransfer()) {
+                throw new BusinessException(ErrorCode.INVALID_STATE,
+                        String.format("Player (id=%d) is in transfer. Team cannot be changed!", teamId));
+            }
             if (team == null) {
                 throw new BusinessException(ErrorCode.OBJECT_NOT_FOUND,
                         String.format("Team (id=%d) not found!", teamId));

@@ -116,11 +116,5 @@ public class ProposalEntity extends EntityBase<Long> implements Serializable {
             
         return sb.toString();
     }
-    
-    public enum TransferStatus {
-        OPEN,
-        CLOSED,
-        CANCELED
-    }
 
 }

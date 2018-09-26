@@ -69,12 +69,17 @@ public class EntityToSOMapper {
             to.setPlayerId(p.getId());
             to.setPlayerFullName(p.getFullName());
             to.setPlayerType(p.getPlayerType().name());
+            to.setPlayerAge(p.getAge());
+            to.setPlayerValue(p.getValue());
             to.setPlayerCountry(p.getCountry().name());
         });
         Optional.ofNullable(from.getFromTeam()).ifPresent((t) -> {
             to.setFromTeamId(t.getId());
             to.setFromTeamName(t.getTeamName());
             to.setFromTeamCountry(t.getCountry().name());
+            Optional.ofNullable(t.getOwner()).ifPresent((o) -> {
+                to.setFromTeamOwnerUsername(o.getUsername());                
+            });
         });
         Optional.ofNullable(from.getToTeam()).ifPresent((t) -> {
             to.setToTeamId(t.getId());
@@ -105,6 +110,9 @@ public class EntityToSOMapper {
             to.setToTeamId(t.getId());
             to.setToTeamName(t.getTeamName());
             to.setToTeamCountry(t.getCountry().name());
+            Optional.ofNullable(t.getOwner()).ifPresent((o) -> {
+                to.setToTeamOwnerUsername(o.getUsername());                
+            });
         });
         to.setPrice(from.getPrice());
         

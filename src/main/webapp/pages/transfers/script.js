@@ -31,19 +31,19 @@ $.Manager.pages.Transfers = {
 
             columns: [
                 {data: 'id', name: 'id'},
-                {data: 'playerFullName', name: 'playerFullName'},
-                {data: 'playerType', name: 'playerType'},
-                {data: 'playerAge', name: 'playerAge'},
-                {data: 'playerCountry', name: 'playerCountry'},
-                {data: 'fromTeamName', name: 'fromTeamName'},
-                {data: 'fromTeamCountry', name: 'fromTeamCountry'},
-                {data: 'playerValue', name: 'playerValue'},
+                {data: 'playerFullName', name: 'playerFullName', orderable: false},
+                {data: 'playerType', name: 'playerType', orderable: false},
+                {data: 'playerAge', name: 'playerAge', orderable: false},
+                {data: 'playerCountry', name: 'playerCountry', orderable: false},
+                {data: 'fromTeamName', name: 'fromTeamName', orderable: false},
+                {data: 'fromTeamCountry', name: 'fromTeamCountry', orderable: false},
+                {data: 'playerValue', name: 'playerValue', orderable: false},
                 {data: 'creationDate', name: 'creationDate'},
 //                    {defaultContent: '', orderable: false},
                 {data: null, orderable: false, searchable: false, render: function (info, type, row) {
                         var action = '<a href="#" onclick="$.Manager.pages.Transfers.onDoTransferProposal(' + info.id + ');"> propose</a>';
                         action += '<a href="#" onclick="$.Manager.pages.Transfers.onCancelTransfer(' + info.id + ');"> cancel</a>'
-                        action += '<a href="#" onclick="$.Manager.onAskUser(' + info.teamOwnerId + ');"> ask</a>'
+                        action += '<a href="#" onclick="$.Manager.onAskUser(' + info.fromTeamOwnerUsername + ');"> ask</a>'
                         return action;
                     }
                 }

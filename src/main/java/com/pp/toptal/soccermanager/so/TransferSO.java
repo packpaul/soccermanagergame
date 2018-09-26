@@ -14,11 +14,14 @@ public class TransferSO implements Serializable {
     private Long playerId;
     private String playerFullName;
     private String playerType;
+    private Integer playerAge;
     private String playerCountry;
+    private Long playerValue;
     
     private Long fromTeamId;
     private String fromTeamName;
     private String fromTeamCountry;
+    private String fromTeamOwnerUsername;
 
     private Long toTeamId;
     private String toTeamName;
@@ -67,6 +70,20 @@ public class TransferSO implements Serializable {
     public void setPlayerCountry(String playerCountry) {
         this.playerCountry = playerCountry;
     }
+    
+    public Integer getPlayerAge() {
+        return playerAge;
+    }
+    public void setPlayerAge(Integer playerAge) {
+        this.playerAge = playerAge;
+    }
+
+    public Long getPlayerValue() {
+        return playerValue;
+    }
+    public void setPlayerValue(Long playerValue) {
+        this.playerValue = playerValue;
+    }
 
     public Long getFromTeamId() {
         return fromTeamId;
@@ -88,7 +105,14 @@ public class TransferSO implements Serializable {
     public void setFromTeamCountry(String fromTeamCountry) {
         this.fromTeamCountry = fromTeamCountry;
     }
-
+    
+    public String getFromTeamOwnerUsername() {
+        return fromTeamOwnerUsername;
+    }
+    public void setFromTeamOwnerUsername(String fromTeamOwnerUsername) {
+        this.fromTeamOwnerUsername = fromTeamOwnerUsername;
+    }
+    
     public Long getToTeamId() {
         return toTeamId;
     }

@@ -87,7 +87,7 @@ public class MessageEntity extends EntityBase<Long> implements Serializable {
         this.content = content;
     }
     
-    private Boolean read;
+    private Boolean read = false;
     
     @Column(name = "read", nullable = false)
     public Boolean isRead() {

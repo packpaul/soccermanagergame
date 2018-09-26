@@ -86,7 +86,7 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
         this.playerType = playerType;
     }
     
-    private Long value; 
+    private Long value = 0L; 
     
     @Column(name = "value", nullable = false)
     public Long getValue() {
@@ -107,7 +107,7 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
         this.country = country;
     }
     
-    private Boolean inTransfer;
+    private Boolean inTransfer = false;
 
     @Column(name = "intransfer", nullable = false)
     public Boolean isInTransfer() {

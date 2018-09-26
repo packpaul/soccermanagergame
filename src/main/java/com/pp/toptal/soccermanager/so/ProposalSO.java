@@ -21,6 +21,7 @@ public class ProposalSO implements Serializable {
     private Long toTeamId;
     private String toTeamName;
     private String toTeamCountry;
+    private String toTeamOwnerUsername;
     
     private Long price;
     
@@ -91,6 +92,13 @@ public class ProposalSO implements Serializable {
     }
     public void setToTeamCountry(String toTeamCountry) {
         this.toTeamCountry = toTeamCountry;
+    }
+
+    public String getToTeamOwnerUsername() {
+        return toTeamOwnerUsername;
+    }
+    public void setToTeamOwnerUsername(String toTeamOwnerUsername) {
+        this.toTeamOwnerUsername = toTeamOwnerUsername;
     }
 
     public Long getPrice() {

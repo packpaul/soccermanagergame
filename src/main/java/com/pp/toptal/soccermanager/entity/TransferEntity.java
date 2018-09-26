@@ -77,7 +77,7 @@ public class TransferEntity extends EntityBase<Long> implements Serializable {
         this.price = price;
     }
     
-    private TransferStatus status;
+    private TransferStatus status = TransferStatus.OPEN;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
