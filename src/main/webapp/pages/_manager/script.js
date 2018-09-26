@@ -12,6 +12,10 @@ $.Manager = {
         };
         
         $.rest.logout(callback, callback);
+    },
+
+    onMessageUser: function(receiver) {
+        alert('// TODO:');
     }
 
 };

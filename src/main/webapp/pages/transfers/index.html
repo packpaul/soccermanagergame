@@ -198,6 +198,12 @@
                         </div>
                    </div>
                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Team ID</label>
+                        <div class="col-sm-9">
+                            <input name="toTeamId" required="required" class="form-control" />
+                        </div>
+                   </div>
+                   <div class="form-group">
                         <label class="col-sm-3 control-label">Proposal price</label>
                         <div class="col-sm-9">
                             <input name="proposalPrice" required="required" class="form-control" />
@@ -209,7 +215,7 @@
                 <button id="saveSettingButton" type="button" class="btn btn-primary" onclick="$.Manager.pages.Transfers.doTransferProposal();">
                     <i class="fa fa-refresh fa-spin hidden"></i>&nbsp;Propose
                 </button>
-                <button id="cancelSaveSettingButton" type="button" class="btn btn-default" onclick="$.Manager.pages.Transfers.hideEditTransferModal();">
+                <button id="cancelSaveSettingButton" type="button" class="btn btn-default" onclick="$.Manager.pages.Transfers.hideTransferProposalModal();">
                     <i class="fa fa-refresh fa-spin hidden"></i>&nbsp;Cancel
                 </button>
             </div>

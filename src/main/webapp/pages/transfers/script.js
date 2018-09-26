@@ -43,7 +43,7 @@ $.Manager.pages.Transfers = {
                 {data: null, orderable: false, searchable: false, render: function (info, type, row) {
                         var action = '<a href="#" onclick="$.Manager.pages.Transfers.onDoTransferProposal(' + info.id + ');"> propose</a>';
                         action += '<a href="#" onclick="$.Manager.pages.Transfers.onCancelTransfer(' + info.id + ');"> cancel</a>'
-                        action += '<a href="#" onclick="$.Manager.onAskUser(' + info.fromTeamOwnerUsername + ');"> ask</a>'
+                        action += '<a href="#" onclick="' + "$.Manager.onMessageUser('" + info.fromTeamOwnerUsername + "');" + '"> ask</a>'
                         return action;
                     }
                 }
@@ -189,7 +189,7 @@ $.Manager.pages.Transfers = {
             function(respData) {
                 if (respData != undefined) {
 //                    console.debug(respData);
-                    respData.proposalPrice = playerValue;
+                    respData.proposalPrice = respData.playerValue;
                     self.setDataToTransferProposalModal(respData);
                     self.editTransferId = respData.id;
                 }
@@ -210,10 +210,11 @@ $.Manager.pages.Transfers = {
         
         $.rest.POST(
                 '/transfer/' + transferId + '/cancel',
+                null,
                 function() {
                     self.$transfersTable.draw();
                 },
-                function(respData) {
+                function(status, respData) {
                     alert(respData.error_description);
                 }
             );
@@ -264,7 +265,11 @@ $.Manager.pages.Transfers = {
             return;
         }
         
-        $.rest.PUT('/transfer/' + self.editTransferId, data,
+        $.rest.POST('/proposal/transfer/' + self.editTransferId,
+            {
+                price: data.proposalPrice,
+                toTeamId: data.toTeamId
+            },
             function(respData) {
 //                console.debug(respData);
                 self.hideTransferProposalModal();

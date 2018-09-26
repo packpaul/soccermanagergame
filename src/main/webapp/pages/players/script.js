@@ -236,12 +236,15 @@ $.Manager.pages.Players = {
             return;
         }
         
+        const self = this;
+        
         $.rest.POST(
                 '/transfer/player/' + playerId,
+                null,
                 function() {
                     self.$playersTable.draw();
                 },
-                function(respData) {
+                function(status, respData) {
                     alert(respData.error_description);
                 }
             );

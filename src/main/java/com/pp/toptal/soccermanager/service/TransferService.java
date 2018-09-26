@@ -1,6 +1,7 @@
 package com.pp.toptal.soccermanager.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pp.toptal.soccermanager.entity.PlayerEntity;
+import com.pp.toptal.soccermanager.entity.QTransferEntity;
 import com.pp.toptal.soccermanager.entity.TransferEntity;
 import com.pp.toptal.soccermanager.entity.TransferEntity.TransferStatus;
 import com.pp.toptal.soccermanager.exception.BusinessException;
@@ -57,7 +59,7 @@ public class TransferService {
                 limit,
                 sort);
         
-        Predicate predicate = null;
+        Predicate predicate = QTransferEntity.transferEntity.status.eq(TransferStatus.OPEN);
         
         // TODO: filtering
 /*
@@ -139,7 +141,6 @@ public class TransferService {
         return transfer;
     }
     
-    
     @Transactional
     public synchronized TransferSO transferPlayer(Long playerId) {
         
@@ -168,13 +169,14 @@ public class TransferService {
     @Transactional
     public void cancelTransfer(Long transferId) {
         
-        TransferEntity transfer = transferRepo.findOne(transferId);
-        if (transfer == null) {
-            throw new BusinessException(ErrorCode.OBJECT_NOT_FOUND,
-                    String.format("Transfer (id=%d) not found!", transferId));
+        TransferEntity transfer = findTransfer(transferId);
+        if (transfer.getStatus() != TransferStatus.OPEN) {
+            throw new BusinessException(ErrorCode.INVALID_STATE,
+                    String.format("Transfer (id=%d) is not valid for cancelation!", transferId));            
         }
         
         transfer.setStatus(TransferStatus.CANCELED);
+        transfer.setUpdateDate(new Date());
         transferRepo.save(transfer);
         
         PlayerEntity player = transfer.getPlayer();
