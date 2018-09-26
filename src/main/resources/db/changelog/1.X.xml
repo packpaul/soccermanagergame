@@ -113,7 +113,95 @@
             <column name="UPDATEDATE" type="TIMESTAMP"/>
         </createTable>
         <addUniqueConstraint constraintName="UK_PLAYERS_FIRSTNAME_LASTNAME_COUNTRY"
-                             tableName="PLAYERS" columnNames="FIRSTNAME,LASTNAME,COUNTRY"/>
+                             tableName="PLAYERS" columnNames="FIRSTNAME,LASTNAME,COUNTRY" />
+    </changeSet>
+    <changeSet author="pavel.perminov" id="1.X-61">
+        <addColumn tableName="PLAYERS">
+            <column name="INTRANSFER" type="BOOLEAN" defaultValue="true">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>        
+
+    <changeSet author="pavel.perminov" id="1.X-70">
+        <createTable tableName="TRANSFERS">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="PK_TRANSFERS" />
+            </column>
+            <column name="PLAYERID" type="BIGINT">
+                <constraints foreignKeyName="FK_TRANSFERS_PLAYERID_PLAYERS"
+                             referencedTableName="PLAYERS" referencedColumnNames="ID"
+                             deleteCascade="true" />
+            </column>
+            <column name="FROMTEAMID" type="BIGINT">
+                <constraints foreignKeyName="FK_PLAYERS_FROMTEAMID_TEAMS"
+                             referencedTableName="TEAMS" referencedColumnNames="ID" />
+            </column>
+            <column name="TOTEAMID" type="BIGINT">
+                <constraints foreignKeyName="FK_PLAYERS_TOTEAMID_TEAMS"
+                             referencedTableName="TEAMS" referencedColumnNames="ID" />
+            </column>
+            <column name="PRICE" type="BIGINT" />
+            <column name="STATUS" type="VARCHAR(16)">
+                <constraints nullable="false" />
+            </column>
+            <column name="CREATIONDATE" type="TIMESTAMP" />
+            <column name="UPDATEDATE" type="TIMESTAMP" />
+        </createTable>
+        <createIndex indexName="IX_TRANSFERS_STATUS" tableName="TRANSFERS">
+            <column name="STATUS" />
+        </createIndex>
+    </changeSet>
+    
+    <changeSet author="pavel.perminov" id="1.X-80">
+        <createTable tableName="PROPOSALS">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="PK_PROPOSALS" />
+            </column>
+            <column name="TRANSFERID" type="BIGINT">
+                <constraints foreignKeyName="FK_PROPOSALS_TRANSFERID_TRANSFERS"
+                             referencedTableName="TRANSFERS" referencedColumnNames="ID"
+                             deleteCascade="true" />
+            </column>
+            <column name="TOTEAMID" type="BIGINT">
+                <constraints foreignKeyName="FK_PROPOSALS_TOTEAMID_TEAMS"
+                             referencedTableName="TEAMS" referencedColumnNames="ID"
+                             deleteCascade="true" />
+            </column>
+            <column name="PRICE" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="CREATIONDATE" type="TIMESTAMP" />
+            <column name="UPDATEDATE" type="TIMESTAMP" />
+        </createTable>
+    </changeSet>
+
+    <changeSet author="pavel.perminov" id="1.X-90">
+        <createTable tableName="MESSAGES">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="PK_MESSAGES" />
+            </column>
+            <column name="FROMUSERID" type="BIGINT">
+                <constraints foreignKeyName="FK_MESSAGES_FROMUSERID_USERS"
+                             referencedTableName="USERS" referencedColumnNames="ID"
+                             deleteCascade="true" />
+            </column>
+            <column name="TOUSERID" type="BIGINT">
+                <constraints foreignKeyName="FK_MESSAGES_TOUSERID_USERS"
+                             referencedTableName="USERS" referencedColumnNames="ID"
+                             deleteCascade="true" />
+            </column>
+            <column name="PREVMESSAGEID" type="BIGINT">
+                <constraints foreignKeyName="FK_MESSAGES_PREVMESSAGEID_MESSAGES"
+                             referencedTableName="MESSAGES" referencedColumnNames="ID" />
+            </column>
+            <column name="NEXTMESSAGEID" type="BIGINT">
+                <constraints foreignKeyName="FK_MESSAGES_NEXTMESSAGEID_MESSAGES"
+                             referencedTableName="MESSAGES" referencedColumnNames="ID" />
+            </column>
+            <column name="CREATIONDATE" type="TIMESTAMP" />
+            <column name="UPDATEDATE" type="TIMESTAMP" />
+        </createTable>
     </changeSet>
     
     <!-- Initial data -->
