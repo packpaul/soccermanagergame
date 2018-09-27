@@ -38,8 +38,8 @@ final class PlayerGenerator {
     @Autowired
     private ApplicationContext ctxt;
     
-    private List<String> playerFirstames;
-    private List<String> playerLastnames;
+    private List<String> playerFirstNames;
+    private List<String> playerLastNames;
     
     private boolean isDataLoaded;
     
@@ -49,19 +49,19 @@ final class PlayerGenerator {
             isDataLoaded = true;
         }
         
-        final String playerName = playerFirstames.get((int) Math.round(Math.random() * (playerFirstames.size() - 1)));
-        final String playerLastname = playerLastnames.get((int) Math.round(Math.random() * (playerLastnames.size() - 1)));
+        final String playerFirstName = playerFirstNames.get((int) Math.round(Math.random() * (playerFirstNames.size() - 1)));
+        final String playerLastName = playerLastNames.get((int) Math.round(Math.random() * (playerLastNames.size() - 1)));
         final int age = (int) (AGE_MIN + Math.round(Math.random() * (AGE_MAX - AGE_MIN)));
         final Country country = Optional.of(Country.values())
                 .map((vs) -> vs[(int) Math.round(Math.random() * (vs.length - 1))]).get();
         
-        return new PlayerEntity(playerName, playerLastname, age, country);
+        return new PlayerEntity(playerFirstName, playerLastName, age, country);
     }
 
     private void loadData() {
 
-        playerFirstames = new ArrayList<>();
-        playerLastnames = new ArrayList<>();
+        playerFirstNames = new ArrayList<>();
+        playerLastNames = new ArrayList<>();
         
         CSVFormat csvFormat = CSVFormat.DEFAULT.withDelimiter(',').withHeader();
         Charset charset = Charset.forName("UTF-8");
@@ -77,8 +77,8 @@ final class PlayerGenerator {
             }
             
             for (CSVRecord record : parser.getRecords()) {
-                playerFirstames.add(record.get(FIRSTNAME_HEADER));
-                playerLastnames.add(Optional.of(record.get(LASTNAME_HEADER))
+                playerFirstNames.add(record.get(FIRSTNAME_HEADER));
+                playerLastNames.add(Optional.of(record.get(LASTNAME_HEADER))
                         .filter((ln) -> (! ln.isEmpty())).orElse(null));
             }
         } catch (IOException ex) {

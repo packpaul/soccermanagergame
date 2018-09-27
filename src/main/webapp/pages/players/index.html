@@ -98,8 +98,12 @@
                     </div>
                 </div>
                 <hr/>
-                <a class="btn btn-primary" href="#" onClick="$.Manager.pages.Players.filterTable();">Filter</a>
-                <a class="btn btn-primary" href="#" onClick="$.Manager.pages.Players.resetFilter();">Reset Filter</a>
+                <a href="#" class="btn btn-primary" onClick="$.Manager.pages.Players.filterTable();">Filter</a>
+                <a href="#" class="btn btn-primary" onClick="$.Manager.pages.Players.resetFilter();">Reset Filter</a>
+                <!--/*/ <th:block th:if="${userType} != 'TEAM_OWNER'"> /*/-->
+                &nbsp;&nbsp;
+                <a href="#" class="btn btn-success" onClick="$.Manager.pages.Players.onAddPlayer();">Add Player</a>
+                <!--/*/ </th:block> /*/-->
             </div>
         </div>
     </div>
@@ -149,6 +153,7 @@
                         <td>2018-09-25</td>
 -->
                         <td>
+                            <a href="#" onclick="$.Manager.pages.Teams.onInfoPlayer(1);">info</a>
                             <a href="#" onclick="$.Manager.pages.Players.onEditPlayer(1);">edit</a>
                             <a href="#" onclick="$.Manager.pages.Players.onDeletePlayer(1);">delete</a>
                             <a href="#" onclick="$.Manager.pages.Players.onTransferPlayer(1);">transfer</a>
@@ -194,7 +199,8 @@
                    <div class="form-group">
                         <label class="col-sm-3 control-label">Age</label>
                         <div class="col-sm-9">
-                            <input name="age" required="required" class="form-control" />
+                            <input name="age" required="required" class="form-control"
+                                   placeholder=">= 18" />
                         </div>
                    </div>
                    <div class="form-group">
@@ -225,7 +231,8 @@
                    <div class="form-group">
                         <label class="col-sm-3 control-label">Team</label>
                         <div class="col-sm-9">
-                            <input name="teamId" required="required" class="form-control" />
+                            <input name="teamId" required="required" class="form-control"
+                                   placeholder="team id" />
                         </div>
                    </div>
                    <div class="form-group">

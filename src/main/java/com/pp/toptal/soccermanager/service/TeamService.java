@@ -134,7 +134,6 @@ public class TeamService {
         }
         if (generatedPlayer == null) {
             throw new BusinessException(ErrorCode.INVALID_STATE, "Initial player generation failed!");
-            
         }
         
         generatedPlayer.setPlayerType(playerType);

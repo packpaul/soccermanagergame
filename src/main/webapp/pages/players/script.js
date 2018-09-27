@@ -47,8 +47,9 @@ $.Manager.pages.Players = {
 //                {data: 'updateDate', name: 'updated'},
 //                    {defaultContent: '', orderable: false},
                 {data: null, orderable: false, searchable: false, render: function (info, type, row) {
-                        var action = '<a href="#" onclick="$.Manager.pages.Players.onEditPlayer(' + info.id + ');"> edit</a>';
+                        var action = '<a href="#" onclick="$.Manager.pages.Players.onInfoPlayer(' + info.id + ');"> info</a>';
                         if ($.Manager.userType != 'TEAM_OWNER') {
+                            action += '<a href="#" onclick="$.Manager.pages.Players.onEditPlayer(' + info.id + ');"> edit</a>';
                             action += '<a href="#" onclick="$.Manager.pages.Players.onDeletePlayer(' + info.id + ');"> delete</a>'
                         }
                         action += '<a href="#" onclick="$.Manager.pages.Players.onTransferPlayer(' + info.id + ');"> transfer</a>'
@@ -171,6 +172,52 @@ $.Manager.pages.Players = {
         this.$playersTable.draw();
     },
     
+    onInfoPlayer: function(playerId) {
+        const self = this;
+        self.setDataToEditPlayerModal({});
+
+        self.showEditPlayerModal('info');
+        
+        if ($.Manager.isPrototype) {
+            self.setDataToEditPlayerModal({
+                id: playerId,
+                firstName: 'Jordi',
+                lastName: 'di María',
+                playerType: 'ATTACKER',
+                age: 28,
+                country: 'BRAZIL',
+                teamId: 1,
+                value: 1450000
+            });
+            
+            self.editPlayerId = playerId;
+            
+            return;
+        }
+        
+        $.rest.GET(
+            '/player/' + playerId,
+            function(respData) {
+                if (respData != undefined) {
+//                    console.debug(respData);
+                    self.setDataToEditPlayerModal(respData);
+                    self.editPlayerId = respData.id;
+                }
+            }
+        );
+    },
+    
+    onAddPlayer: function() {
+
+        const self = this;
+        self.setDataToEditPlayerModal({
+            value: 0
+        });
+
+        self.editPlayerId = null;
+        self.showEditPlayerModal('add');
+    },
+    
     onEditPlayer: function(playerId) {
 
         const self = this;
@@ -189,6 +236,8 @@ $.Manager.pages.Players = {
                 teamId: 1,
                 value: 1450000
             });
+            
+            self.editPlayerId = playerId;
             
             return;
         }
@@ -259,8 +308,25 @@ $.Manager.pages.Players = {
         return this.find$editPlayerModal().find('form').serializeObject();
     },
     
-    showEditPlayerModal: function() {
-        this.find$editPlayerModal().modal('show');  
+    showEditPlayerModal: function(modalType) {
+        
+        var $editPlayerModal = this.find$editPlayerModal();
+        var $editPlayerModalTitle = $editPlayerModal.find('.modal-title');
+        var $editPlayerModalSave = $editPlayerModal.find('#saveSettingButton');
+        
+        $editPlayerModalTitle.text('Edit Player');
+        $editPlayerModalSave.removeClass('hidden');
+//        $editPlayerModal.enableInput();
+        
+        if (modalType == 'info') {
+            $editPlayerModalTitle.text('Player Info');
+            $editPlayerModalSave.addClass('hidden');
+//            $editPlayerModal.disableInput();
+        } else if (modalType == 'add') {
+            $editPlayerModalTitle.text('Add Player');
+        }
+
+        $editPlayerModal.modal('show');  
     },
     
     hideEditPlayerModal: function() {
@@ -284,7 +350,11 @@ $.Manager.pages.Players = {
         const self = this;
         const data = self.getDataFromEditPlayerModal();
         
-        console.info('updating player (id=' + self.editPlayerId + '): ', data);
+        if (self.editPlayerId) {
+            console.info('updating player (id=' + self.editPlayerId + '): ', data);            
+        } else {
+            console.info('adding player: ', data);
+        }
         
         if ($.Manager.isPrototype) {
             setTimeout(
@@ -295,18 +365,36 @@ $.Manager.pages.Players = {
             return;
         }
         
-        $.rest.PUT('/player/' + self.editPlayerId, data,
-            function(respData) {
-//                console.debug(respData);
-                self.hideEditPlayerModal();
-                self.$playersTable.draw();
-            },
-            function(status, respData) {
-                if (respData) {
-                    alert(respData.error_description);
+        if (self.editPlayerId) {
+            $.rest.PUT('/player/' + self.editPlayerId,
+                data,
+                function(respData) {
+//                    console.debug(respData);
+                    self.hideEditPlayerModal();
+                    self.$playersTable.draw(); // TODO: update single row in the table
+                },
+                function(status, respData) {
+                    if (respData) {
+                        alert(respData.error_description);
+                    }
                 }
-            }
-        );
+            );
+        } else {
+            $.rest.POST('/player/',
+                data,
+                function(respData) {
+//                    console.debug(respData);
+                    self.hideEditPlayerModal();
+                    self.$playersTable.draw(); // TODO: insert single row into the table
+                },
+                function(status, respData) {
+                    if (respData) {
+                        alert(respData.error_description);
+                    }
+                }
+            );
+        }
+
     }
     
 };

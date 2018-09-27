@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.javatuples.Triplet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +15,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pp.toptal.soccermanager.auth.AuthService;
 import com.pp.toptal.soccermanager.entity.Country;
 import com.pp.toptal.soccermanager.entity.PlayerEntity;
 import com.pp.toptal.soccermanager.entity.PlayerType;
 import com.pp.toptal.soccermanager.entity.QPlayerEntity;
 import com.pp.toptal.soccermanager.entity.TeamEntity;
+import com.pp.toptal.soccermanager.entity.UserType;
 import com.pp.toptal.soccermanager.exception.BusinessException;
 import com.pp.toptal.soccermanager.exception.DataParameterException;
 import com.pp.toptal.soccermanager.exception.ErrorCode;
@@ -44,6 +47,9 @@ public class PlayerService {
     
     @Autowired
     private EntityToSOMapper toSoMapper;
+    
+    @Autowired
+    private AuthService authService;
 
     public List<PlayerSO> getPlayers(SelectionParameters params) {
         return getPlayersInternal(params).getValue0();
@@ -141,9 +147,65 @@ public class PlayerService {
         
         return player;
     }
+    
+    @Transactional
+    public PlayerSO addPlayer(PlayerSO playerData) {
+        
+        if (authService.isCurrentUserType(UserType.TEAM_OWNER)) {
+            throw new DataParameterException("Team owners cannot add new players!");
+        }
+        
+        if (StringUtils.isBlank(playerData.getFirstName())) {
+            throw new DataParameterException("Player first name should not be blank!");
+        }
+        
+        if (playerData.getPlayerType() == null) {
+            throw new DataParameterException("Player type should be provided!");
+        }
+        
+        String lastName = StringUtils.isNotBlank(playerData.getLastName()) ? playerData.getLastName() : null;
+        
+        if (playerData.getCountry() == null) {
+            throw new DataParameterException("Player country should be provided!");
+        }
+        
+        if ((playerData.getAge() == null) || (! PlayerGenerator.isAgeValid(playerData.getAge()))) {
+            throw new DataParameterException("Player's age is not valid!");
+        }
+        
+        if (playerData.getCountry() == null) {
+            throw new DataParameterException("Player country should be provided!");
+        }
+        
+        TeamEntity team = teamRepo.findOne(playerData.getTeamId());
+        if (team == null) {
+            throw new BusinessException(ErrorCode.OBJECT_NOT_FOUND, "Player's team should be provided!");
+        }
+        
+        if ((playerData.getValue() == null) || (playerData.getValue() < 0)) {
+            throw new DataParameterException("Player's value should be provided and non negative");
+        }
+
+        PlayerEntity player = playerRepo.save(new PlayerEntity(
+                playerData.getFirstName().trim(),
+                lastName,
+                PlayerType.valueOf(playerData.getPlayerType()),
+                playerData.getAge(),
+                Country.valueOf(playerData.getCountry()),
+                team,
+                playerData.getValue()));
+        
+        LOGGER.info(String.format("New player (id=%d) was added.", player.getId()));
+        
+        return toSoMapper.map(player, new PlayerSO());
+    }
 
     @Transactional
     public PlayerSO updatePlayer(Long playerId, PlayerSO playerData) {
+        
+        if (authService.isCurrentUserType(UserType.TEAM_OWNER)) {
+            throw new DataParameterException("Team owners cannot update players!");
+        }
         
         PlayerEntity player = findPlayer(playerId);
         
@@ -176,7 +238,7 @@ public class PlayerService {
         }
         if (age != null) {
             if (! PlayerGenerator.isAgeValid(age)) {
-                throw new DataParameterException("Player's age should be more or equal 18!");
+                throw new DataParameterException("Player's age is not valid!");
             }
             player.setAge(age);
             isChanged = true;
@@ -223,6 +285,6 @@ public class PlayerService {
         findPlayer(playerId);
         
         playerRepo.delete(playerId);
-    } 
+    }
  
 }

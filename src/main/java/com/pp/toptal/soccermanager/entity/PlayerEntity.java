@@ -20,10 +20,19 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
     }
     
     public PlayerEntity(String firstName, String lastName, Integer age, Country country) {
+        this(firstName, lastName, null, age, country, null, null);
+    }
+    
+    public PlayerEntity(String firstName, String lastName, PlayerType playerType, Integer age,
+                        Country country, TeamEntity team, Long value) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.playerType = playerType;
         this.age = age;
         this.country = country;
+        this.team = team;
+        this.value = value;
+
         this.creationDate = new Date();
     }
     
