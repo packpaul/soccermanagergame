@@ -97,28 +97,30 @@ $.Manager = {
         }
     }
     
-    function onhashchange() {
+    function onhashchange(hash) {
         
-        if (! location.hash) {
+        if (! hash) {
             return;
         }
-
+        
         var rexp = /#([-_0-9A-Za-z]+)(\:(.+))?/;
-        var match = rexp.exec(location.hash);
-        var hash = match[1];
+        var match = rexp.exec(hash);
+        var page = match[1];
         var param = match[3];
 
         // navigate to the page
-        app(hash, param);
+        app(page, param);
     }
     
-    window.onhashchange = onhashchange;
+    window.onhashchange = function() {
+        onhashchange(location.hash);
+    }
     
     $.Manager.pages = app;
     
     $(function() {
-        // initial state setup
-        app($("section.content")[0].id);
+        // initial page setup
+        onhashchange('#' + $("section.content")[0].id);
      });
 
   })();
