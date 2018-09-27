@@ -19,8 +19,15 @@ public class TeamEntity extends EntityBase<Long> implements Serializable {
     }
     
     public TeamEntity(String teamName, Country country) {
+        this(teamName, country, null, null);
+    }
+    
+    public TeamEntity(String teamName, Country country, UserEntity owner, Long balance) {
         this.teamName = teamName;
         this.country = country;
+        this.owner = owner;
+        this.balance = balance;
+        
         this.creationDate = new Date();
     }
     

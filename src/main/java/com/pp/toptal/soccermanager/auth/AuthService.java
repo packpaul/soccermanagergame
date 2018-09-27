@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
 
 import com.pp.toptal.soccermanager.config.properties.AuthProperties;
+import com.pp.toptal.soccermanager.entity.UserEntity;
 import com.pp.toptal.soccermanager.entity.UserType;
 import com.pp.toptal.soccermanager.exception.BusinessException;
 import com.pp.toptal.soccermanager.exception.ErrorCode;
@@ -60,6 +61,14 @@ public class AuthService {
             return principal.toString();
         }
     }
+
+    public boolean isCurrentUser(UserEntity user) {
+        return ((user != null) && isCurrentUser(user.getUsername()));
+    }
+    
+    public boolean isCurrentUser(String username) {
+        return ((username != null) && (username.equalsIgnoreCase(getCurrentUsername())));
+    }
     
     private SecurityContext getContext() {
         return SecurityContextHolder.getContext();
@@ -78,6 +87,10 @@ public class AuthService {
         String authority = authorities.iterator().next().getAuthority();
         
         return UserType.valueOf(authority);
+    }
+    
+    public boolean isCurrentUserType(UserType userType) {
+        return (getCurrentUserType() == userType);
     }
     
     public void revokeTokens(String username) {

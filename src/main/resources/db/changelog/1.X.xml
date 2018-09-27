@@ -91,7 +91,8 @@
             </column>
             <column name="TEAMID" type="BIGINT">
                 <constraints foreignKeyName="FK_PLAYERS_TEAMID_TEAMS"
-                             referencedTableName="TEAMS" referencedColumnNames="ID" />
+                             referencedTableName="TEAMS" referencedColumnNames="ID"
+                             nullable="false" deleteCascade="true" />
             </column>
             <column name="FIRSTNAME" type="VARCHAR(64)">
                 <constraints nullable="false"/>

@@ -40,8 +40,9 @@ $.Manager.pages.Teams = {
                 {data: 'updateDate', name: 'updated'},
 //                    {defaultContent: '', orderable: false},
                 {data: null, orderable: false, searchable: false, render: function (info, type, row) {
-                        var action = '<a href="#" onclick="$.Manager.pages.Teams.onEditTeam(' + info.id + ');">edit</a>';
-                        if ($.Manager.userType != 'TEAM_OWNER') {
+                        var action = '<a href="#" onclick="$.Manager.pages.Teams.onInfoTeam(' + info.id + ');"> info</a>';
+                        if ((! $.Manager.userType) || ($.Manager.userType == 'ADMIN')) {
+                            action += '<a href="#" onclick="$.Manager.pages.Teams.onEditTeam(' + info.id + ');"> edit</a>';
                             action += '<a href="#" onclick="$.Manager.pages.Teams.onDeleteTeam(' + info.id + ');"> delete</a>'
                         }
                         return action;
@@ -163,6 +164,50 @@ $.Manager.pages.Teams = {
         this.$teamsTable.draw();
     },
     
+    onInfoTeam: function(teamId) {
+        const self = this;
+        self.setDataToEditTeamModal({});
+
+        self.showEditTeamModal('info');
+        
+        if ($.Manager.isPrototype) {
+            self.setDataToEditTeamModal({
+                id: teamId,
+                teamName: 'Soccer Dream Team',
+                country: 'BELGIUM',
+                owner: 'jose_owner',
+                value: 20000000,
+                balance: 5000000
+            });
+            
+            self.editTeamId = teamId;
+            
+            return;
+        }
+        
+        $.rest.GET(
+            '/team/' + teamId,
+            function(respData) {
+                if (respData != undefined) {
+//                    console.debug(respData);
+                    self.setDataToEditTeamModal(respData);
+                    self.editTeamId = respData.id;
+                }
+            }
+        );
+    },
+    
+    onAddTeam: function() {
+
+        const self = this;
+        self.setDataToEditTeamModal({
+            value: 0
+        });
+
+        self.editTeamId = null;
+        self.showEditTeamModal('add');
+    },
+    
     onEditTeam: function(teamId) {
 
         const self = this;
@@ -179,6 +224,8 @@ $.Manager.pages.Teams = {
                 value: 20000000,
                 balance: 5000000
             });
+            
+            self.editTeamId = teamId;
             
             return;
         }
@@ -223,8 +270,25 @@ $.Manager.pages.Teams = {
         return this.find$editTeamModal().find('form').serializeObject();
     },
     
-    showEditTeamModal: function() {
-        this.find$editTeamModal().modal('show');  
+    showEditTeamModal: function(modalType) {
+        
+        var $editTeamModal = this.find$editTeamModal();
+        var $editTeamModalTitle = $editTeamModal.find('.modal-title');
+        var $editTeamModalSave = $editTeamModal.find('#saveSettingButton');
+        
+        $editTeamModalTitle.text('Edit Team');
+        $editTeamModalSave.removeClass('hidden');
+//        $editTeamModal.enableInput();
+        
+        if (modalType == 'info') {
+            $editTeamModalTitle.text('Team Info');
+            $editTeamModalSave.addClass('hidden');
+//            $editTeamModal.disableInput();
+        } else if (modalType == 'add') {
+            $editTeamModalTitle.text('Add Team');
+        }
+
+        $editTeamModal.modal('show');  
     },
     
     hideEditTeamModal: function() {
@@ -248,7 +312,11 @@ $.Manager.pages.Teams = {
         const self = this;
         const data = self.getDataFromEditTeamModal();
         
-        console.info('updating team (id=' + self.editTeamId + '): ', data);
+        if (self.editTeamId) {
+            console.info('updating team (id=' + self.editTeamId + '): ', data);            
+        } else {
+            console.info('adding team: ', data);
+        }
         
         if ($.Manager.isPrototype) {
             setTimeout(
@@ -258,19 +326,36 @@ $.Manager.pages.Teams = {
                 2000);
             return;
         }
-        
-        $.rest.PUT('/team/' + self.editTeamId, data,
-            function(respData) {
-//                console.debug(respData);
-                self.hideEditTeamModal();
-                self.$teamsTable.draw();
-            },
-            function(status, respData) {
-                if (respData) {
-                    alert(respData.error_description);
+
+        if (self.editTeamId) {
+            $.rest.PUT('/team/' + self.editTeamId,
+                data,
+                function(respData) {
+//                    console.debug(respData);
+                    self.hideEditTeamModal();
+                    self.$teamsTable.draw(); // TODO: update single row in the table
+                },
+                function(status, respData) {
+                    if (respData) {
+                        alert(respData.error_description);
+                    }
                 }
-            }
-        );
+            );
+        } else {
+            $.rest.POST('/team/',
+                data,
+                function(respData) {
+//                    console.debug(respData);
+                    self.hideEditTeamModal();
+                    self.$teamsTable.draw(); // TODO: insert single row into the table
+                },
+                function(status, respData) {
+                    if (respData) {
+                        alert(respData.error_description);
+                    }
+                }
+            );
+        }
     }
     
 };

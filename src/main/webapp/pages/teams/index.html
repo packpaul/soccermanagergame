@@ -93,6 +93,10 @@
                 <hr/>
                 <a class="btn btn-primary" href="#" onClick="$.Manager.pages.Teams.filterTable();">Filter</a>
                 <a class="btn btn-primary" href="#" onClick="$.Manager.pages.Teams.resetFilter();">Reset Filter</a>
+                <!--/*/ <th:block th:if="${userType} == 'ADMIN'"> /*/-->
+                &nbsp;&nbsp;
+                <a class="btn btn-success" href="#" onClick="$.Manager.pages.Teams.onAddTeam();">Add Team</a>
+                <!--/*/ </th:block> /*/-->
             </div>
         </div>
     </div>
@@ -130,6 +134,7 @@
                         <td>2018-09-25</td>
                         <td></td>
                         <td>
+                            <a href="#" onclick="$.Manager.pages.Teams.onInfoTeam(1);">info</a>
                             <a href="#" onclick="$.Manager.pages.Teams.onEditTeam(1);">edit</a>
                             <a href="#" onclick="$.Manager.pages.Teams.onDeleteTeam(1);"> delete</a>
                         </td>

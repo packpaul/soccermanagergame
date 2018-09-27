@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
+import org.apache.commons.lang3.StringUtils;
 import org.javatuples.Triplet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pp.toptal.soccermanager.auth.AuthService;
 import com.pp.toptal.soccermanager.entity.Country;
 import com.pp.toptal.soccermanager.entity.PlayerEntity;
 import com.pp.toptal.soccermanager.entity.PlayerType;
@@ -63,6 +65,9 @@ public class TeamService {
     
     @Autowired
     private EntityToSOMapper toSoMapper;
+    
+    @Autowired
+    private AuthService authService;
 
     @Transactional
     public TeamEntity generateInitialTeam(UserEntity user) {
@@ -232,9 +237,53 @@ public class TeamService {
         
         return team;
     }
+    
+    @Transactional
+    public TeamSO addTeam(TeamSO teamData) {
+        
+        if (! authService.isCurrentUserType(UserType.ADMIN)) {
+            throw new DataParameterException("Only administrator can add new teams!");
+        }
+        
+        if (StringUtils.isBlank(teamData.getTeamName())) {
+            throw new DataParameterException("Team name should be not blank!");
+        }
+        
+        if (teamData.getCountry() == null) {
+            throw new DataParameterException("Team country should be provided!");
+        }
+            
+        UserEntity owner = userRepo.findOneByUsername(teamData.getOwner());
+        if (owner == null) {
+            throw new BusinessException(ErrorCode.OBJECT_NOT_FOUND,
+                    String.format("User (username='%s') not found!", teamData.getOwner()));
+        }
+        if (owner.getUserType() == UserType.ADMIN) {
+            throw new DataParameterException(
+                    String.format("Administrator (username='%s') cannot have teams!", teamData.getOwner()));
+        }
+        
+        if ((teamData.getBalance() == null) || (teamData.getBalance() < 0)) {
+            throw new DataParameterException("Team balance should be provided and not negative!");
+        }
+        
+        TeamEntity team = teamRepo.save(new TeamEntity(
+                teamData.getTeamName().trim(), Country.valueOf(
+                teamData.getCountry()),
+                owner,
+                teamData.getBalance()));
+        
+        LOGGER.info(String.format("New team (id=%d) was added.", team.getId()));
+        
+        return toSoMapper.map(team, new TeamSO());
+    }
 
     @Transactional
     public TeamSO updateTeam(Long teamId, TeamSO teamData) {
+        
+        if (! authService.isCurrentUserType(UserType.ADMIN)) {
+            throw new DataParameterException("Only administrator can update teams!");
+        }
         
         TeamEntity team = findTeam(teamId);
         
@@ -262,6 +311,10 @@ public class TeamService {
                 throw new BusinessException(ErrorCode.OBJECT_NOT_FOUND,
                         String.format("User (username='%s') not found!", owner));
             }
+            if (ownerEntity.getUserType() == UserType.ADMIN) {
+                throw new DataParameterException(
+                        String.format("Administrator (username='%s') cannot have teams!", teamData.getOwner()));
+            }
             team.setOwner(ownerEntity);
             isChanged = true;
         }
@@ -283,9 +336,13 @@ public class TeamService {
     }
 
     public void deleteTeam(Long teamId) {
+        if (! authService.isCurrentUserType(UserType.ADMIN)) {
+            throw new DataParameterException("Only administrator can delete teams!");
+        }
+        
         findTeam(teamId);
         
         teamRepo.delete(teamId);
-    } 
- 
+    }
+
 }
