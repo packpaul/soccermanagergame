@@ -16,7 +16,10 @@ public class ProposalSO implements Serializable {
     private Long playerId;
     private String playerFullName;
     private String playerType;
+    private Integer playerAge;
     private String playerCountry;
+    private Long playerValue;
+
     
     private Long toTeamId;
     private String toTeamName;
@@ -65,12 +68,26 @@ public class ProposalSO implements Serializable {
     public void setPlayerType(String playerType) {
         this.playerType = playerType;
     }
+    
+    public Integer getPlayerAge() {
+        return playerAge;
+    }
+    public void setPlayerAge(Integer playerAge) {
+        this.playerAge = playerAge;
+    }
 
     public String getPlayerCountry() {
         return playerCountry;
     }
     public void setPlayerCountry(String playerCountry) {
         this.playerCountry = playerCountry;
+    }
+
+    public Long getPlayerValue() {
+        return playerValue;
+    }
+    public void setPlayerValue(Long playerValue) {
+        this.playerValue = playerValue;
     }
 
     public Long getToTeamId() {

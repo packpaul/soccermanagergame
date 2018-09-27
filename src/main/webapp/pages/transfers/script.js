@@ -209,15 +209,15 @@ $.Manager.pages.Transfers = {
         const self = this;
         
         $.rest.POST(
-                '/transfer/' + transferId + '/cancel',
-                null,
-                function() {
-                    self.$transfersTable.draw();
-                },
-                function(status, respData) {
-                    alert(respData.error_description);
-                }
-            );
+            '/transfer/' + transferId + '/cancel',
+            null,
+            function() {
+                self.$transfersTable.draw();
+            },
+            function(status, respData) {
+                alert(respData.error_description);
+            }
+        );
     },
     
     setDataToTransferProposalModal: function(data) {

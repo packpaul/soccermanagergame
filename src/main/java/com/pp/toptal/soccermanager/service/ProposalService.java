@@ -18,6 +18,7 @@ import com.pp.toptal.soccermanager.entity.TeamEntity;
 import com.pp.toptal.soccermanager.entity.TransferEntity;
 import com.pp.toptal.soccermanager.entity.TransferEntity.TransferStatus;
 import com.pp.toptal.soccermanager.entity.ProposalEntity;
+import com.pp.toptal.soccermanager.entity.QProposalEntity;
 import com.pp.toptal.soccermanager.exception.BusinessException;
 import com.pp.toptal.soccermanager.exception.DataParameterException;
 import com.pp.toptal.soccermanager.exception.ErrorCode;
@@ -69,7 +70,7 @@ public class ProposalService {
                 limit,
                 sort);
         
-        Predicate predicate = null;
+        Predicate predicate = QProposalEntity.proposalEntity.transfer.status.eq(TransferStatus.OPEN);
         
         // TODO: filtering
 /*
@@ -211,11 +212,13 @@ public class ProposalService {
         
         TransferEntity transfer = proposal.getTransfer();
         transfer.setToTeam(toTeam);
+        transfer.setStatus(TransferStatus.CLOSED);
         transfer.setUpdateDate(new Date());
         transfer = transferRepo.save(transfer);
         
         PlayerEntity player = transfer.getPlayer();
         player.setTeam(toTeam);
+        player.setInTransfer(false);
         player.setUpdateDate(new Date());
         player = playerRepo.save(player);
         

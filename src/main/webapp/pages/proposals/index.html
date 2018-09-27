@@ -55,55 +55,36 @@
 
 <!--/*/ <th:block th:fragment="content"> /*/-->   
 
-<!-- transfers filter -->
+<!-- proposals filter -->
 <div class="row">
     <div class="col-lg-12">
-        <div id="transfersSearchBox" class="box box-primary">
+        <div id="proposalsSearchBox" class="box box-primary">
             <div class="box-header with-border">
             </div>
             <div class="box-body">
                 <div class="row">
-                    <div class="col-lg-3">
-                        <label>PlayerType</label>
-                        <select id="playerType" class="form-control" value="">
-                            <option value="">-- no selection --</option>
-                            <option value="GOALKEEPER">goalkeeper</option>
-                            <option value="DEFENDER">defender</option>
-                            <option value="MIDFIELDER">midfielder</option>
-                            <option value="ATTACKER">attacker</option>
-                        </select>
+                    <div class="col-lg-4">
+                        <label>Player Name</label>
+                        <input id="playerFullName" type="text" class="form-control" placeholder="f.e. 'Doe*Joa*' ('*' wildcard can be used)" />
                     </div>
                     <div class="col-lg-3">
-                        <label>Player Country</label>
-                        <select id="playerCountry" class="form-control" value="">
-                            <option value="">-- no selection --</option>
-                            <option value="FRANCE">France</option>
-                            <option value="CROATIA">Croatia</option>
-                            <option value="ENGLAND">England</option>
-                            <option value="BELGIUM">Belgium</option>
-                            <option value="BRAZIL">Brazil</option>
-                            <option value="GERMANY">Germany</option>
-                            <option value="ICELAND">Iceland</option>
-                        </select>
+                        <label>Date (from)</label>
+                        <input id="creationDateFrom" type="text" class="form-control" placeholder="f.e. 2018-09-25" />
                     </div>
                     <div class="col-lg-3">
-                        <label>Player value (min)</label>
-                        <input id="playerValueMin" type="text" class="form-control" placeholder="f.e. 500000" />
-                    </div>
-                    <div class="col-lg-3">
-                        <label>Player value (max)</label>
-                        <input id="playerValueMax" type="text" class="form-control" placeholder="f.e. 3500000" />
+                        <label>Date (till)</label>
+                        <input id="creationDateTill" type="text" class="form-control" placeholder="f.e. 2018-09-27" />
                     </div>
                 </div>
                 <hr/>
-                <a class="btn btn-primary" href="#" onClick="$.Manager.pages.Transfers.filterTable();">Filter</a>
-                <a class="btn btn-primary" href="#" onClick="$.Manager.pages.Transfers.resetFilter();">Reset Filter</a>
+                <a class="btn btn-primary" href="#" onClick="$.Manager.pages.Proposals.filterTable();">Filter</a>
+                <a class="btn btn-primary" href="#" onClick="$.Manager.pages.Proposals.resetFilter();">Reset Filter</a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- transfers table -->
+<!-- proposals table -->
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-primary">
@@ -111,17 +92,17 @@
                 <div class="panel-heading"></div>
 -->
             <div class="panel-body">
-                <table id="transfersTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                <table id="proposalsTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead>
                         <tr>
                             <th width="4%">ID</th>
-                            <th width="16%">Player Name</th>
+                            <th width="12%">Player Name</th>
                             <th width="8%">Type</th>
-                            <th width="4%">Age</th>
                             <th width="6%">Country</th>
-                            <th width="18%">Team Name</th>
-                            <th width="8%">Team Country</th>
-                            <th width="12%">Value</th>
+                            <th width="18%">To Team Name</th>
+                            <th width="8%">To Team Country</th>
+                            <th width="12%">Player Value</th>
+                            <th width="12%">Proposed Price</th>
                             <th width="7%">Date</th>
                             <th width="13%"></th>
                         </tr>
@@ -130,16 +111,16 @@
                         <td>1</td>
                         <td>Jordi di María</td>
                         <td>attacker</td>
-                        <td>28</td>
                         <td>Brazil</td>
                         <td>Soccer Dream Team</td>
                         <td>Mexica</td>
                         <td>$1 450 000</td>
-                        <td>2018-09-26</td>>
+                        <td>$1 250 000</td>
+                        <td>2018-09-26</td>
                         <td>
-                            <a href="#" onclick="$.Manager.pages.Transfers.onDoTransferProposal(1);">propose</a>
-                            <a href="#" onclick="$.Manager.pages.Transfers.onCancelTransfer(1);">cancel</a>
-                            <a href="#" onclick="$.Manager.onAskUser(2);">ask</a>
+                            <a href="#" onclick="$.Manager.pages.Proposals.onAcceptProposal(1);"> accept</a>
+                            <a href="#" onclick="$.Manager.pages.Proposals.onCancelProposal(1);"> cancel</a>
+                            <a href="#" onclick="$.Manager.onMessageUser(2);"> reply</a>
                         </td>
                     </tr>
                 </table>
@@ -151,7 +132,7 @@
     
 <!-- Modal dialogs -->
 
-<div id="transferProposalModal" class="modal">
+<div id="proposalProposalModal" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -212,10 +193,10 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button id="saveSettingButton" type="button" class="btn btn-primary" onclick="$.Manager.pages.Transfers.doTransferProposal();">
+                <button id="saveSettingButton" type="button" class="btn btn-primary" onclick="$.Manager.pages.Proposals.doProposalProposal();">
                     <i class="fa fa-refresh fa-spin hidden"></i>&nbsp;Propose
                 </button>
-                <button id="cancelSaveSettingButton" type="button" class="btn btn-default" onclick="$.Manager.pages.Transfers.hideTransferProposalModal();">
+                <button id="cancelSaveSettingButton" type="button" class="btn btn-default" onclick="$.Manager.pages.Proposals.hideProposalProposalModal();">
                     <i class="fa fa-refresh fa-spin hidden"></i>&nbsp;Cancel
                 </button>
             </div>

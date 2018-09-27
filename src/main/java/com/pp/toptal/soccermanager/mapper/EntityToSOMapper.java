@@ -103,7 +103,9 @@ public class EntityToSOMapper {
                 to.setPlayerId(p.getId());
                 to.setPlayerFullName(p.getFullName());
                 to.setPlayerType(p.getPlayerType().name());
+                to.setPlayerAge(p.getAge());
                 to.setPlayerCountry(p.getCountry().name());
+                to.setPlayerValue(p.getValue());
             });
         }); 
         Optional.ofNullable(from.getToTeam()).ifPresent((t) -> {
