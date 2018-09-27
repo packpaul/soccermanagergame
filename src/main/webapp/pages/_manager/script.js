@@ -120,7 +120,7 @@ $.Manager = {
     
     $(function() {
         // initial page setup
-        onhashchange('#' + $("section.content")[0].id);
+        onhashchange(location.hash || ('#' + $("section.content")[0].id));
      });
 
   })();

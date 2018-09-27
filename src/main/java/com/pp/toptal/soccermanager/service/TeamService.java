@@ -240,8 +240,8 @@ public class TeamService {
     @Transactional
     public TeamSO addTeam(TeamSO teamData) {
         
-        if (! authService.isCurrentUserType(UserType.ADMIN)) {
-            throw new DataParameterException("Only administrator can add new teams!");
+        if (authService.isCurrentUserType(UserType.TEAM_OWNER)) {
+            throw new DataParameterException("Team owners cannot add new teams!");
         }
         
         if (StringUtils.isBlank(teamData.getTeamName())) {
@@ -280,8 +280,8 @@ public class TeamService {
     @Transactional
     public TeamSO updateTeam(Long teamId, TeamSO teamData) {
         
-        if (! authService.isCurrentUserType(UserType.ADMIN)) {
-            throw new DataParameterException("Only administrator can update teams!");
+        if (authService.isCurrentUserType(UserType.TEAM_OWNER)) {
+            throw new DataParameterException("Team owners cannot update teams!");
         }
         
         TeamEntity team = findTeam(teamId);

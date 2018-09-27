@@ -93,7 +93,7 @@
                 <hr/>
                 <a class="btn btn-primary" href="#" onClick="$.Manager.pages.Teams.filterTable();">Filter</a>
                 <a class="btn btn-primary" href="#" onClick="$.Manager.pages.Teams.resetFilter();">Reset Filter</a>
-                <!--/*/ <th:block th:if="${userType} == 'ADMIN'"> /*/-->
+                <!--/*/ <th:block th:if="${userType} != 'TEAM_OWNER'"> /*/-->
                 &nbsp;&nbsp;
                 <a class="btn btn-success" href="#" onClick="$.Manager.pages.Teams.onAddTeam();">Add Team</a>
                 <!--/*/ </th:block> /*/-->
@@ -135,6 +135,7 @@
                         <td></td>
                         <td>
                             <a href="#" onclick="$.Manager.pages.Teams.onInfoTeam(1);">info</a>
+                            <a href="#players:teamId=1"> players</a>
                             <a href="#" onclick="$.Manager.pages.Teams.onEditTeam(1);">edit</a>
                             <a href="#" onclick="$.Manager.pages.Teams.onDeleteTeam(1);"> delete</a>
                         </td>
@@ -187,7 +188,8 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Owner</label>
                         <div class="col-sm-9">
-                            <input name="owner" required="required" class="form-control" />
+                            <input name="owner" required="required" class="form-control"
+                                   placeholder="username" />
                         </div>
                     </div>
                     <div class="form-group">

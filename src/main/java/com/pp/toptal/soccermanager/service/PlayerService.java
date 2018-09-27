@@ -96,6 +96,8 @@ public class PlayerService {
                 } else if (Objects.equals(properties[i], entity.playerType.getMetadata().getName())) {
                     PlayerType value = PlayerType.valueOf(values[i]);
                     propPredicate = entity.playerType.eq(value);
+                } else if ("teamId".equals(properties[i])) { // TODO: move to property name builder from metadata
+                    propPredicate = entity.team.id.eq(Long.valueOf(values[i]));
                 } else {
                     continue;
                 }

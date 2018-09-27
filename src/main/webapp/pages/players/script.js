@@ -36,8 +36,9 @@ $.Manager.pages.Players = {
                 {data: 'playerType', name: 'playerType'},
                 {data: 'age', name: 'age'},
                 {data: 'country', name: 'country'},
-                {data: 'teamName', name: 'teamName'},
-                {data: 'teamCountry', name: 'teamCountry'},
+                {data: 'teamId', name: 'teamId', visible: false},
+                {data: 'teamName', name: 'teamName', orderable: false},
+                {data: 'teamCountry', name: 'teamCountry', orderable: false},
                 {data: 'value', name: 'value'},
                 {data: 'inTransfer', name: 'inTransfer', searchable: false, render: function(info, type, row) {
                         return info ? 'yes' : '';
@@ -48,11 +49,11 @@ $.Manager.pages.Players = {
 //                    {defaultContent: '', orderable: false},
                 {data: null, orderable: false, searchable: false, render: function (info, type, row) {
                         var action = '<a href="#" onclick="$.Manager.pages.Players.onInfoPlayer(' + info.id + ');"> info</a>';
-                        if ($.Manager.userType != 'TEAM_OWNER') {
+                        action += '<a href="#" onclick="$.Manager.pages.Players.onTransferPlayer(' + info.id + ');"> transfer</a>'
+                        if ((! $.Manager.userType) || ($.Manager.userType != 'TEAM_OWNER')) {
                             action += '<a href="#" onclick="$.Manager.pages.Players.onEditPlayer(' + info.id + ');"> edit</a>';
                             action += '<a href="#" onclick="$.Manager.pages.Players.onDeletePlayer(' + info.id + ');"> delete</a>'
                         }
-                        action += '<a href="#" onclick="$.Manager.pages.Players.onTransferPlayer(' + info.id + ');"> transfer</a>'
                         return action;
                     }
                 }
@@ -98,6 +99,7 @@ $.Manager.pages.Players = {
             lastName: this.$playersTable.column('lastName:name').search(),
             playerType: this.$playersTable.column('playerType:name').search(),
             country: this.$playersTable.column('country:name').search(),
+            country: this.$playersTable.column('teamId:name').search()
         });
         
         function createListQuery(data) {
@@ -135,7 +137,17 @@ $.Manager.pages.Players = {
     },
         
     onShow: function($page, params) {
+
 //      $page.find("select").select2();
+        
+        const searchValues = this.getPlayersSearchBoxValues();
+        
+        var teamId = (params) ? $.query.load('?' + params).get('teamId') : null;
+        if (searchValues.teamId != teamId) {
+            searchValues.teamId = teamId;
+            this.initPlayersSearchBoxValues(searchValues);
+            this.filterTable();
+        }
     },
     
     initPlayersSearchBoxValues: function(searchValues) {

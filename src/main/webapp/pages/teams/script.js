@@ -41,7 +41,8 @@ $.Manager.pages.Teams = {
 //                    {defaultContent: '', orderable: false},
                 {data: null, orderable: false, searchable: false, render: function (info, type, row) {
                         var action = '<a href="#" onclick="$.Manager.pages.Teams.onInfoTeam(' + info.id + ');"> info</a>';
-                        if ((! $.Manager.userType) || ($.Manager.userType == 'ADMIN')) {
+                        action += '<a href="#players:teamId=' + info.id + '"> players</a>';
+                        if ((! $.Manager.userType) || ($.Manager.userType != 'TEAM_OWNER')) {
                             action += '<a href="#" onclick="$.Manager.pages.Teams.onEditTeam(' + info.id + ');"> edit</a>';
                             action += '<a href="#" onclick="$.Manager.pages.Teams.onDeleteTeam(' + info.id + ');"> delete</a>'
                         }
