@@ -22,6 +22,11 @@ OR
 
 ## Documentation
 
+### Architecture
+
+1. `doc/Architecture.png` - Component architecture.
+2. `doc/Entities.png` - Domain entities.
+
 ### Open API Specification
 
 1. `doc/AuthService.oas.yaml` - AuthService REST API.
