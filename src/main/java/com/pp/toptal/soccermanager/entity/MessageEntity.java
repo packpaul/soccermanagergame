@@ -57,8 +57,8 @@ public class MessageEntity extends EntityBase<Long> implements Serializable {
 
     private MessageEntity prevMessage;
     
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "prevmessageid", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "prevmessageid")
     public MessageEntity getPrevMessage() {
         return prevMessage;
     }
@@ -68,8 +68,8 @@ public class MessageEntity extends EntityBase<Long> implements Serializable {
 
     private MessageEntity nextMessage;
     
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "nextmessageid", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "nextmessageid")
     public MessageEntity getNextMessage() {
         return nextMessage;
     }
