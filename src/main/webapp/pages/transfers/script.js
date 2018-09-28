@@ -7,7 +7,10 @@ if (typeof jQuery == "undefined") {
 if (! $.Manager) {
     $.Manager = {
         pages: {},
-        isPrototype: true
+        isPrototype: true,
+        onMessageUser: function(toUser) {
+            var message = prompt("Ask user '" + toUser + "':", "I'd like to have ...");
+        }
     }
 }
 

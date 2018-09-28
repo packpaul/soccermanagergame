@@ -7,7 +7,10 @@ if (typeof jQuery == "undefined") {
 if (! $.Manager) {
     $.Manager = {
         pages: {},
-        isPrototype: true
+        isPrototype: true,
+        onMessageUser: function(toUser) {
+            var message = prompt("Reply to user '" + toUser + "':", "Ok, you can ...");
+        }
     }
 }
 
@@ -43,7 +46,7 @@ $.Manager.pages.Proposals = {
                 {data: null, orderable: false, searchable: false, render: function (info, type, row) {
                         var action = '<a href="#" onclick="$.Manager.pages.Proposals.onAcceptProposal(' + info.id + ');"> accept</a>';
                         action += '<a href="#" onclick="$.Manager.pages.Proposals.onCancelProposal(' + info.id + ');"> cancel</a>'
-                        action += '<a href="#" onclick="' + "$.Manager.onMessageUser('" + info.toTeamOwnerUsername + "');" + '"> ask</a>'
+                        action += '<a href="#" onclick="' + "$.Manager.onMessageUser('" + info.toTeamOwnerUsername + "');" + '"> reply</a>'
                         return action;
                     }
                 }

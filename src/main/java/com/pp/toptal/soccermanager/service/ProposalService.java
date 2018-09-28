@@ -13,10 +13,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pp.toptal.soccermanager.auth.AuthService;
 import com.pp.toptal.soccermanager.entity.PlayerEntity;
 import com.pp.toptal.soccermanager.entity.TeamEntity;
 import com.pp.toptal.soccermanager.entity.TransferEntity;
+import com.pp.toptal.soccermanager.entity.UserType;
 import com.pp.toptal.soccermanager.entity.TransferEntity.TransferStatus;
+import com.pp.toptal.soccermanager.entity.UserEntity;
 import com.pp.toptal.soccermanager.entity.ProposalEntity;
 import com.pp.toptal.soccermanager.entity.QProposalEntity;
 import com.pp.toptal.soccermanager.exception.BusinessException;
@@ -28,8 +31,10 @@ import com.pp.toptal.soccermanager.repo.PlayerRepo;
 import com.pp.toptal.soccermanager.repo.ProposalRepo;
 import com.pp.toptal.soccermanager.repo.TeamRepo;
 import com.pp.toptal.soccermanager.repo.TransferRepo;
+import com.pp.toptal.soccermanager.repo.UserRepo;
 import com.pp.toptal.soccermanager.so.TableDataSO;
 import com.pp.toptal.soccermanager.so.ProposalSO;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 
 @Service
@@ -37,6 +42,9 @@ public class ProposalService {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(ProposalService.class);
 
+    @Autowired
+    private AuthService authService;
+    
     @Autowired
     private TransferRepo transferRepo;
 
@@ -48,6 +56,9 @@ public class ProposalService {
 
     @Autowired
     private TeamRepo teamRepo;
+    
+    @Autowired
+    private UserRepo userRepo;
     
     @Autowired
     private EntityToSOMapper toSoMapper;
@@ -71,6 +82,12 @@ public class ProposalService {
                 sort);
         
         Predicate predicate = QProposalEntity.proposalEntity.transfer.status.eq(TransferStatus.OPEN);
+        
+        if (authService.isCurrentUserType(UserType.TEAM_OWNER)) {
+            UserEntity currentUser = userRepo.findOneByUsername(authService.getCurrentUsername());
+            predicate = ExpressionUtils.and(predicate,
+                    QProposalEntity.proposalEntity.toTeam.owner.eq(currentUser));
+        }
         
         // TODO: filtering
 /*

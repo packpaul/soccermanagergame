@@ -14,8 +14,46 @@ $.Manager = {
         $.rest.logout(callback, callback);
     },
 
-    onMessageUser: function(receiver) {
-        alert('// TODO:');
+    onMessageUser: function(toUsername) {
+        var message = prompt("Message to user '" + toUsername + "':", "Hi! ...");
+        if (! message) {
+            return;
+        }
+        
+        $.rest.POST(
+            '/message',
+            {
+                toUsername: toUsername,
+                content: message
+            },
+            undefined,
+            function(status, respData) {
+                alert(respData.error_description);
+            }
+        );
+    },
+    
+    receiveMessages: function() {
+        $.rest.GET(
+            '/message',
+            function(respData) {
+                respData.forEach(function(message) {
+                    alert("Message from user '" + message.fromUsername + "'\n" +
+                          "Date: " + message.creationDate + "\n\n" +
+                          message.content);
+                    $.rest.POST(
+                        '/message/' + message.id + '/read',
+                        null,
+                        undefined,
+                        function(status, respData) {
+                            alert(respData.error_description);
+                        }
+                    );
+                });
+            },
+            function(status, reqData) {
+            }
+        );
     }
 
 };
@@ -121,6 +159,7 @@ $.Manager = {
     $(function() {
         // initial page setup
         onhashchange(location.hash || ('#' + $("section.content")[0].id));
+        $.Manager.receiveMessages();
      });
 
   })();

@@ -142,6 +142,9 @@ public class EntityToSOMapper {
         });
         to.setContent(from.getContent());
         to.setRead(from.isRead());
+
+        to.setCreationDate(from.getCreationDate());
+        to.setUpdateDate(from.getUpdateDate());
         
         return to;
     }
