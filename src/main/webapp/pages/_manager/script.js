@@ -54,6 +54,108 @@ $.Manager = {
             function(status, reqData) {
             }
         );
+    },
+    
+    select2players($select) {
+        $select.select2({
+            ajax: {
+                url: "/player/list",
+                transport: function (params, success, failure) {
+                    $.rest.GET(params.url + params.data, success, failure);
+                },
+                data: function (params) {
+                    const pageSize = 30;
+                    var query = $.query.empty();
+                    query = query
+                         .set('filterProperties', params.term ? ['firstName'] : [])
+                         .set('filterValues', params.term ? ['*' + params.term + '*'] : [])
+                         .set('orderProperty', 'id')
+                         .set('orderDir', 'asc')
+                         .set('offset', params.page ? pageSize * (params.page - 1) : 0)
+                         .set('limit', pageSize)
+                         
+                    return query.toString();
+                },
+
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+
+                    return {
+                        results: data.data,
+                        pagination: {
+                            more: (30 * params.page < data.countFiltered)
+                        }
+                    };
+                },
+                cache: true
+            },
+            placeholder: '-- no selection --',
+//            minimumInputLength: 2,
+            delay: 500,
+            templateResult: function(player) {
+                return player.id + ' - ' + player.fullName + ', ' + player.country;
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            },
+            templateSelection: function(player) {
+                if (player.id) {
+                    return player.id + ' - ' + player.fullName + ', ' + player.country;
+                }
+                return player.text;
+            }
+        });
+    },
+    
+    select2teams($select) {
+        $select.select2({
+            ajax: {
+                url: "/team/list",
+                transport: function (params, success, failure) {
+                    $.rest.GET(params.url + params.data, success, failure);
+                },
+                data: function (params) {
+                    const pageSize = 30;
+                    var query = $.query.empty();
+                    query = query
+                         .set('filterProperties', params.term ? ['teamName'] : [])
+                         .set('filterValues', params.term ? ['*' + params.term + '*'] : [])
+                         .set('orderProperty', 'id')
+                         .set('orderDir', 'asc')
+                         .set('offset', params.page ? pageSize * (params.page - 1) : 0)
+                         .set('limit', pageSize)
+                         
+                    return query.toString();
+                },
+
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+
+                    return {
+                        results: data.data,
+                        pagination: {
+                            more: (30 * params.page < data.countFiltered)
+                        }
+                    };
+                },
+                cache: true
+            },
+            placeholder: '-- no selection --',
+//            minimumInputLength: 2,
+            delay: 500,
+            templateResult: function(team) {
+                return team.id + ' - ' + team.teamName + ', ' + team.country;
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            },
+            templateSelection: function(team) {
+                if (team.id) {
+                    return team.id + ' - ' + team.teamName + ', ' + team.country;
+                }
+                return team.text;
+            }
+        });
     }
 
 };

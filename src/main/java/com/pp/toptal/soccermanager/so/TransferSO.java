@@ -11,16 +11,27 @@ public class TransferSO implements Serializable {
 
     private Long id;
 
+    public static final String PLAYER_ID_PROP_NAME = "playerId";  
     private Long playerId;
+
     private String playerFullName;
     private String playerType;
     private Integer playerAge;
+    
+    public static final String PLAYER_COUNTRY_PROP_NAME = "playerCountry";
     private String playerCountry;
+    
+    public static final String PLAYER_VALUE_PROP_NAME = "playerValue";
     private Long playerValue;
     
+    public static final String FROM_TEAM_ID_PROP_NAME = "fromTeamId";
     private Long fromTeamId;
+    
     private String fromTeamName;
+    
+    public static final String FROM_TEAM_COUNTRY_PROP_NAME = "fromTeamCountry";    
     private String fromTeamCountry;
+    
     private String fromTeamOwnerUsername;
 
     private Long toTeamId;

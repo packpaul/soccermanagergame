@@ -47,6 +47,7 @@ public class EntityToSOMapper {
         to.setId(from.getId());
         to.setFirstName(from.getFirstName());
         to.setLastName(from.getLastName());
+        to.setFullName(from.getFullName());
         to.setAge(from.getAge());
         to.setPlayerType(from.getPlayerType().name());
         to.setValue(from.getValue());

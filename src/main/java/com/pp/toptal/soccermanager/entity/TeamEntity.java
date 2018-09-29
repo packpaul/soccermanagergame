@@ -94,7 +94,7 @@ public class TeamEntity extends EntityBase<Long> implements Serializable {
     
     private List<PlayerEntity> players;
     
-    @OneToMany(mappedBy = "team", cascade = CascadeType.REFRESH)
+    @OneToMany(mappedBy = "team", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     public List<PlayerEntity> getPlayers() {
         return (players != null) ? players : Collections.emptyList();
     }

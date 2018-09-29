@@ -12,6 +12,7 @@ public class PlayerSO implements Serializable {
     private Long id;
     private String firstName;
     private String lastName;
+    private String fullName;
     private Integer age;
     private String playerType;
     private Long value;
@@ -48,6 +49,13 @@ public class PlayerSO implements Serializable {
         this.lastName = lastName;
     }
     
+    public String getFullName() {
+        return fullName;
+    }
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
     public Integer getAge() {
         return age;
     }

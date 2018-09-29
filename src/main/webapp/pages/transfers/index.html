@@ -56,6 +56,7 @@
 <!--/*/ <th:block th:fragment="content"> /*/-->   
 
 <!-- transfers filter -->
+
 <div class="row">
     <div class="col-lg-12">
         <div id="transfersSearchBox" class="box box-primary">
@@ -63,18 +64,15 @@
             </div>
             <div class="box-body">
                 <div class="row">
-                    <div class="col-lg-3">
-                        <label>PlayerType</label>
-                        <select id="playerType" class="form-control" value="">
-                            <option value="">-- no selection --</option>
-                            <option value="GOALKEEPER">goalkeeper</option>
-                            <option value="DEFENDER">defender</option>
-                            <option value="MIDFIELDER">midfielder</option>
-                            <option value="ATTACKER">attacker</option>
+                    <div class="col-lg-4">
+                        <label>Player</label>
+                        <select id="playerId" class="form-control" value="">
+                            <option value="" th:if="false">-- no selection --</option>
+                            <option value="1" th:if="false">1 - Jordi di María, Brazil</option>
                         </select>
                     </div>
-                    <div class="col-lg-3">
-                        <label>Player Country</label>
+                    <div class="col-lg-2">
+                        <label>Player country</label>
                         <select id="playerCountry" class="form-control" value="">
                             <option value="">-- no selection --</option>
                             <option value="FRANCE">France</option>
@@ -86,6 +84,29 @@
                             <option value="ICELAND">Iceland</option>
                         </select>
                     </div>
+                    <div class="col-lg-4">
+                        <label>Team</label>
+                        <select id="fromTeamId" class="form-control" value="">
+                            <option value="" th:if="false">-- no selection --</option>
+                            <option value="1" th:if="false">1 - Soccer Dream Team, Mexica</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2">
+                        <label>Team country</label>
+                        <select id="fromTeamCountry" class="form-control" value="">
+                            <option value="">-- no selection --</option>
+                            <option value="FRANCE">France</option>
+                            <option value="CROATIA">Croatia</option>
+                            <option value="ENGLAND">England</option>
+                            <option value="BELGIUM">Belgium</option>
+                            <option value="BRAZIL">Brazil</option>
+                            <option value="GERMANY">Germany</option>
+                            <option value="ICELAND">Iceland</option>
+                        </select>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
                     <div class="col-lg-3">
                         <label>Player value (min)</label>
                         <input id="playerValueMin" type="text" class="form-control" placeholder="f.e. 500000" />
@@ -115,10 +136,12 @@
                     <thead>
                         <tr>
                             <th width="4%">ID</th>
+                            <th width="0%">Player ID</th>
                             <th width="16%">Player Name</th>
                             <th width="8%">Type</th>
                             <th width="4%">Age</th>
                             <th width="6%">Country</th>
+                            <th width="0%">Team ID</th>
                             <th width="18%">Team Name</th>
                             <th width="8%">Team Country</th>
                             <th width="12%">Value</th>
@@ -128,10 +151,12 @@
                     </thead>
                     <tr th:if="false">
                         <td>1</td>
+                        <td>1</td>
                         <td>Jordi di María</td>
                         <td>attacker</td>
                         <td>28</td>
                         <td>Brazil</td>
+                        <td>1</td>
                         <td>Soccer Dream Team</td>
                         <td>Mexica</td>
                         <td>$1 450 000</td>
@@ -198,9 +223,12 @@
                         </div>
                    </div>
                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Team ID</label>
+                        <label class="col-sm-3 control-label">To team</label>
                         <div class="col-sm-9">
-                            <input name="toTeamId" required="required" class="form-control" />
+                            <select id="toTeamId" name="toTeamId" class="form-control" value="">
+                                <option value="" th:if="false">-- no selection --</option>
+                                <option value="2" th:if="false">2 - Soccer Sunshiny Team, USA</option>
+                            </select>
                         </div>
                    </div>
                    <div class="form-group">

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.javatuples.Triplet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,11 +14,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pp.toptal.soccermanager.entity.Country;
 import com.pp.toptal.soccermanager.entity.PlayerEntity;
 import com.pp.toptal.soccermanager.entity.QTransferEntity;
 import com.pp.toptal.soccermanager.entity.TransferEntity;
 import com.pp.toptal.soccermanager.entity.TransferEntity.TransferStatus;
 import com.pp.toptal.soccermanager.exception.BusinessException;
+import com.pp.toptal.soccermanager.exception.DataParameterException;
 import com.pp.toptal.soccermanager.exception.ErrorCode;
 import com.pp.toptal.soccermanager.mapper.EntityToSOMapper;
 import com.pp.toptal.soccermanager.repo.OffsetBasedPageRequest;
@@ -25,6 +28,7 @@ import com.pp.toptal.soccermanager.repo.PlayerRepo;
 import com.pp.toptal.soccermanager.repo.TransferRepo;
 import com.pp.toptal.soccermanager.so.TableDataSO;
 import com.pp.toptal.soccermanager.so.TransferSO;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 
 @Service
@@ -61,43 +65,43 @@ public class TransferService {
         
         Predicate predicate = QTransferEntity.transferEntity.status.eq(TransferStatus.OPEN);
         
-        // TODO: filtering
-/*
         if (params.getFilterProperties() != null) {
             String[] properties = params.getFilterProperties();
             String[] values = params.getFilterValues();
             QTransferEntity entity = QTransferEntity.transferEntity;
             for (int i = 0; i < properties.length; i++) {
                 Predicate propPredicate;
-                if (Objects.equals(properties[i], entity.player. firstName.getMetadata().getName())) {
-                    String value = values[i];
-                    if (! value.matches("[\\w\\* ]+")) {
-                        throw new DataParameterException("Filter for 'firstName' should only contain [a-zA-Z_0-9* ] !");
-                    }
-                    value = value.replace('*', '%');
-                    propPredicate = entity.firstName.likeIgnoreCase(value);
-                } else if (Objects.equals(properties[i], entity.lastName.getMetadata().getName())) {
-                    String value = values[i];
-                    if (! value.matches("[\\w\\* ]+")) {
-                        throw new DataParameterException("Filter for 'lastName' should only contain [a-zA-Z_0-9* ] !");
-                    }
-                    value = value.replace('*', '%');
-                    propPredicate = entity.lastName.likeIgnoreCase(value);
-                } else if (Objects.equals(properties[i], entity.country.getMetadata().getName())) {
+                if (TransferSO.PLAYER_ID_PROP_NAME.equals(properties[i])) {
+                    propPredicate = entity.player.id.eq(Long.valueOf(values[i]));
+                } else if (TransferSO.PLAYER_COUNTRY_PROP_NAME.equals(properties[i])) {
                     Country value = Country.valueOf(values[i]);
-                    propPredicate = entity.country.eq(value);
-                } else if (Objects.equals(properties[i], entity.transferType.getMetadata().getName())) {
-                    TransferType value = TransferType.valueOf(values[i]);
-                    propPredicate = entity.transferType.eq(value);
+                    propPredicate = entity.player.country.eq(value);                    
+                } else if (TransferSO.FROM_TEAM_ID_PROP_NAME.equals(properties[i])) {
+                    propPredicate = entity.fromTeam.id.eq(Long.valueOf(values[i]));
+                } else if (TransferSO.FROM_TEAM_COUNTRY_PROP_NAME.equals(properties[i])) {
+                    Country value = Country.valueOf(values[i]);
+                    propPredicate = entity.fromTeam.country.eq(value);
+                } else if (TransferSO.PLAYER_VALUE_PROP_NAME.equals(properties[i])) {
+                    String value = values[i]; 
+                    if (! value.matches("\\d*<=\\d*")) {
+                        throw new DataParameterException(String.format(
+                                "Filter for '%s' should be of form NUM<=NUM !", TransferSO.PLAYER_VALUE_PROP_NAME));
+                    }
+                    int p = value.indexOf("<=");
+                    Long valueMin = Optional.of(value.substring(0, p))
+                            .filter(StringUtils::isNotEmpty).map(Long::valueOf).orElse(null);
+                    Long valueMax = Optional.of(value.substring(p + 2))
+                            .filter(StringUtils::isNotEmpty).map(Long::valueOf).orElse(null);
+                    propPredicate = ((valueMin != null) && (valueMax != null)) ? entity.player.value.between(valueMin, valueMax) :
+                                    (valueMin != null) ? entity.player.value.goe(valueMin) : entity.player.value.loe(valueMax);
                 } else {
                     continue;
                 }
-                
                 predicate = (predicate != null) ? ExpressionUtils.and(predicate, propPredicate) :
                                                   propPredicate;
             }
         }
-*/
+
         final long count = transferRepo.count(predicate);
         
         List<TransferSO> transfers = new ArrayList<>(Math.min(limit, (int) count));

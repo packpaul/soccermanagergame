@@ -182,10 +182,15 @@ public class ProposalService {
                     String.format("Proposal for transfer (id=%d) cannot be created, transfer should be open!", transferId));
         }
 
-        TeamEntity team = teamRepo.findOne(teamId);
+        TeamEntity team = (teamId != null) ? teamRepo.findOne(teamId) : null;
         if (team == null) {
             throw new BusinessException(ErrorCode.OBJECT_NOT_FOUND,
                     String.format("Team (id=%d) not found!", teamId));
+        }
+        if (team.equals(transfer.getFromTeam())) {
+            throw new BusinessException(ErrorCode.INVALID_STATE,
+                    String.format("Team of proposal (id=%d) cannot be the same as from team of transfer (id=%d)!",
+                            team.getId(), transfer.getId()));
         }
 
         if ((price == null) || (price <= 0)) {

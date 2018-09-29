@@ -2,6 +2,8 @@ package com.pp.toptal.soccermanager.entity;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Formula;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -74,6 +76,16 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
         this.lastName = lastName;
     }
     
+    private String fullName;
+    
+    @Formula("CASE WHEN (lastName IS NULL) THEN firstName ELSE CONCAT(firstName, ' ', lastName) END")  
+    public String getFullName() {
+        return fullName;
+    }
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
     private Integer age;
     
     @Column(name = "age", nullable = false)
@@ -146,17 +158,6 @@ public class PlayerEntity extends EntityBase<Long> implements Serializable {
     }
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
-    }
-    
-    @Transient
-    public String getFullName() {
-
-        String fullName = getFirstName();
-        if (getLastName() != null) {
-            fullName += " " + getLastName();
-        }
-        
-        return fullName;
     }
     
     @Override

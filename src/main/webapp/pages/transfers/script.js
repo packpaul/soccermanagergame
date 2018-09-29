@@ -10,6 +10,12 @@ if (! $.Manager) {
         isPrototype: true,
         onMessageUser: function(toUser) {
             var message = prompt("Ask user '" + toUser + "':", "I'd like to have ...");
+        },
+        select2players: function($select) {
+            $select.select2();
+        },
+        select2teams: function($select) {
+            $select.select2();
         }
     }
 }
@@ -34,10 +40,12 @@ $.Manager.pages.Transfers = {
 
             columns: [
                 {data: 'id', name: 'id'},
+                {data: 'playerId', name: 'playerId', orderable: false, visible: false},
                 {data: 'playerFullName', name: 'playerFullName', orderable: false},
                 {data: 'playerType', name: 'playerType', orderable: false},
                 {data: 'playerAge', name: 'playerAge', orderable: false},
                 {data: 'playerCountry', name: 'playerCountry', orderable: false},
+                {data: 'fromTeamId', name: 'fromTeamId', orderable: false, visible: false},
                 {data: 'fromTeamName', name: 'fromTeamName', orderable: false},
                 {data: 'fromTeamCountry', name: 'fromTeamCountry', orderable: false},
                 {data: 'playerValue', name: 'playerValue', orderable: false},
@@ -88,8 +96,10 @@ $.Manager.pages.Transfers = {
         this.$transfersTable = this.$page.find('#transfersTable').DataTable(dtConfig);
 
         this.initTransfersSearchBoxValues({
-            playerType: this.$transfersTable.column('playerType:name').search(),
+            playerId: this.$transfersTable.column('playerId:name').search(),
             playerCountry: this.$transfersTable.column('playerCountry:name').search(),
+            fromTeamId: this.$transfersTable.column('fromTeamId:name').search(),
+            fromTeamCountry: this.$transfersTable.column('fromTeamCountry:name').search(),
             playerValueMin: this.$transfersTable.column('').search(),
             playerValueMax: this.$transfersTable.column('').search(),
         });
@@ -129,11 +139,19 @@ $.Manager.pages.Transfers = {
     },
         
     onShow: function($page, params) {
-//      $page.find("select").select2();
+        if (! $page.prop('shown')) {
+            $page.prop('shown', true);
+            $.Manager.select2players(this.find$transfersSearchBox().find('#playerId'));
+            $.Manager.select2teams(this.find$transfersSearchBox().find('#fromTeamId'));
+        }
+    },
+    
+    find$transfersSearchBox: function() {
+        return this.$page.find('#transfersSearchBox'); 
     },
     
     initTransfersSearchBoxValues: function(searchValues) {
-        var $transfersSearchBox = this.$page.find('#transfersSearchBox');
+        var $transfersSearchBox = this.find$transfersSearchBox();
         
         Object.keys(searchValues).forEach(function(name) {
             $transfersSearchBox.find('#' + name).val(searchValues[name]);
@@ -145,10 +163,13 @@ $.Manager.pages.Transfers = {
     getTransfersSearchBoxValues: function() {
         var values = {};
     
-        var $transfersSearchBoxControls = this.$page.find('#transfersSearchBox .form-control');
+        var $transfersSearchBoxControls = this.find$transfersSearchBox().find('.form-control');
         $transfersSearchBoxControls.each(function(index, $control) {
             values[$control.id] = $control.value.trim();
-        }); 
+        });
+        
+        values.playerValue = (values.playerValueMin || values.playerValueMax) ?
+                (values.playerValueMin || '') + '<=' + (values.playerValueMax || '') : '';
         
         return values;
     },
@@ -229,11 +250,23 @@ $.Manager.pages.Transfers = {
     },
 
     getDataFromTransferProposalModal: function() {
-        return this.find$transferProposalModal().find('form').serializeObject();
+        var data = this.find$transferProposalModal().find('form').serializeObject();
+        console.debug(data);
+        
+        return data;
     },
     
     showTransferProposalModal: function() {
-        this.find$transferProposalModal().modal('show');  
+        var $transferProposalModal = this.find$transferProposalModal(); 
+
+        $transferProposalModal.modal('show');
+        
+        if (! $transferProposalModal.prop('shown')) {
+            $transferProposalModal.prop('shown', true)
+            $.Manager.select2teams($transferProposalModal.find('#toTeamId'));
+        }
+        
+        this.find$transferProposalModal().find('select').trigger("change");
     },
     
     hideTransferProposalModal: function() {
@@ -246,7 +279,7 @@ $.Manager.pages.Transfers = {
     },
     
     resetFilter: function() {
-        var $transfersSearchBox = this.$page.find('#transfersSearchBox');
+        var $transfersSearchBox = this.find$transfersSearchBox();
         $transfersSearchBox.find('.form-control').val('');
         $transfersSearchBox.find('select').trigger("change");
         this.filterTable();
