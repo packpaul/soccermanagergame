@@ -76,28 +76,26 @@ public class PlayerService {
             QPlayerEntity entity = QPlayerEntity.playerEntity;
             for (int i = 0; i < properties.length; i++) {
                 Predicate propPredicate;
-                if (Objects.equals(properties[i], entity.firstName.getMetadata().getName())) {
+                if (Objects.equals(properties[i], entity.fullName.getMetadata().getName())) {
                     String value = values[i];
                     if (! value.matches("[\\w\\* ]+")) {
                         throw new DataParameterException("Filter for 'firstName' should only contain [a-zA-Z_0-9* ] !");
                     }
                     value = value.replace('*', '%');
-                    propPredicate = entity.firstName.likeIgnoreCase(value);
-                } else if (Objects.equals(properties[i], entity.lastName.getMetadata().getName())) {
-                    String value = values[i];
-                    if (! value.matches("[\\w\\* ]+")) {
-                        throw new DataParameterException("Filter for 'lastName' should only contain [a-zA-Z_0-9* ] !");
-                    }
-                    value = value.replace('*', '%');
-                    propPredicate = entity.lastName.likeIgnoreCase(value);
-                } else if (Objects.equals(properties[i], entity.country.getMetadata().getName())) {
-                    Country value = Country.valueOf(values[i]);
-                    propPredicate = entity.country.eq(value);
+                    propPredicate = entity.fullName.likeIgnoreCase(value);
+                } else if (Objects.equals(properties[i], entity.id.getMetadata().getName())) {
+                    propPredicate = entity.id.eq(Long.valueOf(values[i]));
                 } else if (Objects.equals(properties[i], entity.playerType.getMetadata().getName())) {
                     PlayerType value = PlayerType.valueOf(values[i]);
                     propPredicate = entity.playerType.eq(value);
-                } else if ("teamId".equals(properties[i])) { // TODO: move to property name builder from metadata
+                } else if (Objects.equals(properties[i], entity.country.getMetadata().getName())) {
+                    Country value = Country.valueOf(values[i]);
+                    propPredicate = entity.country.eq(value);
+                } else if (PlayerSO.TEAM_ID_PROP_NAME.equals(properties[i])) {
                     propPredicate = entity.team.id.eq(Long.valueOf(values[i]));
+                } else if (PlayerSO.TEAM_COUNTRY_PROP_NAME.equals(properties[i])) {
+                    Country value = Country.valueOf(values[i]);
+                    propPredicate = entity.team.country.eq(value);
                 } else {
                     continue;
                 }

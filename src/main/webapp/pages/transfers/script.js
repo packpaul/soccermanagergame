@@ -250,10 +250,7 @@ $.Manager.pages.Transfers = {
     },
 
     getDataFromTransferProposalModal: function() {
-        var data = this.find$transferProposalModal().find('form').serializeObject();
-        console.debug(data);
-        
-        return data;
+        return this.find$transferProposalModal().find('form').serializeObject();
     },
     
     showTransferProposalModal: function() {

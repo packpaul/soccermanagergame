@@ -7,7 +7,13 @@ if (typeof jQuery == "undefined") {
 if (! $.Manager) {
     $.Manager = {
         pages: {},
-        isPrototype: true
+        isPrototype: true,
+        select2players: function($select) {
+            $select.select2();
+        },
+        select2teams: function($select) {
+            $select.select2();
+        }
     }
 }
 
@@ -31,8 +37,7 @@ $.Manager.pages.Players = {
 
             columns: [
                 {data: 'id', name: 'id'},
-                {data: 'firstName', name: 'firstName'},
-                {data: 'lastName', name: 'lastName'},
+                {data: 'fullName', name: 'fullName'},
                 {data: 'playerType', name: 'playerType'},
                 {data: 'age', name: 'age'},
                 {data: 'country', name: 'country'},
@@ -95,11 +100,11 @@ $.Manager.pages.Players = {
         this.$playersTable = this.$page.find('#playersTable').DataTable(dtConfig);
 
         this.initPlayersSearchBoxValues({
-            firstName: this.$playersTable.column('firstName:name').search(),
-            lastName: this.$playersTable.column('lastName:name').search(),
+            id: this.$playersTable.column('id:name').search(),
             playerType: this.$playersTable.column('playerType:name').search(),
             country: this.$playersTable.column('country:name').search(),
-            country: this.$playersTable.column('teamId:name').search()
+            teamId: this.$playersTable.column('teamId:name').search(),
+            country: this.$playersTable.column('teamCountry:name').search()
         });
         
         function createListQuery(data) {
@@ -138,7 +143,11 @@ $.Manager.pages.Players = {
         
     onShow: function($page, params) {
 
-//      $page.find("select").select2();
+        if (! $page.prop('shown')) {
+            $page.prop('shown', true);
+            $.Manager.select2players(this.find$playersSearchBox().find('#id'));
+            $.Manager.select2teams(this.find$playersSearchBox().find('#teamId'));
+        }
         
         const searchValues = this.getPlayersSearchBoxValues();
         
@@ -150,8 +159,12 @@ $.Manager.pages.Players = {
         }
     },
     
+    find$playersSearchBox: function() {
+        return this.$page.find('#playersSearchBox'); 
+    },
+    
     initPlayersSearchBoxValues: function(searchValues) {
-        var $playersSearchBox = this.$page.find('#playersSearchBox');
+        var $playersSearchBox = this.find$playersSearchBox();
         
         Object.keys(searchValues).forEach(function(name) {
             $playersSearchBox.find('#' + name).val(searchValues[name]);
@@ -163,7 +176,7 @@ $.Manager.pages.Players = {
     getPlayersSearchBoxValues: function() {
         var values = {};
     
-        var $playersSearchBoxControls = this.$page.find('#playersSearchBox .form-control');
+        var $playersSearchBoxControls = this.find$playersSearchBox().find('.form-control');
         $playersSearchBoxControls.each(function(index, $control) {
             values[$control.id] = $control.value.trim();
         }); 
@@ -323,6 +336,7 @@ $.Manager.pages.Players = {
     showEditPlayerModal: function(modalType) {
         
         var $editPlayerModal = this.find$editPlayerModal();
+
         var $editPlayerModalTitle = $editPlayerModal.find('.modal-title');
         var $editPlayerModalSave = $editPlayerModal.find('#saveSettingButton');
         
@@ -337,8 +351,15 @@ $.Manager.pages.Players = {
         } else if (modalType == 'add') {
             $editPlayerModalTitle.text('Add Player');
         }
-
-        $editPlayerModal.modal('show');  
+        
+        $editPlayerModal.modal('show');
+        
+        if (! $editPlayerModal.prop('shown')) {
+            $editPlayerModal.prop('shown', true)
+            $.Manager.select2teams($editPlayerModal.find('#teamId'));
+        }
+        
+        $editPlayerModal.find('select').trigger("change");
     },
     
     hideEditPlayerModal: function() {
@@ -351,7 +372,7 @@ $.Manager.pages.Players = {
     },
     
     resetFilter: function() {
-        var $playersSearchBox = this.$page.find('#playersSearchBox');
+        var $playersSearchBox = this.find$playersSearchBox();
         $playersSearchBox.find('.form-control').val('');
         $playersSearchBox.find('select').trigger("change");
         this.filterTable();

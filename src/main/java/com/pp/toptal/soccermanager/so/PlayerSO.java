@@ -17,9 +17,15 @@ public class PlayerSO implements Serializable {
     private String playerType;
     private Long value;
     private String country;
+    
+    public static final String TEAM_ID_PROP_NAME = "teamId";
     private Long teamId;
+
     private String teamName;
+    
+    public static final String TEAM_COUNTRY_PROP_NAME = "teamCountry";
     private String teamCountry;
+
     private Boolean inTransfer;
     
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

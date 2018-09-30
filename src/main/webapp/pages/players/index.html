@@ -64,15 +64,14 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-lg-3">
-                        <label>First name</label>
-                        <input id="firstName" type="text" class="form-control" placeholder="f.e. 'Joa*' ('*' wildcard can be used)" />
+                        <label>Player</label>
+                        <select id="id" class="form-control" value="">
+                            <option value="" th:if="false">-- no selection --</option>
+                            <option value="1" th:if="false">1 - Jordi di María, Brazil</option>
+                        </select>
                     </div>
-                    <div class="col-lg-3">
-                        <label>Last name</label>
-                        <input id="lastName" type="text" class="form-control" placeholder="f.e. 'Doe*' ('*' wildcard can be used)" />
-                    </div>
-                    <div class="col-lg-3">
-                        <label>Type</label>
+                    <div class="col-lg-2">
+                        <label>Player type</label>
                         <select id="playerType" class="form-control" value="">
                             <option value="">-- no selection --</option>
                             <option value="GOALKEEPER">goalkeeper</option>
@@ -81,8 +80,8 @@
                             <option value="ATTACKER">attacker</option>
                         </select>
                     </div>
-                    <div class="col-lg-3">
-                        <label>Country</label>
+                    <div class="col-lg-2">
+                        <label>Player country</label>
                         <select id="country" class="form-control" value="">
                             <option value="">-- no selection --</option>
                             <option value="FRANCE">France</option>
@@ -96,7 +95,23 @@
                     </div>
                     <div class="col-lg-3">
                         <label>Team</label>
-                        <input id="teamId" type="text" class="form-control" placeholder="team id" />
+                        <select id="teamId" class="form-control" value="">
+                            <option value="" th:if="false">-- no selection --</option>
+                            <option value="1" th:if="false">1 - Soccer Dream Team, Mexica</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2">
+                        <label>Team country</label>
+                        <select id="teamCountry" class="form-control" value="">
+                            <option value="">-- no selection --</option>
+                            <option value="FRANCE">France</option>
+                            <option value="CROATIA">Croatia</option>
+                            <option value="ENGLAND">England</option>
+                            <option value="BELGIUM">Belgium</option>
+                            <option value="BRAZIL">Brazil</option>
+                            <option value="GERMANY">Germany</option>
+                            <option value="ICELAND">Iceland</option>
+                        </select>
                     </div>
                 </div>
                 <hr/>
@@ -123,11 +138,10 @@
                     <thead>
                         <tr>
                             <th width="4%">ID</th>
-                            <th width="10%">Firstname</th>
-                            <th width="10%">Lastname</th>
-                            <th width="8%">Type</th>
+                            <th width="15%">Player Name</th>
+                            <th width="8%">Player Type</th>
                             <th width="4%">Age</th>
-                            <th width="6%">Country</th>
+                            <th width="6%">Player Country</th>
                             <th width="0%">Team ID</th>
                             <th width="14%">Team</th>
                             <th width="10%">Team Country</th>
@@ -142,8 +156,7 @@
                     </thead>
                     <tr th:if="false">
                         <td>1</td>
-                        <td>Jordi</td>
-                        <td>di María</td>
+                        <td>Jordi di María</td>
                         <td>attacker</td>
                         <td>28</td>
                         <td>Brazil</td>
@@ -235,8 +248,11 @@
                    <div class="form-group">
                         <label class="col-sm-3 control-label">Team</label>
                         <div class="col-sm-9">
-                            <input name="teamId" required="required" class="form-control"
-                                   placeholder="team id" />
+                            <select id="teamId" name="teamId" class="form-control" value="">
+                                <option value="" th:if="false">-- no selection --</option>
+                                <option value="1" th:if="false">1 - Soccer Dream Team, Mexica</option>
+                                <option value="2" th:if="false">2 - Soccer Sunshiny Team, USA</option>
+                            </select>
                         </div>
                    </div>
                    <div class="form-group">
