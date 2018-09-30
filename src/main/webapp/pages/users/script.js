@@ -7,7 +7,12 @@ if (typeof jQuery == "undefined") {
 if (! $.Manager) {
     $.Manager = {
         pages: {},
-        isPrototype: true
+        isPrototype: true,
+        select2: {
+            users: function($select) {
+                $select.select2();
+            }
+        }
     }
 }
 
@@ -37,7 +42,7 @@ $.Manager.pages.Users = {
                 {data: 'updateDate', name: 'updated'},
 //                    {defaultContent: '', orderable: false},
                 {data: null, orderable: false, searchable: false, render: function (info, type, row) {
-                        return '<a href="#" onclick="$.Manager.pages.Users.onEditUser(' + info.id + ')">edit user</a>';
+                        return '<a href="#" onclick="$.Manager.pages.Users.onEditUser(' + info.id + ')">edit</a>';
                     }
                 }
             ]
@@ -78,7 +83,7 @@ $.Manager.pages.Users = {
         this.$table = this.$page.find('#usersTable').DataTable(dtConfig);
 
         this.initSearchBoxValues({
-            username: this.$table.column('username:name').search(),
+            id: this.$table.column('id:name').search(),
             userType: this.$table.column('userType:name').search()
         });
         
@@ -117,6 +122,11 @@ $.Manager.pages.Users = {
     },
         
     onShow: function($page, params) {
+        if (! $page.prop('shown')) {
+            $page.prop('shown', true);
+            $.Manager.select2.users(this.$page.find('#searchBox').find('#id'));
+        }
+
 //        $page.find("select").select2();
     },
     
@@ -191,7 +201,9 @@ $.Manager.pages.Users = {
     },
     
     showEditUserModal: function() {
-        this.find$editUserModal().modal('show');
+        var $editUserModal = this.find$editUserModal(); 
+        $editUserModal.modal('show');
+        $editUserModal.find('select').trigger("change");
     },
     
     hideEditUserModal: function() {

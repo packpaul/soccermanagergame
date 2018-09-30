@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pp.toptal.soccermanager.auth.AuthService;
 import com.pp.toptal.soccermanager.entity.QUserEntity;
 import com.pp.toptal.soccermanager.entity.UserEntity;
 import com.pp.toptal.soccermanager.entity.UserType;
@@ -39,6 +40,9 @@ public class UserService {
     
     @Autowired
     private EntityToSOMapper toSoMapper;
+    
+    @Autowired
+    private AuthService authService;
     
     public List<UserSO> getUsers(SelectionParameters params) {
         return getUsersInternal(params).getValue0();
@@ -72,6 +76,8 @@ public class UserService {
                     }
                     value = value.replace('*', '%');
                     propPredicate = entity.username.likeIgnoreCase(value);
+                } else if (Objects.equals(properties[i], entity.id.getMetadata().getName())) {
+                    propPredicate = entity.id.eq(Long.valueOf(values[i]));
                 } else if (Objects.equals(properties[i], entity.userType.getMetadata().getName())) {
                     UserType value = UserType.valueOf(values[i]);
                     propPredicate = entity.userType.eq(value);
@@ -129,6 +135,10 @@ public class UserService {
 
     @Transactional
     public UserSO updateUser(Long userId, UserSO userData) {
+        
+        if (! authService.isCurrentUserType(UserType.ADMIN)) {
+            throw new BusinessException(ErrorCode.INVALID_STATE, "Only administrator can change users!");
+        }
         
         UserEntity user = findUser(userId);
         

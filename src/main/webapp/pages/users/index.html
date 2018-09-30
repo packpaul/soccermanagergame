@@ -65,7 +65,10 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <label>Username</label>
-                        <input id="username" type="text" class="form-control" placeholder="f.e. 'team*' ('*' wildcard can be used)" />
+                        <select id="id" class="form-control" value="">
+                            <option value="" th:if="false">-- no selection --</option>
+                            <option value="1" th:if="false">1 - Admin</option>
+                        </select>
                     </div>
                     <div class="col-lg-3">
                         <label>Role</label>
@@ -113,7 +116,7 @@
                         <td>2018-09-21</td>
                         <td></td>
                         <td>
-                            <a href="#" onclick="$.Manager.pages.Users.onEditUser(1);">edit user</a>
+                            <a href="#" onclick="$.Manager.pages.Users.onEditUser(1);">edit</a>
                         </td>
                     </tr>
                 </table>
@@ -150,6 +153,7 @@
                         <label class="col-sm-3 control-label">Role</label>
                         <div class="col-sm-9">
                             <select name="userType" class="form-control" value="">
+                                <option value="ADMIN">Administrator</option>
                                 <option value="TEAM_OWNER">Team Owner</option>
                                 <option value="LEAGUE_MANAGER">League Manager</option>
                             </select>
