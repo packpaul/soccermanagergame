@@ -11,11 +11,13 @@ if (! $.Manager) {
         onMessageUser: function(toUser) {
             var message = prompt("Ask user '" + toUser + "':", "I'd like to have ...");
         },
-        select2players: function($select) {
-            $select.select2();
-        },
-        select2teams: function($select) {
-            $select.select2();
+        select2: {
+            players: function($select) {
+                $select.select2();
+            },
+            teams: function($select) {
+                $select.select2();
+            }
         }
     }
 }
@@ -141,8 +143,8 @@ $.Manager.pages.Transfers = {
     onShow: function($page, params) {
         if (! $page.prop('shown')) {
             $page.prop('shown', true);
-            $.Manager.select2players(this.find$transfersSearchBox().find('#playerId'));
-            $.Manager.select2teams(this.find$transfersSearchBox().find('#fromTeamId'));
+            $.Manager.select2.players(this.find$transfersSearchBox().find('#playerId'));
+            $.Manager.select2.teams(this.find$transfersSearchBox().find('#fromTeamId'));
         }
     },
     
@@ -260,7 +262,7 @@ $.Manager.pages.Transfers = {
         
         if (! $transferProposalModal.prop('shown')) {
             $transferProposalModal.prop('shown', true)
-            $.Manager.select2teams($transferProposalModal.find('#toTeamId'));
+            $.Manager.select2.teams($transferProposalModal.find('#toTeamId'));
         }
         
         this.find$transferProposalModal().find('select').trigger("change");

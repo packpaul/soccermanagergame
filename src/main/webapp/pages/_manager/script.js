@@ -56,106 +56,121 @@ $.Manager = {
         );
     },
     
-    select2players($select) {
-        $select.select2({
-            ajax: {
-                url: "/player/list",
-                transport: function (params, success, failure) {
-                    $.rest.GET(params.url + params.data, success, failure);
-                },
-                data: function (params) {
-                    const pageSize = 30;
-                    var query = $.query.empty();
-                    query = query
-                         .set('filterProperties', params.term ? ['firstName'] : [])
-                         .set('filterValues', params.term ? ['*' + params.term + '*'] : [])
-                         .set('orderProperty', 'id')
-                         .set('orderDir', 'asc')
-                         .set('offset', params.page ? pageSize * (params.page - 1) : 0)
-                         .set('limit', pageSize)
-                         
-                    return query.toString();
-                },
-
-                processResults: function (data, params) {
-                    params.page = params.page || 1;
-
-                    return {
-                        results: data.data,
-                        pagination: {
-                            more: (30 * params.page < data.countFiltered)
-                        }
-                    };
-                },
-                cache: true
+    select2: {
+        _config: {
+            users: {
+                idUrl: "/user/",
+                listUrl: "/user/list",
+                filterProperty: "username",
+                renderCallback: function(user) {
+                    return user.id + ' - ' + user.username;
+                }
             },
-            placeholder: '-- no selection --',
-//            minimumInputLength: 2,
-            delay: 500,
-            templateResult: function(player) {
-                return player.id + ' - ' + player.fullName + ', ' + player.country;
-            },
-            escapeMarkup: function(markup) {
-                return markup;
-            },
-            templateSelection: function(player) {
-                if (player.id) {
+            players: {
+                idUrl: "/player/",
+                listUrl: "/player/list",
+                filterProperty: "fullName",
+                renderCallback: function(player) {
                     return player.id + ' - ' + player.fullName + ', ' + player.country;
                 }
-                return player.text;
-            }
-        });
-    },
-    
-    select2teams($select) {
-        $select.select2({
-            ajax: {
-                url: "/team/list",
-                transport: function (params, success, failure) {
-                    $.rest.GET(params.url + params.data, success, failure);
-                },
-                data: function (params) {
-                    const pageSize = 30;
-                    var query = $.query.empty();
-                    query = query
-                         .set('filterProperties', params.term ? ['teamName'] : [])
-                         .set('filterValues', params.term ? ['*' + params.term + '*'] : [])
-                         .set('orderProperty', 'id')
-                         .set('orderDir', 'asc')
-                         .set('offset', params.page ? pageSize * (params.page - 1) : 0)
-                         .set('limit', pageSize)
-                         
-                    return query.toString();
-                },
-
-                processResults: function (data, params) {
-                    params.page = params.page || 1;
-
-                    return {
-                        results: data.data,
-                        pagination: {
-                            more: (30 * params.page < data.countFiltered)
-                        }
-                    };
-                },
-                cache: true
             },
-            placeholder: '-- no selection --',
-//            minimumInputLength: 2,
-            delay: 500,
-            templateResult: function(team) {
-                return team.id + ' - ' + team.teamName + ', ' + team.country;
-            },
-            escapeMarkup: function(markup) {
-                return markup;
-            },
-            templateSelection: function(team) {
-                if (team.id) {
+            teams: {
+                idUrl: "/team/",
+                listUrl: "/team/list",
+                filterProperty: "teamName",
+                renderCallback: function(team) {
                     return team.id + ' - ' + team.teamName + ', ' + team.country;
                 }
-                return team.text;
             }
-        });
+        },
+
+        users: function($select) {
+            $select.prop('select2type', 'users');
+            this._create($select);
+        },
+
+        players: function($select) {
+            $select.prop('select2type', 'players');
+            this._create($select);
+        },
+
+        teams: function($select) {
+            $select.prop('select2type', 'teams');
+            this._create($select);
+        },
+
+        select: function($select, id) {
+            const select2type = $select.prop('select2type');
+            const url = this._config[select2type].idUrl;
+            const renderCallback = this._config[select2type].renderCallback;            
+
+            $.rest.GET(url + id,
+                    function(respData) {
+                    if (respData != undefined) {
+                        const optionSel = "option[value='" + respData.id + "']"; 
+                        $select.children(optionSel).remove();
+                        $select.append(new Option(renderCallback(respData), respData.id, true, true));
+                        $select.trigger('change');
+                    }
+                }
+            );
+        },
+
+        _create: function($select) {
+            const select2type = $select.prop('select2type');
+            const url = this._config[select2type].listUrl;
+            const filterProperty = this._config[select2type].filterProperty;
+            const renderCallback = this._config[select2type].renderCallback;
+            
+            $select.select2({
+                ajax: {
+                    url: url,
+                    transport: function (params, success, failure) {
+                        $.rest.GET(params.url + params.data, success, failure);
+                    },
+                    data: function (params) {
+                        const pageSize = 30;
+                        var query = $.query.empty();
+                        query = query
+                             .set('filterProperties', params.term ? [filterProperty] : [])
+                             .set('filterValues', params.term ? ['*' + params.term + '*'] : [])
+                             .set('orderProperty', 'id')
+                             .set('orderDir', 'asc')
+                             .set('offset', params.page ? pageSize * (params.page - 1) : 0)
+                             .set('limit', pageSize)
+                             
+                        return query.toString();
+                    },
+
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.data,
+                            pagination: {
+                                more: (30 * params.page < data.countFiltered)
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: '-- no selection --',
+//                minimumInputLength: 2,
+                delay: 500,
+                templateResult: function(data) {
+                    return renderCallback(data);
+                },
+                escapeMarkup: function(markup) {
+                    return markup;
+                },
+                templateSelection: function(data) {
+                    if (data.id) {
+                        return data.text ? data.text : renderCallback(data);
+                    }
+                    return data.text;
+                }
+            });
+        }
     }
 
 };

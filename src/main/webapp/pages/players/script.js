@@ -8,11 +8,16 @@ if (! $.Manager) {
     $.Manager = {
         pages: {},
         isPrototype: true,
-        select2players: function($select) {
-            $select.select2();
-        },
-        select2teams: function($select) {
-            $select.select2();
+        select2: {
+            players: function($select) {
+                $select.select2();
+            },
+            teams: function($select) {
+                $select.select2();
+            },
+            select: function($select, id) {
+                $select.val(id).trigger("change");
+            }
         }
     }
 }
@@ -145,8 +150,8 @@ $.Manager.pages.Players = {
 
         if (! $page.prop('shown')) {
             $page.prop('shown', true);
-            $.Manager.select2players(this.find$playersSearchBox().find('#id'));
-            $.Manager.select2teams(this.find$playersSearchBox().find('#teamId'));
+            $.Manager.select2.players(this.find$playersSearchBox().find('#id'));
+            $.Manager.select2.teams(this.find$playersSearchBox().find('#teamId'));
         }
         
         const searchValues = this.getPlayersSearchBoxValues();
@@ -325,7 +330,11 @@ $.Manager.pages.Players = {
     },
     
     setDataToEditPlayerModal: function(data) {
+//        console.debug(data);
         var $editPlayerModalForm = this.find$editPlayerModal().find('form');
+        if (data.id) {
+            $.Manager.select2.select($editPlayerModalForm.find('#teamId'), data.teamId); 
+        }
         $editPlayerModalForm.deserializeObject(data);
     },
 
@@ -356,7 +365,7 @@ $.Manager.pages.Players = {
         
         if (! $editPlayerModal.prop('shown')) {
             $editPlayerModal.prop('shown', true)
-            $.Manager.select2teams($editPlayerModal.find('#teamId'));
+            $.Manager.select2.teams($editPlayerModal.find('#teamId'));
         }
         
         $editPlayerModal.find('select').trigger("change");
