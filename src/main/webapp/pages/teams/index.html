@@ -67,8 +67,11 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-lg-4">
-                        <label>Name</label>
-                        <input id="teamName" type="text" class="form-control" placeholder="f.e. 'team*' ('*' wildcard can be used)" />
+                        <label>Team</label>
+                        <select id="id" class="form-control" value="">
+                            <option value="" th:if="false">-- no selection --</option>
+                            <option value="1" th:if="false">1 - Soccer Dream Team, Belgium</option>
+                        </select>
                     </div>
                     <div class="col-lg-3">
                         <label>Country</label>
@@ -85,7 +88,10 @@
                     </div>
                     <div class="col-lg-4">
                         <label>Owner</label>
-                        <input id="owner" type="text" class="form-control" placeholder="f.e. 'team*' ('*' wildcard can be used)" />
+                        <select id="ownerId" class="form-control" value="">
+                            <option value="" th:if="false">-- no selection --</option>
+                            <option value="2" th:if="false">2 - jose_owner</option>
+                        </select>
                     </div>
                     <div class="col-lg-1">
                     </div>
@@ -116,6 +122,7 @@
                             <th width="7%">ID</th>
                             <th width="18%">Name</th>
                             <th width="12%">Country</th>
+                            <th width="0%">Owner ID</th>
                             <th width="13%">Owner</th>
                             <th width="10%">Value</th>
                             <th width="10%">Balance</th>
@@ -128,6 +135,7 @@
                         <td>1</td>
                         <td>Soccer Dream Team</td>
                         <td>Belgium</td>
+                        <td>2</td>
                         <td>jose_owner</td>
                         <td>$20 000 000</td>
                         <td>$5 000 000</td>
@@ -188,8 +196,10 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Owner</label>
                         <div class="col-sm-9">
-                            <input name="owner" required="required" class="form-control"
-                                   placeholder="username" />
+                            <select id="ownerId" name="ownerId" class="form-control" value="">
+                                <option value="" th:if="false">-- no selection --</option>
+                                <option value="2" th:if="false">2 - jose_owner</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">

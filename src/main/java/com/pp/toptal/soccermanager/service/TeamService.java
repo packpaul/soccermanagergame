@@ -162,6 +162,7 @@ public class TeamService {
                 sort);
         
         Predicate predicate = null;
+
         if (params.getFilterProperties() != null) {
             String[] properties = params.getFilterProperties();
             String[] values = params.getFilterValues();
@@ -175,16 +176,13 @@ public class TeamService {
                     }
                     value = value.replace('*', '%');
                     propPredicate = entity.teamName.likeIgnoreCase(value);
+                } else if (Objects.equals(properties[i], entity.id.getMetadata().getName())) {
+                    propPredicate = entity.id.eq(Long.valueOf(values[i]));
                 } else if (Objects.equals(properties[i], entity.country.getMetadata().getName())) {
                     Country value = Country.valueOf(values[i]);
                     propPredicate = entity.country.eq(value);
-                } else if (Objects.equals(properties[i], entity.owner.getMetadata().getName())) {
-                    String value = values[i];
-                    if (! value.matches("[\\w\\*]+")) {
-                        throw new DataParameterException("Filter for 'owner' should only contain [a-zA-Z_0-9*] !");
-                    }
-                    value = value.replace('*', '%');
-                    propPredicate = entity.owner.username.likeIgnoreCase(value);
+                } else if (TeamSO.OWNER_ID_PROP_NAME.equals(properties[i])) {
+                    propPredicate = entity.owner.id.eq(Long.valueOf(values[i]));
                 } else {
                     continue;
                 }
@@ -252,14 +250,14 @@ public class TeamService {
             throw new DataParameterException("Team country should be provided!");
         }
             
-        UserEntity owner = userRepo.findOneByUsername(teamData.getOwner());
+        UserEntity owner = userRepo.findOne(teamData.getOwnerId());
         if (owner == null) {
             throw new BusinessException(ErrorCode.OBJECT_NOT_FOUND,
-                    String.format("User (username='%s') not found!", teamData.getOwner()));
+                    String.format("User (id=%d) not found!", teamData.getOwnerId()));
         }
         if (owner.getUserType() == UserType.ADMIN) {
             throw new DataParameterException(
-                    String.format("Administrator (username='%s') cannot have teams!", teamData.getOwner()));
+                    String.format("Administrator (username='%s') cannot have teams!", owner.getUsername()));
         }
         
         if ((teamData.getBalance() == null) || (teamData.getBalance() < 0)) {
@@ -290,8 +288,7 @@ public class TeamService {
                 .map(String::trim).filter((tn) -> (! Objects.equals(tn, team.getTeamName()))).orElse(null);
         Country country = Optional.ofNullable(teamData.getCountry())
                 .map(Country::valueOf).filter((c) -> (c != team.getCountry())).orElse(null);
-        String owner = Optional.ofNullable(teamData.getOwner())
-                .filter((o) -> (! Objects.equals(o, team.getOwner().getUsername()))).orElse(null);
+        Long ownerId = (! Objects.equals(teamData.getOwnerId(), team.getOwner().getId())) ? teamData.getOwnerId() : null;
         Long balance = (! Objects.equals(teamData.getBalance(), team.getBalance())) ? teamData.getBalance() : null;
         
         boolean isChanged = false;
@@ -304,17 +301,17 @@ public class TeamService {
             team.setCountry(country);
             isChanged = true;
         }
-        if (owner != null) {
-            UserEntity ownerEntity = userRepo.findOneByUsername(owner);
-            if (ownerEntity == null) {
+        if (ownerId != null) {
+            UserEntity owner = userRepo.findOne(ownerId);
+            if (owner == null) {
                 throw new BusinessException(ErrorCode.OBJECT_NOT_FOUND,
-                        String.format("User (username='%s') not found!", owner));
+                        String.format("User (id=%d) not found!", ownerId));
             }
-            if (ownerEntity.getUserType() == UserType.ADMIN) {
+            if (owner.getUserType() == UserType.ADMIN) {
                 throw new DataParameterException(
-                        String.format("Administrator (username='%s') cannot have teams!", teamData.getOwner()));
+                        String.format("Administrator (username='%s') cannot have teams!", owner.getUsername()));
             }
-            team.setOwner(ownerEntity);
+            team.setOwner(owner);
             isChanged = true;
         }
         if (balance != null) {

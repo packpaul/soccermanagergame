@@ -332,7 +332,7 @@ $.Manager.pages.Players = {
     setDataToEditPlayerModal: function(data) {
 //        console.debug(data);
         var $editPlayerModalForm = this.find$editPlayerModal().find('form');
-        if (data.id) {
+        if (data.teamId) {
             $.Manager.select2.select($editPlayerModalForm.find('#teamId'), data.teamId); 
         }
         $editPlayerModalForm.deserializeObject(data);

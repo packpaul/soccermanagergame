@@ -7,7 +7,18 @@ if (typeof jQuery == "undefined") {
 if (! $.Manager) {
     $.Manager = {
         pages: {},
-        isPrototype: true
+        isPrototype: true,
+        select2: {
+            users: function($select) {
+                $select.select2();
+            },
+            teams: function($select) {
+                $select.select2();
+            },
+            select: function($select, id) {
+                $select.val(id).trigger("change");
+            }
+        }
     }
 }
 
@@ -33,7 +44,8 @@ $.Manager.pages.Teams = {
                 {data: 'id', name: 'id'},
                 {data: 'teamName', name: 'teamName'},
                 {data: 'country', name: 'country'},
-                {data: 'owner', name: 'owner'},
+                {data: 'ownerId', name: 'ownerId', visible: false},
+                {data: 'ownerUsername', name: 'ownerUsername'},
                 {data: 'value', name: 'value', orderable: false},
                 {data: 'balance', name: 'balance'},
                 {data: 'creationDate', name: 'created'},
@@ -90,7 +102,7 @@ $.Manager.pages.Teams = {
         this.initTeamsSearchBoxValues({
             teamName: this.$teamsTable.column('teamName:name').search(),
             country: this.$teamsTable.column('country:name').search(),
-            owner: this.$teamsTable.column('owner:name').search()
+            ownerId: this.$teamsTable.column('ownerId:name').search()
         });
         
         function createListQuery(data) {
@@ -128,7 +140,12 @@ $.Manager.pages.Teams = {
     },
         
     onShow: function($page, params) {
-//      $page.find("select").select2();
+        if (! $page.prop('shown')) {
+            $page.prop('shown', true);
+            var $teamsSearchBox = this.$page.find('#teamsSearchBox');
+            $.Manager.select2.teams($teamsSearchBox.find('#id'));
+            $.Manager.select2.users($teamsSearchBox.find('#ownerId'));
+        }
     },
     
     initTeamsSearchBoxValues: function(searchValues) {
@@ -176,7 +193,7 @@ $.Manager.pages.Teams = {
                 id: teamId,
                 teamName: 'Soccer Dream Team',
                 country: 'BELGIUM',
-                owner: 'jose_owner',
+                ownerId: 2,
                 value: 20000000,
                 balance: 5000000
             });
@@ -221,7 +238,7 @@ $.Manager.pages.Teams = {
                 id: teamId,
                 teamName: 'Soccer Dream Team',
                 country: 'BELGIUM',
-                owner: 'jose_owner',
+                ownerId: 2,
                 value: 20000000,
                 balance: 5000000
             });
@@ -264,6 +281,11 @@ $.Manager.pages.Teams = {
     },
     
     setDataToEditTeamModal: function(data) {
+//        console.debug(data);
+        var $editTeamModalForm = this.find$editTeamModal().find('form');
+        if (data.ownerId) {
+            $.Manager.select2.select($editTeamModalForm.find('#ownerId'), data.ownerId); 
+        }
         this.find$editTeamModal().find('form').deserializeObject(data);
     },
 
@@ -288,8 +310,15 @@ $.Manager.pages.Teams = {
         } else if (modalType == 'add') {
             $editTeamModalTitle.text('Add Team');
         }
-
-        $editTeamModal.modal('show');  
+        
+        $editTeamModal.modal('show');
+        
+        if (! $editTeamModal.prop('shown')) {
+            $editTeamModal.prop('shown', true)
+            $.Manager.select2.users($editTeamModal.find('#ownerId'));
+        }
+        
+        $editTeamModal.find('select').trigger("change");
     },
     
     hideEditTeamModal: function() {

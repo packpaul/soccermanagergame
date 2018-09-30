@@ -36,7 +36,8 @@ public class EntityToSOMapper {
         to.setCountry(from.getCountry().name());
         to.setValue(from.getValue());
         to.setBalance(from.getBalance());
-        to.setOwner(from.getOwner().getUsername());
+        to.setOwnerId(from.getOwner().getId());
+        to.setOwnerUsename(from.getOwner().getUsername());
         to.setCreationDate(from.getCreationDate());
         to.setUpdateDate(from.getUpdateDate());
 

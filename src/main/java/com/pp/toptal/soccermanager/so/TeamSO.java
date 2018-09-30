@@ -12,7 +12,11 @@ public class TeamSO implements Serializable {
     private Long id;
     private String teamName;
     private String country;
-    private String owner;
+    
+    public static final String OWNER_ID_PROP_NAME = "ownerId";
+    private Long ownerId;
+    
+    private String ownerUsername;
     private Long value;
     private Long balance;
     
@@ -42,12 +46,19 @@ public class TeamSO implements Serializable {
     public void setCountry(String country) {
         this.country = country;
     }
-
-    public String getOwner() {
-        return owner;
+    
+    public Long getOwnerId() {
+        return ownerId;
     }
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
+    }
+    
+    public String getOwnerUsername() {
+        return ownerUsername;
+    }
+    public void setOwnerUsename(String ownerUsername) {
+        this.ownerUsername = ownerUsername;
     }
 
     public Long getValue() {
