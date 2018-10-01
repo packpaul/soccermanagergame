@@ -3,6 +3,7 @@ package com.pp.toptal.soccermanager.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,11 +15,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pp.toptal.soccermanager.auth.AuthService;
 import com.pp.toptal.soccermanager.entity.Country;
 import com.pp.toptal.soccermanager.entity.PlayerEntity;
 import com.pp.toptal.soccermanager.entity.QTransferEntity;
 import com.pp.toptal.soccermanager.entity.TransferEntity;
+import com.pp.toptal.soccermanager.entity.UserType;
 import com.pp.toptal.soccermanager.entity.TransferEntity.TransferStatus;
+import com.pp.toptal.soccermanager.entity.UserEntity;
 import com.pp.toptal.soccermanager.exception.BusinessException;
 import com.pp.toptal.soccermanager.exception.DataParameterException;
 import com.pp.toptal.soccermanager.exception.ErrorCode;
@@ -26,6 +30,7 @@ import com.pp.toptal.soccermanager.mapper.EntityToSOMapper;
 import com.pp.toptal.soccermanager.repo.OffsetBasedPageRequest;
 import com.pp.toptal.soccermanager.repo.PlayerRepo;
 import com.pp.toptal.soccermanager.repo.TransferRepo;
+import com.pp.toptal.soccermanager.repo.UserRepo;
 import com.pp.toptal.soccermanager.so.TableDataSO;
 import com.pp.toptal.soccermanager.so.TransferSO;
 import com.querydsl.core.types.ExpressionUtils;
@@ -41,6 +46,12 @@ public class TransferService {
     
     @Autowired
     private TransferRepo transferRepo;
+    
+    @Autowired
+    private AuthService authService;
+    
+    @Autowired
+    private UserRepo userRepo;
     
     @Autowired
     private EntityToSOMapper toSoMapper;
@@ -152,6 +163,13 @@ public class TransferService {
         if (player == null) {
             throw new BusinessException(ErrorCode.OBJECT_NOT_FOUND,
                     String.format("Player (id=%d) not found!", playerId));
+        }
+        if (authService.isCurrentUserType(UserType.TEAM_OWNER)) {
+            UserEntity currentUser = userRepo.findOneByUsername(authService.getCurrentUsername());
+            if (! Objects.equals(player.getTeam().getOwner(), currentUser)) {
+                throw new BusinessException(ErrorCode.INVALID_STATE,
+                        "Team owners cannot initiate transfers for players from non-owned teams!");
+            }
         }
         if (player.isInTransfer() ||
                 transferRepo.existsByPlayerAndFromTeamAndStatus(player, player.getTeam(), TransferStatus.OPEN)) {
