@@ -2,6 +2,8 @@ package com.pp.toptal.soccermanager.entity;
 
 import javax.persistence.*;
 
+import com.querydsl.core.annotations.QueryInit;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -27,7 +29,8 @@ public class ProposalEntity extends EntityBase<Long> implements Serializable {
     public Long getId() {
         return super.getId();
     }
-    
+
+    @QueryInit("fromTeam.owner")
     private TransferEntity transfer;
 
     @ManyToOne(fetch = FetchType.EAGER)

@@ -92,7 +92,7 @@ public class ProposalService {
         if (authService.isCurrentUserType(UserType.TEAM_OWNER)) {
             UserEntity currentUser = userRepo.findOneByUsername(authService.getCurrentUsername());
             predicate = ExpressionUtils.and(predicate,
-                    QProposalEntity.proposalEntity.toTeam.owner.eq(currentUser));
+                    QProposalEntity.proposalEntity.transfer.fromTeam.owner.eq(currentUser));
         }
         
         if (params.getFilterProperties() != null) {
@@ -168,7 +168,7 @@ public class ProposalService {
         
         if (authService.isCurrentUserType(UserType.TEAM_OWNER)) {
             UserEntity currentUser = userRepo.findOneByUsername(authService.getCurrentUsername());
-            if (! Objects.equals(currentUser, proposal.getToTeam().getOwner())) {
+            if (! Objects.equals(currentUser, proposal.getTransfer().getFromTeam().getOwner())) {
                 throw new BusinessException(ErrorCode.INVALID_STATE, String.format(
                         "Team owner '%s' has no rights to access proposal (id=%d)!",
                         currentUser.getUsername(), proposal.getId()));                                
@@ -189,7 +189,7 @@ public class ProposalService {
     }
     
     @Transactional
-    public ProposalSO createProposal(Long transferId, Long teamId, Long price) {
+    public ProposalSO createProposal(Long transferId, Long toTeamId, Long price) {
         
         TransferEntity transfer = transferRepo.findOne(transferId);
         if (transfer == null) {
@@ -201,29 +201,40 @@ public class ProposalService {
                     String.format("Proposal for transfer (id=%d) cannot be created, transfer should be open!", transferId));
         }
 
-        TeamEntity team = (teamId != null) ? teamRepo.findOne(teamId) : null;
-        if (team == null) {
-            throw new BusinessException(ErrorCode.OBJECT_NOT_FOUND,
-                    String.format("Team (id=%d) not found!", teamId));
+        if (toTeamId == null) {
+            throw new DataParameterException("Destination team should be present in the proposal!");
         }
-        if (team.equals(transfer.getFromTeam())) {
+        TeamEntity toTeam = teamRepo.findOne(toTeamId);
+        if (toTeam == null) {
+            throw new BusinessException(ErrorCode.OBJECT_NOT_FOUND,
+                    String.format("Team (id=%d) not found!", toTeamId));
+        }
+        if (authService.isCurrentUserType(UserType.TEAM_OWNER)) {
+            UserEntity currentUser = userRepo.findOneByUsername(authService.getCurrentUsername());
+            if (! Objects.equals(currentUser, toTeam.getOwner())) {
+                throw new BusinessException(ErrorCode.INVALID_STATE, String.format(
+                        "Team owner '%s' cannot create proposal to non-owned team (id=%d)!",
+                        currentUser.getUsername(), toTeam.getId()));                                
+            }
+        }
+        if (toTeam.equals(transfer.getFromTeam())) {
             throw new BusinessException(ErrorCode.INVALID_STATE,
                     String.format("Team of proposal (id=%d) cannot be the same as from team of transfer (id=%d)!",
-                            team.getId(), transfer.getId()));
+                            toTeam.getId(), transfer.getId()));
         }
 
         if ((price == null) || (price <= 0)) {
             throw new DataParameterException("Price for proposal should be present and positive!");
         }
         
-        LOGGER.info("Creating proposal for transfer (id={}) and team (id={})...", transferId, teamId);
+        LOGGER.info("Creating proposal for transfer (id={}) and team (id={})...", transferId, toTeamId);
 
-        ProposalEntity proposal = proposalRepo.save(new ProposalEntity(transfer, team, price));
+        ProposalEntity proposal = proposalRepo.save(new ProposalEntity(transfer, toTeam, price));
         
         return toSoMapper.map(proposal, new ProposalSO());
     }
 
-    public void removeProposal(Long proposalId) {
+    public void cancelProposal(Long proposalId) {
         
         ProposalEntity proposal = findProposal(proposalId);
         
@@ -231,14 +242,32 @@ public class ProposalService {
             UserEntity currentUser = userRepo.findOneByUsername(authService.getCurrentUsername());
             if (! Objects.equals(currentUser, proposal.getToTeam().getOwner())) {
                 throw new BusinessException(ErrorCode.INVALID_STATE, String.format(
-                        "Team owner '%s' has no rights to remove proposal (id=%d)!",
+                        "Team owner '%s' cannot cancel proposal (id=%d) that was created by others!",
+                        currentUser.getUsername()));                                
+            }
+        }
+
+        proposalRepo.delete(proposal.getId());
+        
+        LOGGER.info("Proposal (id={}) was canceled.", proposal.getId());
+    }
+    
+    public void declineProposal(Long proposalId) {
+        
+        ProposalEntity proposal = findProposal(proposalId);
+        
+        if (authService.isCurrentUserType(UserType.TEAM_OWNER)) {
+            UserEntity currentUser = userRepo.findOneByUsername(authService.getCurrentUsername());
+            if (! Objects.equals(currentUser, proposal.getTransfer().getFromTeam().getOwner())) {
+                throw new BusinessException(ErrorCode.INVALID_STATE, String.format(
+                        "Team owner '%s' cannot decline proposal (id=%d) targeted to others!",
                         currentUser.getUsername(), proposal.getId()));                                
             }
         }
 
         proposalRepo.delete(proposal.getId());
         
-        LOGGER.info("Proposal (id={}) was deleted.", proposal.getId());
+        LOGGER.info("Proposal (id={}) was canceled.", proposal.getId());
     }
 
     @Transactional
@@ -248,9 +277,9 @@ public class ProposalService {
         
         if (authService.isCurrentUserType(UserType.TEAM_OWNER)) {
             UserEntity currentUser = userRepo.findOneByUsername(authService.getCurrentUsername());
-            if (! Objects.equals(currentUser, proposal.getToTeam().getOwner())) {
+            if (! Objects.equals(currentUser, proposal.getTransfer().getFromTeam().getOwner())) {
                 throw new BusinessException(ErrorCode.INVALID_STATE, String.format(
-                        "Team owner '%s' has no rights to remove proposal (id=%d)!",
+                        "Team owner '%s' has no rights to accept proposal (id=%d)!",
                         currentUser.getUsername(), proposal.getId()));                                
             }
         }

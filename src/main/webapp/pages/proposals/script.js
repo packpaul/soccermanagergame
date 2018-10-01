@@ -57,6 +57,7 @@ $.Manager.pages.Proposals = {
 //                    {defaultContent: '', orderable: false},
                 {data: null, orderable: false, searchable: false, render: function (info, type, row) {
                         var action = '<a href="#" onclick="$.Manager.pages.Proposals.onAcceptProposal(' + info.id + ');"> accept</a>';
+                        action += '<a href="#" onclick="$.Manager.pages.Proposals.onDeclineProposal(' + info.id + ');"> decline</a>'
                         action += '<a href="#" onclick="$.Manager.pages.Proposals.onCancelProposal(' + info.id + ');"> cancel</a>'
                         action += '<a href="#" onclick="' + "$.Manager.onMessageUser('" + info.toTeamOwnerUsername + "');" + '"> reply</a>'
                         return action;
@@ -229,6 +230,29 @@ $.Manager.pages.Proposals = {
         
         $.rest.POST(
             '/proposal/' + proposalId + '/accept',
+            null,
+            function() {
+                self.$proposalsTable.draw();
+            },
+            function(status, respData) {
+                alert(respData.error_description);
+            }
+        );
+    },
+
+    onDeclineProposal: function(proposalId) {
+        if (! confirm("You are going to decline proposal (id=" + proposalId + "). Please confirm it!")) {
+            return;
+        }
+        
+        if ($.Manager.isPrototype) {
+            return;
+        }
+        
+        const self = this;
+        
+        $.rest.POST(
+            '/proposal/' + proposalId + '/decline',
             null,
             function() {
                 self.$proposalsTable.draw();

@@ -84,7 +84,7 @@ public class ManagerProposalController {
     public NullSO cancelProposal(
             @PathVariable("proposalId") Long proposalId) {
           
-        proposalService.removeProposal(proposalId);
+        proposalService.cancelProposal(proposalId);
         
         return NullSO.INSTANCE;
     }
@@ -94,6 +94,15 @@ public class ManagerProposalController {
             @PathVariable("proposalId") Long proposalId) {
           
         proposalService.acceptProposal(proposalId);
+        
+        return NullSO.INSTANCE;
+    }
+    
+    @PostMapping("/{proposalId}/decline")
+    public NullSO declineProposal(
+            @PathVariable("proposalId") Long proposalId) {
+          
+        proposalService.declineProposal(proposalId);
         
         return NullSO.INSTANCE;
     }

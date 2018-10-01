@@ -196,6 +196,13 @@ public class TransferService {
             throw new BusinessException(ErrorCode.INVALID_STATE,
                     String.format("Transfer (id=%d) is not valid for cancelation!", transferId));            
         }
+        if (authService.isCurrentUserType(UserType.TEAM_OWNER)) {
+            UserEntity currentUser = userRepo.findOneByUsername(authService.getCurrentUsername());
+            if (! Objects.equals(transfer.getFromTeam().getOwner(), currentUser)) {
+                throw new BusinessException(ErrorCode.INVALID_STATE,
+                        "Team owners cannot cancel transfers for players from non-owned teams!");
+            }
+        }
         
         transfer.setStatus(TransferStatus.CANCELED);
         transfer.setUpdateDate(new Date());
