@@ -56,9 +56,12 @@ $.Manager.pages.Transfers = {
                 {data: 'creationDate', name: 'creationDate'},
 //                    {defaultContent: '', orderable: false},
                 {data: null, orderable: false, searchable: false, render: function (info, type, row) {
-                        var action = '<a href="#" onclick="$.Manager.pages.Transfers.onDoTransferProposal(' + info.id + ');"> propose</a>';
+                        var action = '';
+                        if (($.Manager.userType != 'TEAM_OWNER') || (info.fromTeamOwnerUserId != $.Manager.userId)) {
+                            action = '<a href="#" onclick="$.Manager.pages.Transfers.onDoTransferProposal(' + info.id + ');"> propose</a>';
+                            action += '<a href="#" onclick="' + "$.Manager.onMessageUser('" + info.fromTeamOwnerUsername + "');" + '"> ask</a>'
+                        }
                         action += '<a href="#" onclick="$.Manager.pages.Transfers.onCancelTransfer(' + info.id + ');"> cancel</a>'
-                        action += '<a href="#" onclick="' + "$.Manager.onMessageUser('" + info.fromTeamOwnerUsername + "');" + '"> ask</a>'
                         return action;
                     }
                 }

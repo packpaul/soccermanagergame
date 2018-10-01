@@ -43,6 +43,7 @@ public class ProposalEntity extends EntityBase<Long> implements Serializable {
         this.transfer = transfer;
     }
 
+    @QueryInit("owner")
     private TeamEntity toTeam;
     
     @ManyToOne(fetch = FetchType.EAGER)

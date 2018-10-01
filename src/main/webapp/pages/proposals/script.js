@@ -56,10 +56,15 @@ $.Manager.pages.Proposals = {
                 {data: 'creationDate', name: 'creationDate'},
 //                    {defaultContent: '', orderable: false},
                 {data: null, orderable: false, searchable: false, render: function (info, type, row) {
-                        var action = '<a href="#" onclick="$.Manager.pages.Proposals.onAcceptProposal(' + info.id + ');"> accept</a>';
-                        action += '<a href="#" onclick="$.Manager.pages.Proposals.onDeclineProposal(' + info.id + ');"> decline</a>'
-                        action += '<a href="#" onclick="$.Manager.pages.Proposals.onCancelProposal(' + info.id + ');"> cancel</a>'
-                        action += '<a href="#" onclick="' + "$.Manager.onMessageUser('" + info.toTeamOwnerUsername + "');" + '"> reply</a>'
+                        var action = '';
+                        if (($.Manager.userType != 'TEAM_OWNER') || (info.transferFromTeamOwnerUserId == $.Manager.userId)) {
+                            action += '<a href="#" onclick="$.Manager.pages.Proposals.onAcceptProposal(' + info.id + ');"> accept</a>';
+                            action += '<a href="#" onclick="$.Manager.pages.Proposals.onDeclineProposal(' + info.id + ');"> decline</a>';
+                            action += '<a href="#" onclick="' + "$.Manager.onMessageUser('" + info.toTeamOwnerUsername + "');" + '"> reply</a>';
+                        }
+                        if (($.Manager.userType != 'TEAM_OWNER') || (info.toTeamOwnerUserId == $.Manager.userId)) {
+                            action += '<a href="#" onclick="$.Manager.pages.Proposals.onCancelProposal(' + info.id + ');"> cancel</a>';
+                        }
                         return action;
                     }
                 }

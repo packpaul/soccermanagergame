@@ -22,11 +22,14 @@ public class ProposalSO implements Serializable {
     private String playerCountry;
     private Long playerValue;
 
+    private Long transferFromTeamOwnerUserId;
+    
     public static final String TO_TEAM_ID_PROP_NAME = "toTeamId";
     private Long toTeamId;
     
     private String toTeamName;
     private String toTeamCountry;
+    private Long toTeamOwnerUserId;
     private String toTeamOwnerUsername;
     
     private Long price;
@@ -93,6 +96,13 @@ public class ProposalSO implements Serializable {
     public void setPlayerValue(Long playerValue) {
         this.playerValue = playerValue;
     }
+    
+    public Long getTransferFromTeamOwnerUserId() {
+        return transferFromTeamOwnerUserId;
+    }
+    public void setTransferFromTeamOwnerUserId(Long transferFromTeamOwnerUserId) {
+        this.transferFromTeamOwnerUserId = transferFromTeamOwnerUserId;
+    }
 
     public Long getToTeamId() {
         return toTeamId;
@@ -113,6 +123,13 @@ public class ProposalSO implements Serializable {
     }
     public void setToTeamCountry(String toTeamCountry) {
         this.toTeamCountry = toTeamCountry;
+    }
+
+    public Long getToTeamOwnerUserId() {
+        return toTeamOwnerUserId;
+    }
+    public void setToTeamOwnerUserId(Long toTeamOwnerUserId) {
+        this.toTeamOwnerUserId = toTeamOwnerUserId;
     }
 
     public String getToTeamOwnerUsername() {

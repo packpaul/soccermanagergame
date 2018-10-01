@@ -61,8 +61,12 @@ $.Manager.pages.Players = {
 //                    {defaultContent: '', orderable: false},
                 {data: null, orderable: false, searchable: false, render: function (info, type, row) {
                         var action = '<a href="#" onclick="$.Manager.pages.Players.onInfoPlayer(' + info.id + ');"> info</a>';
-                        action += '<a href="#" onclick="$.Manager.pages.Players.onTransferPlayer(' + info.id + ');"> transfer</a>'
-                        if ((! $.Manager.userType) || ($.Manager.userType != 'TEAM_OWNER')) {
+                        if (($.Manager.userType != 'TEAM_OWNER') || (info.teamOwnerUserId == $.Manager.userId)) {
+                            if (! info.inTransfer) {
+                                action += '<a href="#" onclick="$.Manager.pages.Players.onTransferPlayer(' + info.id + ');"> transfer</a>'
+                            }
+                        }
+                        if ($.Manager.userType != 'TEAM_OWNER') {
                             action += '<a href="#" onclick="$.Manager.pages.Players.onEditPlayer(' + info.id + ');"> edit</a>';
                             action += '<a href="#" onclick="$.Manager.pages.Players.onDeletePlayer(' + info.id + ');"> delete</a>'
                         }
@@ -160,11 +164,13 @@ $.Manager.pages.Players = {
         
         const searchValues = this.getPlayersSearchBoxValues();
         
-        var teamId = (params) ? $.query.load('?' + params).get('teamId') : null;
-        if (searchValues.teamId != teamId) {
-            searchValues.teamId = teamId;
-            this.initPlayersSearchBoxValues(searchValues);
-            setTimeout(function() { self.filterTable() }, 500); // TODO: -> promise
+        if (params) {
+            var teamId = $.query.load('?' + params).get('teamId');
+            if (searchValues.teamId != teamId) {
+                searchValues.teamId = teamId;
+                this.initPlayersSearchBoxValues(searchValues);
+                setTimeout(function() { self.filterTable() }, 500); // TODO: -> promise
+            }
         }
     },
     

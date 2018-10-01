@@ -25,6 +25,7 @@ public class PlayerSO implements Serializable {
     
     public static final String TEAM_COUNTRY_PROP_NAME = "teamCountry";
     private String teamCountry;
+    private Long teamOwnerUserId;
 
     private Boolean inTransfer;
     
@@ -111,6 +112,13 @@ public class PlayerSO implements Serializable {
         this.teamCountry = teamCountry;
     }
     
+    public Long getTeamOwnerUserId() {
+        return teamOwnerUserId;
+    }
+    public void setTeamOwnerUserId(Long teamOwnerUserId) {
+        this.teamOwnerUserId = teamOwnerUserId;
+    }
+
     public Boolean isInTransfer() {
         return inTransfer;
     }

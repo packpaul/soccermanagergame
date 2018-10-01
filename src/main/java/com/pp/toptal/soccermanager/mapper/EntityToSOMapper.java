@@ -55,6 +55,7 @@ public class EntityToSOMapper {
         to.setCountry(from.getCountry().name());
         to.setTeamId(from.getTeam().getId());
         to.setTeamName(from.getTeam().getTeamName());
+        to.setTeamOwnerUserId(from.getTeam().getOwner().getId());
         to.setTeamCountry(from.getTeam().getCountry().name());
         to.setInTransfer(from.isInTransfer());
 
@@ -80,7 +81,8 @@ public class EntityToSOMapper {
             to.setFromTeamName(t.getTeamName());
             to.setFromTeamCountry(t.getCountry().name());
             Optional.ofNullable(t.getOwner()).ifPresent((o) -> {
-                to.setFromTeamOwnerUsername(o.getUsername());                
+                to.setFromTeamOwnerUserId(o.getId());
+                to.setFromTeamOwnerUsername(o.getUsername()); 
             });
         });
         Optional.ofNullable(from.getToTeam()).ifPresent((t) -> {
@@ -109,13 +111,19 @@ public class EntityToSOMapper {
                 to.setPlayerCountry(p.getCountry().name());
                 to.setPlayerValue(p.getValue());
             });
+            Optional.ofNullable(t.getFromTeam()).ifPresent((ft) -> {
+                Optional.ofNullable(ft.getOwner()).ifPresent((o) -> {
+                    to.setTransferFromTeamOwnerUserId(o.getId());
+                });
+            });
         }); 
         Optional.ofNullable(from.getToTeam()).ifPresent((t) -> {
             to.setToTeamId(t.getId());
             to.setToTeamName(t.getTeamName());
             to.setToTeamCountry(t.getCountry().name());
             Optional.ofNullable(t.getOwner()).ifPresent((o) -> {
-                to.setToTeamOwnerUsername(o.getUsername());                
+                to.setToTeamOwnerUserId(o.getId());
+                to.setToTeamOwnerUsername(o.getUsername());             
             });
         });
         to.setPrice(from.getPrice());

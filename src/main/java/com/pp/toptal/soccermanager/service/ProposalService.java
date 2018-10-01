@@ -91,8 +91,9 @@ public class ProposalService {
         
         if (authService.isCurrentUserType(UserType.TEAM_OWNER)) {
             UserEntity currentUser = userRepo.findOneByUsername(authService.getCurrentUsername());
-            predicate = ExpressionUtils.and(predicate,
-                    QProposalEntity.proposalEntity.transfer.fromTeam.owner.eq(currentUser));
+            predicate = ExpressionUtils.and(predicate, ExpressionUtils.or(
+                    QProposalEntity.proposalEntity.transfer.fromTeam.owner.eq(currentUser),
+                    QProposalEntity.proposalEntity.toTeam.owner.eq(currentUser)));
         }
         
         if (params.getFilterProperties() != null) {
@@ -243,7 +244,7 @@ public class ProposalService {
             if (! Objects.equals(currentUser, proposal.getToTeam().getOwner())) {
                 throw new BusinessException(ErrorCode.INVALID_STATE, String.format(
                         "Team owner '%s' cannot cancel proposal (id=%d) that was created by others!",
-                        currentUser.getUsername()));                                
+                        currentUser.getUsername(), proposal.getId()));                                
             }
         }
 

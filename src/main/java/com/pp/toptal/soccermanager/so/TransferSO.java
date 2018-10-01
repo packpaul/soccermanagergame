@@ -32,6 +32,7 @@ public class TransferSO implements Serializable {
     public static final String FROM_TEAM_COUNTRY_PROP_NAME = "fromTeamCountry";    
     private String fromTeamCountry;
     
+    private Long fromTeamOwnerUserId;
     private String fromTeamOwnerUsername;
 
     private Long toTeamId;
@@ -117,6 +118,13 @@ public class TransferSO implements Serializable {
         this.fromTeamCountry = fromTeamCountry;
     }
     
+    public Long getFromTeamOwnerUserId() {
+        return fromTeamOwnerUserId;
+    }
+    public void setFromTeamOwnerUserId(Long fromTeamOwnerUserId) {
+        this.fromTeamOwnerUserId = fromTeamOwnerUserId;
+    }
+
     public String getFromTeamOwnerUsername() {
         return fromTeamOwnerUsername;
     }
