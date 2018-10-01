@@ -10,6 +10,14 @@ if (! $.Manager) {
         isPrototype: true,
         onMessageUser: function(toUser) {
             var message = prompt("Reply to user '" + toUser + "':", "Ok, you can ...");
+        },
+        select2: {
+            players: function($select) {
+                $select.select2();
+            },
+            teams: function($select) {
+                $select.select2();
+            }
         }
     }
 }
@@ -34,9 +42,11 @@ $.Manager.pages.Proposals = {
 
             columns: [
                 {data: 'id', name: 'id'},
+                {data: 'playerId', name: 'playerId', orderable: false, visible: false},
                 {data: 'playerFullName', name: 'playerFullName', orderable: false},
                 {data: 'playerType', name: 'playerType', orderable: false},
                 {data: 'playerCountry', name: 'playerCountry', orderable: false},
+                {data: 'toTeamId', name: 'toTeamId', orderable: false, visible: false},
                 {data: 'toTeamName', name: 'toTeamName', orderable: false},
                 {data: 'toTeamCountry', name: 'toTeamCountry', orderable: false},
                 {data: 'playerValue', name: 'playerValue', orderable: false},
@@ -89,6 +99,7 @@ $.Manager.pages.Proposals = {
 
         this.initProposalsSearchBoxValues({
             playerFullName: this.$proposalsTable.column('playerFullName:name').search(),
+            toTeamId: this.$proposalsTable.column('toTeamId:name').search(),
             creationDateFrom: this.$proposalsTable.column('').search(),
             creationDateTill: this.$proposalsTable.column('').search()
         });
@@ -128,7 +139,12 @@ $.Manager.pages.Proposals = {
     },
         
     onShow: function($page, params) {
-//      $page.find("select").select2();
+        if (! $page.prop('shown')) {
+            $page.prop('shown', true);
+            var $proposalsSearchBox = this.$page.find('#proposalsSearchBox');
+            $.Manager.select2.players($proposalsSearchBox.find('#playerId'));
+            $.Manager.select2.teams($proposalsSearchBox.find('#toTeamId'));
+        }
     },
     
     initProposalsSearchBoxValues: function(searchValues) {
@@ -147,7 +163,10 @@ $.Manager.pages.Proposals = {
         var $proposalsSearchBoxControls = this.$page.find('#proposalsSearchBox .form-control');
         $proposalsSearchBoxControls.each(function(index, $control) {
             values[$control.id] = $control.value.trim();
-        }); 
+        });
+        
+        values.creationDate = (values.creationDateFrom || values.creationDateTill) ?
+                (values.creationDateFrom || '') + '<=' + (values.creationDateTill || '') : '';
         
         return values;
     },

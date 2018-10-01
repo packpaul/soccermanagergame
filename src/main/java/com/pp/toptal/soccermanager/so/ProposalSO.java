@@ -13,21 +13,25 @@ public class ProposalSO implements Serializable {
     
     private Long transferId;
     
+    public static final String PLAYER_ID_PROP_NAME = "playerId";
     private Long playerId;
+    
     private String playerFullName;
     private String playerType;
     private Integer playerAge;
     private String playerCountry;
     private Long playerValue;
 
-    
+    public static final String TO_TEAM_ID_PROP_NAME = "toTeamId";
     private Long toTeamId;
+    
     private String toTeamName;
     private String toTeamCountry;
     private String toTeamOwnerUsername;
     
     private Long price;
     
+    public static final String CREATION_DATE_PROP_NAME = "creationDate";
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date creationDate;
     

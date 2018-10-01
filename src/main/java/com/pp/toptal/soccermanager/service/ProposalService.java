@@ -1,10 +1,15 @@
 package com.pp.toptal.soccermanager.service;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.javatuples.Triplet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +38,7 @@ import com.pp.toptal.soccermanager.repo.TeamRepo;
 import com.pp.toptal.soccermanager.repo.TransferRepo;
 import com.pp.toptal.soccermanager.repo.UserRepo;
 import com.pp.toptal.soccermanager.so.TableDataSO;
+import com.pp.toptal.soccermanager.utils.DateTimeFormatter;
 import com.pp.toptal.soccermanager.so.ProposalSO;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
@@ -89,34 +95,35 @@ public class ProposalService {
                     QProposalEntity.proposalEntity.toTeam.owner.eq(currentUser));
         }
         
-        // TODO: filtering
-/*
         if (params.getFilterProperties() != null) {
             String[] properties = params.getFilterProperties();
             String[] values = params.getFilterValues();
             QProposalEntity entity = QProposalEntity.proposalEntity;
             for (int i = 0; i < properties.length; i++) {
                 Predicate propPredicate;
-                if (Objects.equals(properties[i], entity.player. firstName.getMetadata().getName())) {
-                    String value = values[i];
-                    if (! value.matches("[\\w\\* ]+")) {
-                        throw new DataParameterException("Filter for 'firstName' should only contain [a-zA-Z_0-9* ] !");
+                if (ProposalSO.PLAYER_ID_PROP_NAME.equals(properties[i])) {
+                    propPredicate = entity.transfer.player.id.eq(Long.valueOf(values[i]));
+                } else if (ProposalSO.TO_TEAM_ID_PROP_NAME.equals(properties[i])) {
+                    propPredicate = entity.toTeam.id.eq(Long.valueOf(values[i]));
+                } else if (ProposalSO.CREATION_DATE_PROP_NAME.equals(properties[i])) {
+                    String value = values[i]; 
+                    if (! value.matches("(\\d\\d\\d\\d-\\d\\d-\\d\\d)?<=(\\d\\d\\d\\d-\\d\\d-\\d\\d)?")) {
+                        throw new DataParameterException(String.format(
+                                "Filter for '%s' should be of form DATE<=DATE !", ProposalSO.CREATION_DATE_PROP_NAME));
                     }
-                    value = value.replace('*', '%');
-                    propPredicate = entity.firstName.likeIgnoreCase(value);
-                } else if (Objects.equals(properties[i], entity.lastName.getMetadata().getName())) {
-                    String value = values[i];
-                    if (! value.matches("[\\w\\* ]+")) {
-                        throw new DataParameterException("Filter for 'lastName' should only contain [a-zA-Z_0-9* ] !");
+                    int p = value.indexOf("<=");
+                    Date valueMin = Optional.of(value.substring(0, p))
+                            .filter(StringUtils::isNotEmpty).map(DateTimeFormatter::fromString).orElse(null);
+                    Date valueMax = Optional.of(value.substring(p + 2))
+                            .filter(StringUtils::isNotEmpty).map(DateTimeFormatter::fromString).orElse(null);
+                    if (valueMax != null) {
+                        valueMax = Date.from(ZonedDateTime.ofInstant(valueMax.toInstant(), ZoneId.systemDefault())
+                                .truncatedTo(ChronoUnit.DAYS).plusDays(1).toInstant());
                     }
-                    value = value.replace('*', '%');
-                    propPredicate = entity.lastName.likeIgnoreCase(value);
-                } else if (Objects.equals(properties[i], entity.country.getMetadata().getName())) {
-                    Country value = Country.valueOf(values[i]);
-                    propPredicate = entity.country.eq(value);
-                } else if (Objects.equals(properties[i], entity.proposalType.getMetadata().getName())) {
-                    ProposalType value = ProposalType.valueOf(values[i]);
-                    propPredicate = entity.proposalType.eq(value);
+                    propPredicate = ((valueMin != null) && (valueMax != null)) ? entity.creationDate.between(valueMin, valueMax) :
+                                    (valueMin != null) ? entity.creationDate.goe(valueMin) : entity.creationDate.loe(valueMax);
+                                    
+                                    
                 } else {
                     continue;
                 }
@@ -125,7 +132,7 @@ public class ProposalService {
                                                   propPredicate;
             }
         }
-*/
+
         final long count = proposalRepo.count(predicate);
         
         List<ProposalSO> proposals = new ArrayList<>(Math.min(limit, (int) count));
@@ -156,7 +163,19 @@ public class ProposalService {
     }
 
     public ProposalSO getProposal(Long proposalId) {
-        return toSoMapper.map(findProposal(proposalId), new ProposalSO());
+
+        ProposalEntity proposal = findProposal(proposalId);
+        
+        if (authService.isCurrentUserType(UserType.TEAM_OWNER)) {
+            UserEntity currentUser = userRepo.findOneByUsername(authService.getCurrentUsername());
+            if (! Objects.equals(currentUser, proposal.getToTeam().getOwner())) {
+                throw new BusinessException(ErrorCode.INVALID_STATE, String.format(
+                        "Team owner '%s' has no rights to access proposal (id=%d)!",
+                        currentUser.getUsername(), proposal.getId()));                                
+            }
+        }
+
+        return toSoMapper.map(proposal, new ProposalSO());
     }
     
     private ProposalEntity findProposal(Long proposalId) {
@@ -207,6 +226,15 @@ public class ProposalService {
     public void removeProposal(Long proposalId) {
         
         ProposalEntity proposal = findProposal(proposalId);
+        
+        if (authService.isCurrentUserType(UserType.TEAM_OWNER)) {
+            UserEntity currentUser = userRepo.findOneByUsername(authService.getCurrentUsername());
+            if (! Objects.equals(currentUser, proposal.getToTeam().getOwner())) {
+                throw new BusinessException(ErrorCode.INVALID_STATE, String.format(
+                        "Team owner '%s' has no rights to remove proposal (id=%d)!",
+                        currentUser.getUsername(), proposal.getId()));                                
+            }
+        }
 
         proposalRepo.delete(proposal.getId());
         
@@ -218,7 +246,14 @@ public class ProposalService {
         
         ProposalEntity proposal = findProposal(proposalId);
         
-        LOGGER.info("Accepting proposal (id={})...", proposal.getId());
+        if (authService.isCurrentUserType(UserType.TEAM_OWNER)) {
+            UserEntity currentUser = userRepo.findOneByUsername(authService.getCurrentUsername());
+            if (! Objects.equals(currentUser, proposal.getToTeam().getOwner())) {
+                throw new BusinessException(ErrorCode.INVALID_STATE, String.format(
+                        "Team owner '%s' has no rights to remove proposal (id=%d)!",
+                        currentUser.getUsername(), proposal.getId()));                                
+            }
+        }
 
         TeamEntity toTeam = proposal.getToTeam();
         
@@ -246,7 +281,8 @@ public class ProposalService {
         
         proposal.setUpdateDate(new Date());
         proposalRepo.save(proposal);
+        
+        LOGGER.info("Proposal (id={}) was accepted.", proposal.getId());
     }
-
 
 }

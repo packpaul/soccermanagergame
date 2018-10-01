@@ -64,14 +64,24 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-lg-4">
-                        <label>Player Name</label>
-                        <input id="playerFullName" type="text" class="form-control" placeholder="f.e. 'Doe*Joa*' ('*' wildcard can be used)" />
+                        <label>Player</label>
+                        <select id="playerId" class="form-control" value="">
+                            <option value="" th:if="false">-- no selection --</option>
+                            <option value="1" th:if="false">1 - Jordi di María, Brazil</option>
+                        </select>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
+                        <label>To team</label>
+                        <select id="toTeamId" class="form-control" value="">
+                            <option value="" th:if="false">-- no selection --</option>
+                            <option value="1" th:if="false">1 - Soccer Dream Team, Mexica</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2">
                         <label>Date (from)</label>
                         <input id="creationDateFrom" type="text" class="form-control" placeholder="f.e. 2018-09-25" />
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-2">
                         <label>Date (till)</label>
                         <input id="creationDateTill" type="text" class="form-control" placeholder="f.e. 2018-09-27" />
                     </div>
@@ -96,22 +106,26 @@
                     <thead>
                         <tr>
                             <th width="4%">ID</th>
-                            <th width="12%">Player Name</th>
+                            <th width="0%">Player ID</th>
+                            <th width="16%">Player Name</th>
                             <th width="8%">Type</th>
                             <th width="6%">Country</th>
+                            <th width="0%">To Team ID</th>
                             <th width="18%">To Team Name</th>
                             <th width="8%">To Team Country</th>
-                            <th width="12%">Player Value</th>
-                            <th width="12%">Proposed Price</th>
+                            <th width="10%">Player Value</th>
+                            <th width="10%">Proposed Price</th>
                             <th width="7%">Date</th>
                             <th width="13%"></th>
                         </tr>
                     </thead>
                     <tr th:if="false">
                         <td>1</td>
+                        <td>2</td>
                         <td>Jordi di María</td>
                         <td>attacker</td>
                         <td>Brazil</td>
+                        <td>1</td>
                         <td>Soccer Dream Team</td>
                         <td>Mexica</td>
                         <td>$1 450 000</td>

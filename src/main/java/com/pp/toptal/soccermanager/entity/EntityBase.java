@@ -1,8 +1,9 @@
 package com.pp.toptal.soccermanager.entity;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
+
+import com.pp.toptal.soccermanager.utils.DateTimeFormatter;
 
 /**
  * Base class for ORM entities.
@@ -10,11 +11,6 @@ import java.util.Objects;
  * @param <ID>
  */
 public abstract class EntityBase<ID> {
-    
-    private static final ThreadLocal<SimpleDateFormat> DATE_FORMATTER =
-            ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd"));
-    private static final ThreadLocal<SimpleDateFormat> DATE_TIME_FORMATTER =
-            ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
     
     private ID id;
     
@@ -62,11 +58,11 @@ public abstract class EntityBase<ID> {
     }
     
     final static String toDateString(Date date) {
-        return (date != null) ? DATE_FORMATTER.get().format(date) : null;
+        return DateTimeFormatter.toDateString(date);
     }
 
     final static String toDateTimeString(Date date) {
-        return (date != null) ? DATE_TIME_FORMATTER.get().format(date) : null;
+        return DateTimeFormatter.toDateTimeString(date);
     }
 
 }
