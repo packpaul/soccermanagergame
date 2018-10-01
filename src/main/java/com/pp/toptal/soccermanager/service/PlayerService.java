@@ -177,9 +177,13 @@ public class PlayerService {
             throw new DataParameterException("Player country should be provided!");
         }
         
+        if (playerData.getTeamId() == null) {
+            throw new DataParameterException("Player's team should be provided!");            
+        }
         TeamEntity team = teamRepo.findOne(playerData.getTeamId());
         if (team == null) {
-            throw new BusinessException(ErrorCode.OBJECT_NOT_FOUND, "Player's team should be provided!");
+            throw new BusinessException(ErrorCode.OBJECT_NOT_FOUND,
+                    String.format("Team (id=%d) not found!", playerData.getTeamId()));
         }
         
         if ((playerData.getValue() == null) || (playerData.getValue() < 0)) {

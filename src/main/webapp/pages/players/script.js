@@ -147,6 +147,8 @@ $.Manager.pages.Players = {
     },
         
     onShow: function($page, params) {
+        
+        const self = this;
 
         if (! $page.prop('shown')) {
             $page.prop('shown', true);
@@ -160,7 +162,7 @@ $.Manager.pages.Players = {
         if (searchValues.teamId != teamId) {
             searchValues.teamId = teamId;
             this.initPlayersSearchBoxValues(searchValues);
-            this.filterTable();
+            setTimeout(function() { self.filterTable() }, 500); // TODO: -> promise
         }
     },
     
@@ -170,10 +172,16 @@ $.Manager.pages.Players = {
     
     initPlayersSearchBoxValues: function(searchValues) {
         var $playersSearchBox = this.find$playersSearchBox();
+
+//        console.debug(searchValues);
         
         Object.keys(searchValues).forEach(function(name) {
             $playersSearchBox.find('#' + name).val(searchValues[name]);
         });
+
+        if (searchValues.teamId) {
+            $.Manager.select2.select($playersSearchBox.find('#teamId'), searchValues.teamId);
+        }
         
         $playersSearchBox.find('select').trigger("change");
     },

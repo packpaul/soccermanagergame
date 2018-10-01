@@ -250,6 +250,9 @@ public class TeamService {
             throw new DataParameterException("Team country should be provided!");
         }
             
+        if (teamData.getOwnerId() == null) {
+            throw new DataParameterException("Team owner should be provided!");            
+        }
         UserEntity owner = userRepo.findOne(teamData.getOwnerId());
         if (owner == null) {
             throw new BusinessException(ErrorCode.OBJECT_NOT_FOUND,
