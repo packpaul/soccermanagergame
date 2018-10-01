@@ -33,6 +33,8 @@ $.Manager.pages.Proposals = {
     
         this.$page = $page;
         
+        $page.find("[data-mask]").inputmask(undefined, { rightAlignNumerics: false });
+        
         var dtConfig = {
             processing: true,
             select: true,

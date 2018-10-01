@@ -47,9 +47,12 @@
         });
     </script>
 
-    <script src="../../js/util.js" th:src="@{/js/util.js}"></script>
-    <script src="../../js/restApi.js" th:src="@{/js/restApi.js}"></script>
-            
+    <!-- InputMask -->
+    <script src="../../plugins/input-mask/jquery.inputmask.js"></script>
+    <script src="../../plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+    <script src="../../plugins/input-mask/jquery.inputmask.numeric.extensions.js"></script>
+    <script src="../../js/jquery.inputmask.app.extensions.js"></script>
+    
     <script src="../../js/restApi.js"></script>
     <script src="../../js/util.js"></script>
 </head>
@@ -205,13 +208,17 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Value</label>
                         <div class="col-sm-9">
-                            <input name="value" required="required" class="form-control" disabled="disabled" />
+                            <input name="value" required="required" class="form-control" disabled="disabled"
+                                   placeholder="USD"
+                                   data-inputmask="'alias': 'currency'" data-mask="data-mask" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Balance</label>
                         <div class="col-sm-9">
-                            <input name="balance" required="required" class="form-control" />
+                            <input name="balance" required="required" class="form-control"
+                                   placeholder="USD"
+                                   data-inputmask="'alias': 'currency'" data-mask="data-mask" />
                         </div>
                     </div>
                 </form>

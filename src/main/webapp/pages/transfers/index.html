@@ -46,6 +46,12 @@
             $.fn.select2.defaults.set("theme", "bootstrap");
         });
     </script>
+    
+    <!-- InputMask -->
+    <script src="../../plugins/input-mask/jquery.inputmask.js"></script>
+    <script src="../../plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+    <script src="../../plugins/input-mask/jquery.inputmask.numeric.extensions.js"></script>
+    <script src="../../js/jquery.inputmask.app.extensions.js"></script>
             
     <script src="../../js/restApi.js"></script>
     <script src="../../js/util.js"></script>
@@ -109,11 +115,13 @@
                 <div class="row">
                     <div class="col-lg-3">
                         <label>Player value (min)</label>
-                        <input id="playerValueMin" type="text" class="form-control" placeholder="f.e. 500000" />
+                        <input id="playerValueMin" type="text" class="form-control" placeholder="f.e. $500 000"
+                               data-inputmask="'alias': 'currency'" data-mask="data-mask" />
                     </div>
                     <div class="col-lg-3">
                         <label>Player value (max)</label>
-                        <input id="playerValueMax" type="text" class="form-control" placeholder="f.e. 3500000" />
+                        <input id="playerValueMax" type="text" class="form-control" placeholder="f.e. $3 500 000"
+                               data-inputmask="'alias': 'currency'" data-mask="data-mask" />
                     </div>
                 </div>
                 <hr/>
@@ -207,7 +215,8 @@
                    <div class="form-group">
                         <label class="col-sm-3 control-label">Player age</label>
                         <div class="col-sm-9">
-                            <input name="playerAge" required="required" class="form-control" disabled="disabled" />
+                            <input name="playerAge" required="required" class="form-control" disabled="disabled"
+                                   data-inputmask="'alias': 'age'" data-mask="data-mask" />
                         </div>
                    </div>
                    <div class="form-group">
@@ -234,7 +243,9 @@
                    <div class="form-group">
                         <label class="col-sm-3 control-label">Proposal price</label>
                         <div class="col-sm-9">
-                            <input name="proposalPrice" required="required" class="form-control" />
+                            <input name="proposalPrice" required="required" class="form-control" 
+                                   placeholder="USD"
+                                   data-inputmask="'alias': 'currency'" data-mask="data-mask" />
                         </div>
                    </div>
                 </form>

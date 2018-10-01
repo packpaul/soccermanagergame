@@ -46,6 +46,12 @@
             $.fn.select2.defaults.set("theme", "bootstrap");
         });
     </script>
+    
+    <!-- InputMask -->
+    <script src="../../plugins/input-mask/jquery.inputmask.js"></script>
+    <script src="../../plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+    <script src="../../plugins/input-mask/jquery.inputmask.numeric.extensions.js"></script>
+    <script src="../../js/jquery.inputmask.app.extensions.js"></script>
             
     <script src="../../js/restApi.js"></script>
     <script src="../../js/util.js"></script>
@@ -79,11 +85,13 @@
                     </div>
                     <div class="col-lg-2">
                         <label>Date (from)</label>
-                        <input id="creationDateFrom" type="text" class="form-control" placeholder="f.e. 2018-09-25" />
+                        <input id="creationDateFrom" type="text" class="form-control" placeholder="f.e. 2018-09-25"
+                                   data-inputmask="'alias': 'date'" data-mask="data-mask" />
                     </div>
                     <div class="col-lg-2">
                         <label>Date (till)</label>
-                        <input id="creationDateTill" type="text" class="form-control" placeholder="f.e. 2018-09-27" />
+                        <input id="creationDateTill" type="text" class="form-control" placeholder="f.e. 2018-09-27"
+                               data-inputmask="'alias': 'date'" data-mask="data-mask" />
                     </div>
                 </div>
                 <hr/>

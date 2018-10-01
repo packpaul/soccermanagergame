@@ -42,10 +42,16 @@
     <!-- Select2 -->
     <script src="../../plugins/select2/select2.min.js"></script>
     <script>
-        $(function () {           
+        $(function() {           
             $.fn.select2.defaults.set("theme", "bootstrap");
         });
     </script>
+    
+    <!-- InputMask -->
+    <script src="../../plugins/input-mask/jquery.inputmask.js"></script>
+    <script src="../../plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+    <script src="../../plugins/input-mask/jquery.inputmask.numeric.extensions.js"></script>
+    <script src="../../js/jquery.inputmask.app.extensions.js"></script>
             
     <script src="../../js/restApi.js"></script>
     <script src="../../js/util.js"></script>
@@ -217,7 +223,8 @@
                         <label class="col-sm-3 control-label">Age</label>
                         <div class="col-sm-9">
                             <input name="age" required="required" class="form-control"
-                                   placeholder=">= 18" />
+                                   placeholder=">= 18"
+                                   data-inputmask="'alias': 'age'" data-mask="data-mask" />
                         </div>
                    </div>
                    <div class="form-group">
@@ -258,7 +265,9 @@
                    <div class="form-group">
                         <label class="col-sm-3 control-label">Value</label>
                         <div class="col-sm-9">
-                            <input name="value" required="required" class="form-control" />
+                            <input name="value" required="required" class="form-control"
+                                   placeholder="USD"
+                                   data-inputmask="'alias': 'currency'" data-mask="data-mask" />
                         </div>
                    </div>
                 </form>
