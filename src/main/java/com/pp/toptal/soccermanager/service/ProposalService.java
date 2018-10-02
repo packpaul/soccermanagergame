@@ -297,6 +297,11 @@ public class ProposalService {
         toTeam.setUpdateDate(new Date());
         toTeam = teamRepo.save(toTeam);
         
+        TeamEntity fromTeam = proposal.getTransfer().getFromTeam();
+        fromTeam.setBalance(fromTeam.getBalance() + proposal.getPrice());
+        fromTeam.setUpdateDate(new Date());
+        fromTeam = teamRepo.save(fromTeam);
+        
         TransferEntity transfer = proposal.getTransfer();
         transfer.setToTeam(toTeam);
         transfer.setStatus(TransferStatus.CLOSED);
